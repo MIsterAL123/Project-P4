@@ -1,0 +1,92 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Materi Pembelajaran</h1>
+        <p class="text-gray-600 mt-1">Akses semua materi program P4</p>
+    </div>
+
+    <% if (typeof isApproved === 'undefined' || !isApproved) { %>
+    <!-- Not Approved -->
+    <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-8 text-center">
+        <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-yellow-800">Akses Terbatas</h3>
+        <p class="text-yellow-700 mt-2 mb-6">Anda harus memiliki pendaftaran yang disetujui untuk mengakses materi pembelajaran.</p>
+        <a href="/peserta/daftar-p4" class="inline-flex items-center px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium">
+            Daftar Program P4
+        </a>
+    </div>
+    <% } else { %>
+    <!-- Materials Grid -->
+    <% if (typeof materials === 'undefined' || !materials || materials.length === 0) { %>
+    <div class="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
+        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-700">Belum Ada Materi</h3>
+        <p class="text-gray-500 mt-2">Materi pembelajaran akan segera tersedia. Silakan cek kembali nanti.</p>
+    </div>
+    <% } else { %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% materials.forEach((material, index) => { %>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+            <!-- Thumbnail -->
+            <div class="h-40 bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                <% if (material.jenis === 'video') { %>
+                <svg class="w-16 h-16 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <% } else if (material.jenis === 'pdf') { %>
+                <svg class="w-16 h-16 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+                <% } else { %>
+                <svg class="w-16 h-16 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+                <% } %>
+            </div>
+            <div class="p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-medium px-2 py-1 rounded-full 
+                        <% if (material.jenis === 'video') { %>
+                        bg-purple-100 text-purple-700
+                        <% } else if (material.jenis === 'pdf') { %>
+                        bg-red-100 text-red-700
+                        <% } else { %>
+                        bg-blue-100 text-blue-700
+                        <% } %>
+                    ">
+                        <%= material.jenis ? material.jenis.toUpperCase() : 'MATERI' %>
+                    </span>
+                    <span class="text-xs text-gray-400">Modul <%= index + 1 %></span>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-2 line-clamp-2"><%= material.judul %></h4>
+                <p class="text-sm text-gray-500 mb-4 line-clamp-2"><%= material.deskripsi || 'Tidak ada deskripsi' %></p>
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-400">
+                        <% if (material.guru_nama) { %>
+                        Oleh: <%= material.guru_nama %>
+                        <% } else { %>
+                        P4 Jakarta
+                        <% } %>
+                    </span>
+                    <% if (material.file_url) { %>
+                    <a href="<%= material.file_url %>" target="_blank" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                        Akses →
+                    </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+    <% } %>
+    <% } %>
+</div>

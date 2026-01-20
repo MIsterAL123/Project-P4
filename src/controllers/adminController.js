@@ -1,0 +1,190 @@
+// Manajemen admin
+const Admin = require('../models/Admin');
+const User = require('../models/User');
+const logger = require('../utils/logger');
+
+// @desc    Show manage admin page
+// @route   GET /admin/manage-admin
+const showManageAdminPage = async (req, res) => {
+  try {
+    const admins = await Admin.findAll();
+
+    res.render('admin/manage-admin', {
+      title: 'Kelola Admin - P4 Jakarta',
+      layout: 'layouts/admin',
+      admins,
+      currentUser: req.user,
+      user: req.user
+    });
+  } catch (error) {
+    logger.error('Show manage admin error:', error);
+    res.render('admin/manage-admin', {
+      title: 'Kelola Admin - P4 Jakarta',
+      layout: 'layouts/admin',
+      admins: [],
+      currentUser: req.user,
+      user: req.user
+    });
+  }
+};
+
+// @desc    Add new admin
+// @route   POST /admin/add-admin
+const addAdmin = async (req, res) => {
+  try {
+    const { nama, email, password, confirm_password } = req.body;
+
+    // Validation
+    const errors = [];
+
+    if (!nama || nama.length < 3) {
+      errors.push('Nama minimal 3 karakter');
+    }
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      errors.push('Email tidak valid');
+    }
+    if (!password || password.length < 8) {
+      errors.push('Password minimal 8 karakter');
+    }
+    if (password !== confirm_password) {
+      errors.push('Password tidak cocok');
+    }
+
+    // Check if email exists
+    if (await User.emailExists(email)) {
+      errors.push('Email sudah terdaftar');
+    }
+
+    if (errors.length > 0) {
+      const admins = await Admin.findAll();
+      return res.render('admin/manage-admin', {
+        title: 'Kelola Admin - P4 Jakarta',
+        layout: 'layouts/admin',
+        admins,
+        currentUser: req.user,
+        errors,
+        formData: { nama, email }
+      });
+    }
+
+    // Get current admin id
+    const currentAdmin = await Admin.findByUserId(req.user.id);
+
+    // Create new admin
+    await Admin.create({ nama, email, password }, currentAdmin.id);
+
+    logger.info(`New admin added by ${req.user.email}: ${email}`);
+    req.session.success = 'Admin baru berhasil ditambahkan';
+    res.redirect('/admin/manage-admin');
+  } catch (error) {
+    logger.error('Add admin error:', error);
+    req.session.error = 'Gagal menambahkan admin';
+    res.redirect('/admin/manage-admin');
+  }
+};
+
+// @desc    Delete admin
+// @route   POST /admin/delete-admin/:id
+const deleteAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const admin = await Admin.findById(id);
+
+    if (!admin) {
+      req.session.error = 'Admin tidak ditemukan';
+      return res.redirect('/admin/manage-admin');
+    }
+
+    // Prevent self-deletion
+    if (admin.user_id === req.user.id) {
+      req.session.error = 'Tidak dapat menghapus akun sendiri';
+      return res.redirect('/admin/manage-admin');
+    }
+
+    await Admin.delete(id);
+
+    logger.info(`Admin deleted by ${req.user.email}: ID ${id}`);
+    req.session.success = 'Admin berhasil dihapus';
+    res.redirect('/admin/manage-admin');
+  } catch (error) {
+    logger.error('Delete admin error:', error);
+    req.session.error = 'Gagal menghapus admin';
+    res.redirect('/admin/manage-admin');
+  }
+};
+
+// @desc    Update admin
+// @route   POST /admin/update-admin/:id
+const updateAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nama, email, password, confirm_password } = req.body;
+
+    const admin = await Admin.findById(id);
+    if (!admin) {
+      req.session.error = 'Admin tidak ditemukan';
+      return res.redirect('/admin/manage-admin');
+    }
+
+    // Validation
+    const errors = [];
+
+    if (!nama || nama.length < 3) {
+      errors.push('Nama minimal 3 karakter');
+    }
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      errors.push('Email tidak valid');
+    }
+
+    // Check if email exists for other users
+    const existingUser = await User.findByEmail(email);
+    if (existingUser && existingUser.id !== admin.user_id) {
+      errors.push('Email sudah digunakan oleh user lain');
+    }
+
+    // Password validation (optional)
+    if (password && password.length > 0) {
+      if (password.length < 8) {
+        errors.push('Password minimal 8 karakter');
+      }
+      if (password !== confirm_password) {
+        errors.push('Password tidak cocok');
+      }
+    }
+
+    if (errors.length > 0) {
+      const admins = await Admin.findAll();
+      return res.render('admin/manage-admin', {
+        title: 'Kelola Admin - P4 Jakarta',
+        layout: 'layouts/admin',
+        admins,
+        currentUser: req.user,
+        user: req.user,
+        errors
+      });
+    }
+
+    // Update admin data
+    await Admin.update(id, { nama, email });
+
+    // Update password if provided
+    if (password && password.length > 0) {
+      await User.updatePassword(admin.user_id, password);
+    }
+
+    logger.info(`Admin updated by ${req.user.email}: ID ${id}`);
+    req.session.success = 'Admin berhasil diperbarui';
+    res.redirect('/admin/manage-admin');
+  } catch (error) {
+    logger.error('Update admin error:', error);
+    req.session.error = 'Gagal memperbarui admin';
+    res.redirect('/admin/manage-admin');
+  }
+};
+
+module.exports = {
+  showManageAdminPage,
+  addAdmin,
+  updateAdmin,
+  deleteAdmin
+};

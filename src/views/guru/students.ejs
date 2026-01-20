@@ -1,0 +1,97 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Peserta Didik</h1>
+            <p class="text-gray-600 mt-1">Daftar peserta yang mengikuti program P4</p>
+        </div>
+        <div class="mt-4 sm:mt-0">
+            <form action="/guru/students" method="GET" class="flex items-center space-x-2">
+                <input type="text" name="search" value="<%= typeof search !== 'undefined' ? search : '' %>"
+                    placeholder="Cari peserta..."
+                    class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Students Grid -->
+    <% if (typeof students !== 'undefined' && students.length > 0) { %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% students.forEach(function(student) { %>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center space-x-4">
+                <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center">
+                    <span class="text-blue-700 font-bold text-xl"><%= student.nama ? student.nama.charAt(0).toUpperCase() : '?' %></span>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-semibold text-gray-900"><%= student.nama || '-' %></h3>
+                    <p class="text-sm text-gray-500"><%= student.email || '-' %></p>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100 space-y-2">
+                <div class="flex items-center text-sm">
+                    <span class="text-gray-500 w-24">NIK</span>
+                    <span class="text-gray-900"><%= student.nik || '-' %></span>
+                </div>
+                <div class="flex items-center text-sm">
+                    <span class="text-gray-500 w-24">No. Urut</span>
+                    <span class="text-gray-900">#<%= student.nomor_urut || '-' %></span>
+                </div>
+                <div class="flex items-center text-sm">
+                    <span class="text-gray-500 w-24">Tgl Daftar</span>
+                    <span class="text-gray-900">
+                        <%= student.tanggal_daftar ? new Date(student.tanggal_daftar).toLocaleDateString('id-ID') : '-' %>
+                    </span>
+                </div>
+                <% if (student.link_dokumen) { %>
+                <div class="flex items-center text-sm">
+                    <span class="text-gray-500 w-24">Dokumen</span>
+                    <a href="<%= student.link_dokumen %>" target="_blank" class="text-blue-600 hover:underline">Lihat</a>
+                </div>
+                <% } %>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100">
+                <span class="px-3 py-1 text-xs font-medium rounded-full 
+                    <%= student.pendaftaran_status === 'registered' ? 'bg-green-100 text-green-800' :
+                       student.pendaftaran_status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                       'bg-gray-100 text-gray-800' %>">
+                    <%= student.pendaftaran_status === 'registered' ? 'Terdaftar' :
+                       student.pendaftaran_status === 'cancelled' ? 'Dibatalkan' : 'Belum Daftar' %>
+                </span>
+            </div>
+        </div>
+        <% }); %>
+    </div>
+    <% } else { %>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Peserta</h3>
+        <p class="text-gray-500">
+            <% if (typeof search !== 'undefined' && search) { %>
+            Tidak ditemukan peserta dengan kata kunci "<%= search %>"
+            <% } else { %>
+            Belum ada peserta yang terdaftar dalam program P4
+            <% } %>
+        </p>
+    </div>
+    <% } %>
+
+    <!-- Pagination -->
+    <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+    <div class="flex justify-center space-x-2">
+        <% for (let i = 1; i <= totalPages; i++) { %>
+        <a href="?page=<%= i %><%= typeof search !== 'undefined' && search ? '&search=' + search : '' %>"
+            class="px-4 py-2 rounded-lg <%= currentPage === i ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' %>">
+            <%= i %>
+        </a>
+        <% } %>
+    </div>
+    <% } %>
+</div>

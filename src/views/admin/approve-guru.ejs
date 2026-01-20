@@ -1,0 +1,162 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Approval Guru</h1>
+        <p class="text-gray-600 mt-1">Kelola persetujuan pendaftaran guru</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="border-b border-gray-200">
+        <nav class="flex space-x-8">
+            <a href="?status=pending" class="<%= !status || status === 'pending' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700' %> whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                Menunggu
+                <% if (typeof pendingCount !== 'undefined' && pendingCount > 0) { %>
+                <span class="ml-2 bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full text-xs"><%= pendingCount %></span>
+                <% } %>
+            </a>
+            <a href="?status=verified" class="<%= status === 'verified' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700' %> whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                Terverifikasi
+            </a>
+            <a href="?status=rejected" class="<%= status === 'rejected' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700' %> whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                Ditolak
+            </a>
+        </nav>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Guru</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">NIP</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Dokumen</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal Daftar</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <% if (typeof gurus !== 'undefined' && gurus.length > 0) { %>
+                    <% gurus.forEach(function(guru) { %>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                    <span class="text-green-700 font-semibold"><%= guru.nama ? guru.nama.charAt(0).toUpperCase() : 'G' %></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="font-medium text-gray-900"><%= guru.nama || '-' %></p>
+                                    <p class="text-sm text-gray-500"><%= guru.email || '-' %></p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-600"><%= guru.nip || '-' %></td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <% if (guru.link_dokumen) { %>
+                            <a href="<%= guru.link_dokumen %>" target="_blank" class="text-blue-600 hover:underline">Lihat</a>
+                            <% } else { %>
+                            <span class="text-gray-400">-</span>
+                            <% } %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-600">
+                            <%= guru.created_at ? new Date(guru.created_at).toLocaleDateString('id-ID') : '-' %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 text-xs font-medium rounded-full 
+                                <%= guru.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                                   guru.status === 'active' ? 'bg-green-100 text-green-800' : 
+                                   'bg-red-100 text-red-800' %>
+                                <%= guru.status === 'pending' ? 'Menunggu' : 
+                                   guru.status === 'active' ? 'Terverifikasi' : 'Ditolak' %>
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <% if (guru.status === 'pending') { %>
+                            <div class="flex space-x-2">
+                                <form action="/admin/guru/<%= guru.id %>/approve" method="POST">
+                                    <button type="submit" class="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors">
+                                        Setujui
+                                    </button>
+                                </form>
+                                <button onclick="openRejectModal(<%= guru.id %>, '<%= guru.nama || 'Guru' %>')" class="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors">
+                                    Tolak
+                                </button>
+                            </div>
+                            <% } else if (guru.status === 'active') { %>
+                            <div class="text-sm text-gray-500">
+                                <% if (guru.verified_at) { %>
+                                Disetujui: <%= new Date(guru.verified_at).toLocaleDateString('id-ID') %>
+                                <% } %>
+                            </div>
+                            <% } else { %>
+                            <div class="text-sm text-gray-500">
+                                <% if (guru.rejection_reason) { %>
+                                <span class="text-red-600" title="<%= guru.rejection_reason %>">
+                                    <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Lihat Alasan
+                                </span>
+                                <% } %>
+                            </div>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    <% } else { %>
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                            <svg class="w-12 h-12 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                            Tidak ada data guru dengan status ini
+                        </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div id="rejectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+        <div class="p-6 border-b border-gray-100">
+            <h3 class="text-lg font-semibold text-gray-900">Tolak Pendaftaran</h3>
+            <p class="text-sm text-gray-500 mt-1">Guru: <span id="rejectGuruName"></span></p>
+        </div>
+        <form id="rejectForm" method="POST" class="p-6 space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Alasan Penolakan</label>
+                <textarea name="rejection_reason" rows="4" required 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="Masukkan alasan penolakan..."></textarea>
+            </div>
+            <div class="flex justify-end space-x-3 pt-4">
+                <button type="button" onclick="closeRejectModal()" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">Batal</button>
+                <button type="submit" class="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700">Tolak</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openRejectModal(guruId, guruName) {
+    document.getElementById('rejectGuruName').textContent = guruName;
+    document.getElementById('rejectForm').action = '/admin/guru/' + guruId + '/reject';
+    document.getElementById('rejectModal').classList.remove('hidden');
+    document.getElementById('rejectModal').classList.add('flex');
+}
+
+function closeRejectModal() {
+    document.getElementById('rejectModal').classList.add('hidden');
+    document.getElementById('rejectModal').classList.remove('flex');
+}
+
+document.getElementById('rejectModal').addEventListener('click', function(e) {
+    if (e.target === this) closeRejectModal();
+});
+</script>

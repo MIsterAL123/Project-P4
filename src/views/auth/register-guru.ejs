@@ -1,0 +1,138 @@
+<h2 class="text-2xl font-bold text-gray-900 text-center mb-2">Daftar sebagai Guru</h2>
+<p class="text-center text-gray-600 text-sm mb-6">Bergabunglah bersama kami untuk mengajar dan berbagi ilmu</p>
+
+<% if (typeof errors !== 'undefined' && errors && errors.length > 0) { %>
+<div class="mb-4 max-w-xl mx-auto">
+  <div class="alert alert-error">
+    <ul class="list-disc list-inside text-sm">
+      <% errors.forEach(function(err) { %>
+        <li><%= err %></li>
+      <% }); %>
+    </ul>
+  </div>
+</div>
+<% } %>
+
+<% if (typeof info !== 'undefined' && info) { %>
+  <div class="mb-4 max-w-xl mx-auto">
+    <div class="alert alert-info">
+      <%= info %>
+    </div>
+  </div>
+<% } %>
+
+<form action="/auth/register-guru" method="POST" class="space-y-5" data-loading>
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+            <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+            <input type="text" id="nama" name="nama" required
+                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Nama lengkap"
+                value="<%= typeof data !== 'undefined' && data.nama ? data.nama : '' %>">
+        </div>
+        <div>
+            <label for="nip" class="block text-sm font-medium text-gray-700 mb-1">NIP</label>
+            <input type="text" id="nip" name="nip" required
+                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Nomor Induk Pegawai"
+                value="<%= typeof data !== 'undefined' && data.nip ? data.nip : '' %>">
+        </div>
+    </div>
+
+    <div>
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input type="email" id="email" name="email" required
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="email@sekolah.sch.id"
+            value="<%= typeof data !== 'undefined' && data.email ? data.email : '' %>">
+    </div>
+
+    <div>
+        <label for="link_dokumen" class="block text-sm font-medium text-gray-700 mb-1">Link Dokumen (Ijazah / SK)</label>
+        <input type="url" id="link_dokumen" name="link_dokumen"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="https://drive.google.com/..."
+            value="<%= typeof data !== 'undefined' && data.link_dokumen ? data.link_dokumen : '' %>">
+    </div>
+
+    <div>
+        <label for="no_hp" class="block text-sm font-medium text-gray-700 mb-1">Nomor HP</label>
+        <input type="tel" id="no_hp" name="no_hp" required
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="08xxxxxxxxxx"
+            value="<%= typeof data !== 'undefined' && data.no_hp ? data.no_hp : '' %>">
+    </div>
+
+    <div>
+        <label for="sekolah_asal" class="block text-sm font-medium text-gray-700 mb-1">Sekolah Asal</label>
+        <input type="text" id="sekolah_asal" name="sekolah_asal" required
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Nama sekolah"
+            value="<%= typeof data !== 'undefined' && data.sekolah_asal ? data.sekolah_asal : '' %>">
+    </div>
+
+    <div>
+        <label for="mata_pelajaran" class="block text-sm font-medium text-gray-700 mb-1">Mata Pelajaran</label>
+        <input type="text" id="mata_pelajaran" name="mata_pelajaran" required
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Mata pelajaran yang diampu"
+            value="<%= typeof data !== 'undefined' && data.mata_pelajaran ? data.mata_pelajaran : '' %>">
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input type="password" id="password" name="password" required minlength="8"
+                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Min. 6 karakter">
+        </div>
+        <div>
+            <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" required
+                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Ulangi password">
+        </div>
+    </div>
+
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <div class="flex">
+            <svg class="w-5 h-5 text-yellow-600 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p class="text-sm text-yellow-700">
+                Pendaftaran guru memerlukan persetujuan admin. Anda akan diberitahu melalui email setelah akun disetujui.
+            </p>
+        </div>
+    </div>
+
+    <div>
+        <label class="flex items-start">
+            <input type="checkbox" name="agree" required class="w-4 h-4 mt-0.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+            <span class="ml-2 text-sm text-gray-600">
+                Saya menyetujui <a href="/terms" class="text-blue-600 hover:underline">Syarat & Ketentuan</a> dan <a href="/privacy" class="text-blue-600 hover:underline">Kebijakan Privasi</a>
+            </span>
+        </label>
+    </div>
+
+    <button type="submit"
+        class="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+        Daftar sebagai Guru
+    </button>
+</form>
+
+<div class="mt-6 text-center">
+    <p class="text-sm text-gray-600">
+        Sudah punya akun? <a href="/auth/login" class="text-blue-600 hover:text-blue-800 font-medium">Masuk di sini</a>
+    </p>
+</div>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    if (password !== confirmPassword) {
+        e.preventDefault();
+        alert('Password dan konfirmasi password tidak cocok!');
+    }
+});
+</script>

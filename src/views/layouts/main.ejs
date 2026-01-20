@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'P4 Jakarta' %> - Pusat Pelatihan dan Pengembangan Pendidikan</title>
+    
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="/css/output.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome (untuk icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="antialiased">
+    
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+    
+    <!-- Flash Messages -->
+    <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success max-w-7xl mx-auto mt-4">
+            <i class="fas fa-check-circle mr-2"></i>
+            <%= success %>
+        </div>
+    <% } %>
+    
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error max-w-7xl mx-auto mt-4">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            <%= error %>
+        </div>
+    <% } %>
+    
+    <!-- Main Content -->
+    <main>
+        <%- body %>
+    </main>
+    
+    <!-- Footer -->
+    <%- include('../partials/footer') %>
+    
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+</body>
+</html>
