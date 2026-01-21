@@ -72,6 +72,11 @@ if (process.env.NODE_ENV === 'development') {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 
+// Disable view cache in development so template changes apply without server restart
+if (process.env.NODE_ENV !== 'production') {
+  app.set('view cache', false);
+}
+
 // EJS Layouts
 app.use(expressLayouts);
 app.set('layout', 'layouts/main');
