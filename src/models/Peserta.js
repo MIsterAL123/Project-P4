@@ -41,7 +41,7 @@ class Peserta {
 
   // Create peserta (self-registration, langsung active)
   static async create(userData) {
-    const { nama, email, password, nik, link_dokumen } = userData;
+    const { nama, email, password, nik, link_dokumen, no_hp, sekolah_asal, kelas } = userData;
 
     // First create the user
     const user = await User.create({
@@ -51,11 +51,14 @@ class Peserta {
       role: 'peserta'
     });
 
-    // Then create peserta record
-    const sql = 'INSERT INTO peserta (user_id, nik, link_dokumen) VALUES (?, ?, ?)';
-    // Ensure we don't pass undefined to DB driver (use null for missing link_dokumen)
-    const safeLink = typeof link_dokumen !== 'undefined' && link_dokumen !== '' ? link_dokumen : null;
-    const result = await query(sql, [user.id, nik, safeLink]);
+    // Then create peserta record with additional fields
+    const sql = 'INSERT INTO peserta (user_id, nik, link_dokumen, no_hp, sekolah_asal, kelas) VALUES (?, ?, ?, ?, ?, ?)';
+    // Ensure we don't pass undefined to DB driver (use null for missing values)
+    const safeLink = link_dokumen && link_dokumen !== '' ? link_dokumen : null;
+    const safeNoHp = no_hp && no_hp !== '' ? no_hp : null;
+    const safeSekolah = sekolah_asal && sekolah_asal !== '' ? sekolah_asal : null;
+    const safeKelas = kelas && kelas !== '' ? kelas : null;
+    const result = await query(sql, [user.id, nik, safeLink, safeNoHp, safeSekolah, safeKelas]);
 
     return {
       id: result.insertId,
@@ -63,13 +66,16 @@ class Peserta {
       nama: user.nama,
       email: user.email,
       nik,
-      link_dokumen: safeLink
+      link_dokumen: safeLink,
+      no_hp: safeNoHp,
+      sekolah_asal: safeSekolah,
+      kelas: safeKelas
     };
   }
 
   // Update peserta profile
   static async update(id, pesertaData) {
-    const { nama, email, nik, link_dokumen } = pesertaData;
+    const { nama, email, nik, link_dokumen, no_hp, sekolah_asal, kelas } = pesertaData;
     const peserta = await this.findById(id);
     
     if (!peserta) return null;
@@ -77,10 +83,13 @@ class Peserta {
     // Update user data
     await User.update(peserta.user_id, { nama, email });
 
-    // Update peserta data
-    const sql = 'UPDATE peserta SET nik = ?, link_dokumen = ? WHERE id = ?';
-    const safeLink = typeof link_dokumen !== 'undefined' && link_dokumen !== '' ? link_dokumen : null;
-    await query(sql, [nik, safeLink, id]);
+    // Update peserta data with additional fields
+    const sql = 'UPDATE peserta SET nik = ?, link_dokumen = ?, no_hp = ?, sekolah_asal = ?, kelas = ? WHERE id = ?';
+    const safeLink = link_dokumen && link_dokumen !== '' ? link_dokumen : null;
+    const safeNoHp = no_hp && no_hp !== '' ? no_hp : null;
+    const safeSekolah = sekolah_asal && sekolah_asal !== '' ? sekolah_asal : null;
+    const safeKelas = kelas && kelas !== '' ? kelas : null;
+    await query(sql, [nik, safeLink, safeNoHp, safeSekolah, safeKelas, id]);
 
     return this.findById(id);
   }

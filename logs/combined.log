@@ -335,3 +335,10 @@
 2026-01-21T04:44:55.457Z [INFO]: ✅ Database connected successfully
 2026-01-21T04:45:32.644Z [INFO]: User logged in: admin@p4jakarta.go.id
 2026-01-21T04:46:16.583Z [INFO]: Guru approved by admin@p4jakarta.go.id: ci-guru@example.com
+2026-01-21T07:24:19.922Z [INFO]: Server running in development mode on port 3000
+2026-01-21T07:24:19.958Z [INFO]: ✅ Database connected successfully
+2026-01-21T07:24:35.093Z [INFO]: User logged in: admin@p4jakarta.go.id
+2026-01-21T07:25:02.346Z [INFO]: Peserta deleted by admin@p4jakarta.go.id: ID 1
+2026-01-21T07:26:23.909Z [INFO]: User logged in: guru@gmail.com
+2026-01-21T07:27:04.160Z [INFO]: User logged in: admin@p4jakarta.go.id
+2026-01-21T07:28:29.967Z [INFO]: User logged in: aziz@gmail.com
