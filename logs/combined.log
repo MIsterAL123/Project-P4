@@ -342,3 +342,10 @@
 2026-01-21T07:26:23.909Z [INFO]: User logged in: guru@gmail.com
 2026-01-21T07:27:04.160Z [INFO]: User logged in: admin@p4jakarta.go.id
 2026-01-21T07:28:29.967Z [INFO]: User logged in: aziz@gmail.com
+2026-01-21T07:37:30.883Z [INFO]: Server running in development mode on port 3000
+2026-01-21T07:37:30.899Z [ERROR]: ❌ Database connection failed:
+2026-01-21T07:37:33.209Z [ERROR]: Database query error:
+2026-01-21T07:37:33.217Z [ERROR]: Database query error:
+2026-01-21T07:38:29.094Z [INFO]: User logged in: admin@p4jakarta.go.id
+2026-01-21T07:41:10.782Z [INFO]: User logged in: Aqila@gmail.com
+2026-01-21T07:46:19.001Z [INFO]: User logged in: admin@p4.com
