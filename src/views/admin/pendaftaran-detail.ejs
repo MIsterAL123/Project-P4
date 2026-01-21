@@ -38,7 +38,7 @@
     </dl>
 
     <div class="mt-6">
-      <form action="/admin/pendaftaran/<%= pendaftaran.id %>/delete" method="POST" onsubmit="return confirm('Hapus pendaftaran ini?');">
+      <form action="/admin/pendaftaran/<%= pendaftaran.id %>/delete" method="POST" class="confirm-action" data-confirm="Hapus pendaftaran ini?">
         <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Hapus Pendaftaran</button>
       </form>
     </div>

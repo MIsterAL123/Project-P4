@@ -29,6 +29,7 @@ router.post('/guru/:id/reject', guruController.rejectGuru);
 // Manage Peserta
 router.get('/manage-peserta', pesertaController.showManagePesertaPage);
 router.get('/peserta/:id', pesertaController.viewPesertaDetail);
+router.post('/manage-peserta/:id/delete', pesertaController.deletePeserta);
 
 // Manage Kuota
 router.get('/manage-kuota', kuotaController.showManageKuotaPage);

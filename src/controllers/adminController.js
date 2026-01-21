@@ -5,18 +5,29 @@ const logger = require('../utils/logger');
 const PendaftaranP4 = require('../models/PendaftaranP4');
 const KuotaP4 = require('../models/KuotaP4');
 
+// Helper: determine Super Admin (configurable via env)
+const isSuperAdmin = (req) => {
+  if (!req.user) return false;
+  if (req.user.is_super) return true; // optional flag on session/user
+  if (process.env.SUPERADMIN_EMAIL && req.user.email === process.env.SUPERADMIN_EMAIL) return true;
+  if (process.env.SUPERADMIN_ID && String(req.user.id) === String(process.env.SUPERADMIN_ID)) return true;
+  return false;
+};
+
 // @desc    Show manage admin page
 // @route   GET /admin/manage-admin
 const showManageAdminPage = async (req, res) => {
   try {
     const admins = await Admin.findAll();
+    const superAdmin = isSuperAdmin(req);
 
     res.render('admin/manage-admin', {
       title: 'Kelola Admin - P4 Jakarta',
       layout: 'layouts/admin',
       admins,
       currentUser: req.user,
-      user: req.user
+      user: req.user,
+      isSuper: superAdmin
     });
   } catch (error) {
     logger.error('Show manage admin error:', error);
@@ -25,7 +36,8 @@ const showManageAdminPage = async (req, res) => {
       layout: 'layouts/admin',
       admins: [],
       currentUser: req.user,
-      user: req.user
+      user: req.user,
+      isSuper: isSuperAdmin(req)
     });
   }
 };
@@ -35,6 +47,12 @@ const showManageAdminPage = async (req, res) => {
 const addAdmin = async (req, res) => {
   try {
     const { nama, email, password, confirm_password } = req.body;
+
+    // Only Super Admin can add admins
+    if (!isSuperAdmin(req)) {
+      req.session.error = 'Akses ditolak: hanya Super Admin yang dapat menambah admin';
+      return res.redirect('/admin/manage-admin');
+    }
 
     // Validation
     const errors = [];
@@ -65,15 +83,18 @@ const addAdmin = async (req, res) => {
         admins,
         currentUser: req.user,
         errors,
-        formData: { nama, email }
+        formData: { nama, email, no_hp: req.body.no_hp, is_active: req.body.is_active }
       });
     }
 
     // Get current admin id
     const currentAdmin = await Admin.findByUserId(req.user.id);
 
-    // Create new admin
-    await Admin.create({ nama, email, password }, currentAdmin.id);
+    // Create new admin (include phone and active flag)
+    const no_hp = req.body.no_hp || null;
+    const is_active = typeof req.body.is_active !== 'undefined' ? (req.body.is_active === '1' ? 1 : 0) : 1;
+
+    await Admin.create({ nama, email, password, no_hp, is_active }, currentAdmin.id);
 
     logger.info(`New admin added by ${req.user.email}: ${email}`);
     req.session.success = 'Admin baru berhasil ditambahkan';
@@ -90,6 +111,13 @@ const addAdmin = async (req, res) => {
 const deleteAdmin = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Only Super Admin can delete admins
+    if (!isSuperAdmin(req)) {
+      req.session.error = 'Akses ditolak: hanya Super Admin yang dapat menghapus admin';
+      return res.redirect('/admin/manage-admin');
+    }
+
     const admin = await Admin.findById(id);
 
     if (!admin) {
@@ -121,6 +149,12 @@ const updateAdmin = async (req, res) => {
   try {
     const { id } = req.params;
     const { nama, email, password, confirm_password } = req.body;
+
+    // Only Super Admin can update admins
+    if (!isSuperAdmin(req)) {
+      req.session.error = 'Akses ditolak: hanya Super Admin yang dapat mengubah admin';
+      return res.redirect('/admin/manage-admin');
+    }
 
     const admin = await Admin.findById(id);
     if (!admin) {
@@ -162,12 +196,16 @@ const updateAdmin = async (req, res) => {
         admins,
         currentUser: req.user,
         user: req.user,
-        errors
+        errors,
+        formData: { id, nama, email, no_hp: req.body.no_hp }
       });
     }
 
-    // Update admin data
-    await Admin.update(id, { nama, email });
+    // Update admin data (include phone & active flag)
+    const no_hp = req.body.no_hp || null;
+    const is_active = typeof req.body.is_active !== 'undefined' ? (req.body.is_active === '1' ? 1 : 0) : undefined;
+
+    await Admin.update(id, { nama, email, no_hp, is_active });
 
     // Update password if provided
     if (password && password.length > 0) {

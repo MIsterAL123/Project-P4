@@ -176,6 +176,30 @@ const updateProfile = async (req, res) => {
   }
 };
 
+// @desc    Delete peserta (admin)
+// @route   POST /admin/manage-peserta/:id/delete
+const deletePeserta = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const peserta = await Peserta.findById(id);
+
+    if (!peserta) {
+      req.session.error = 'Peserta tidak ditemukan';
+      return res.redirect('/admin/manage-peserta');
+    }
+
+    await Peserta.delete(id);
+
+    logger.info(`Peserta deleted by ${req.user.email}: ID ${id}`);
+    req.session.success = 'Peserta berhasil dihapus';
+    res.redirect('/admin/manage-peserta');
+  } catch (error) {
+    logger.error('Delete peserta error:', error);
+    req.session.error = 'Gagal menghapus peserta';
+    res.redirect('/admin/manage-peserta');
+  }
+};
+
 // @desc    Change password
 // @route   POST /peserta/change-password
 const changePassword = async (req, res) => {
@@ -230,6 +254,7 @@ module.exports = {
   // Admin functions
   showManagePesertaPage,
   viewPesertaDetail,
+  deletePeserta,
   // Peserta functions
   showDashboard,
   showProfile,
