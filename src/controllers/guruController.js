@@ -152,6 +152,104 @@ const showProfile = async (req, res) => {
   }
 };
 
+// @desc    Show materials page
+// @route   GET /guru/materials
+const showMaterials = async (req, res) => {
+  try {
+    const guru = await Guru.findByUserId(req.user.id);
+    const Material = require('../models/Material');
+    const materials = await Material.findByGuru(guru.id);
+
+    res.render('guru/materials', {
+      title: 'Materi Pelatihan - P4 Jakarta',
+      layout: 'layouts/admin',
+      user: req.user,
+      currentUser: req.user,
+      guru,
+      materials
+    });
+  } catch (error) {
+    logger.error('Show materials error:', error);
+    req.session.error = 'Gagal memuat materi';
+    res.redirect('/guru/dashboard');
+  }
+};
+
+// @desc    Upload material
+// @route   POST /guru/materials/upload
+const uploadMaterial = async (req, res) => {
+  try {
+    const { title, description } = req.body;
+    const file = req.file;
+    const guru = await Guru.findByUserId(req.user.id);
+    const Material = require('../models/Material');
+
+    const errors = [];
+    if (!title || title.trim().length < 3) errors.push('Judul minimal 3 karakter');
+    if (!file) errors.push('File materi wajib diunggah');
+
+    if (errors.length > 0) {
+      req.session.error = errors.join('; ');
+      return res.redirect('/guru/materials');
+    }
+
+    const filePath = `/uploads/materials/${file.filename}`;
+    const fileType = file.originalname.split('.').pop().toLowerCase();
+
+    await Material.create({
+      guru_id: guru.id,
+      title: title.trim(),
+      description: description || null,
+      file_path: file.filename,
+      file_type: fileType
+    });
+
+    logger.info(`Material uploaded by guru ${guru.id}: ${file.filename}`);
+    req.session.success = 'Materi berhasil diunggah';
+    res.redirect('/guru/materials');
+  } catch (error) {
+    logger.error('Upload material error:', error);
+    req.session.error = 'Gagal mengunggah materi';
+    res.redirect('/guru/materials');
+  }
+};
+
+// @desc    Delete material
+// @route   POST /guru/materials/:id/delete
+const deleteMaterial = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const Material = require('../models/Material');
+    const material = await Material.findById(id);
+    const guru = await Guru.findByUserId(req.user.id);
+
+    if (!material) {
+      req.session.error = 'Materi tidak ditemukan';
+      return res.redirect('/guru/materials');
+    }
+
+    if (material.guru_id !== guru.id) {
+      req.session.error = 'Anda tidak berhak menghapus materi ini';
+      return res.redirect('/guru/materials');
+    }
+
+    // Remove file from disk
+    const fs = require('fs');
+    const path = require('path');
+    const filePath = path.join(__dirname, '..', '..', 'public', 'uploads', 'materials', material.file_path);
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+    await Material.delete(id);
+    logger.info(`Material deleted by guru ${guru.id}: ${material.file_path}`);
+    req.session.success = 'Materi berhasil dihapus';
+    res.redirect('/guru/materials');
+  } catch (error) {
+    logger.error('Delete material error:', error);
+    req.session.error = 'Gagal menghapus materi';
+    res.redirect('/guru/materials');
+  }
+};
+
 // @desc    Update guru profile
 // @route   POST /guru/profile/update
 const updateProfile = async (req, res) => {
@@ -291,6 +389,9 @@ module.exports = {
   // Guru functions
   showDashboard,
   showProfile,
+  showMaterials,
+  uploadMaterial,
+  deleteMaterial,
   updateProfile,
   changePassword,
   showStudents
