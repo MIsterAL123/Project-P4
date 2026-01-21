@@ -37,6 +37,11 @@ router.post('/kuota/update', kuotaController.updateKuota);
 router.post('/kuota/:id/toggle-status', kuotaController.toggleKuotaStatus);
 router.post('/kuota/:id/delete', kuotaController.deleteKuota);
 
+// Pendaftaran
+router.get('/pendaftaran', adminController.showPendaftaranPage);
+router.get('/pendaftaran/:id', adminController.viewPendaftaranDetail);
+router.post('/pendaftaran/:id/delete', adminController.deletePendaftaran);
+
 // Reports
 router.get('/reports', dashboardController.showReportsPage);
 

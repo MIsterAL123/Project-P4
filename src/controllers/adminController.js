@@ -2,6 +2,8 @@
 const Admin = require('../models/Admin');
 const User = require('../models/User');
 const logger = require('../utils/logger');
+const PendaftaranP4 = require('../models/PendaftaranP4');
+const KuotaP4 = require('../models/KuotaP4');
 
 // @desc    Show manage admin page
 // @route   GET /admin/manage-admin
@@ -182,9 +184,79 @@ const updateAdmin = async (req, res) => {
   }
 };
 
+// @desc    Show all pendaftaran (admin view)
+// @route   GET /admin/pendaftaran
+const showPendaftaranPage = async (req, res) => {
+  try {
+    const kuota = await KuotaP4.findActiveKuota();
+    let registrations = [];
+    if (kuota) {
+      registrations = await PendaftaranP4.findByKuotaId(kuota.id);
+    } else {
+      registrations = await PendaftaranP4.findAll();
+    }
+
+    res.render('admin/pendaftaran', {
+      title: 'Pendaftaran P4 - P4 Jakarta',
+      layout: 'layouts/admin',
+      registrations,
+      kuota,
+      currentUser: req.user,
+      user: req.user
+    });
+  } catch (error) {
+    logger.error('Show pendaftaran error:', error);
+    req.session.error = 'Gagal memuat pendaftaran';
+    res.redirect('/admin/dashboard');
+  }
+};
+
+// @desc    View pendaftaran detail (admin)
+// @route   GET /admin/pendaftaran/:id
+const viewPendaftaranDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const pendaftaran = await PendaftaranP4.findById(id);
+    if (!pendaftaran) {
+      req.session.error = 'Pendaftaran tidak ditemukan';
+      return res.redirect('/admin/pendaftaran');
+    }
+
+    res.render('admin/pendaftaran-detail', {
+      title: 'Detail Pendaftaran - P4 Jakarta',
+      layout: 'layouts/admin',
+      pendaftaran,
+      currentUser: req.user,
+      user: req.user
+    });
+  } catch (error) {
+    logger.error('View pendaftaran detail error:', error);
+    req.session.error = 'Gagal memuat detail pendaftaran';
+    res.redirect('/admin/pendaftaran');
+  }
+};
+
+// @desc    Delete pendaftaran (admin)
+// @route   POST /admin/pendaftaran/:id/delete
+const deletePendaftaran = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await PendaftaranP4.delete(id);
+    req.session.success = 'Pendaftaran berhasil dihapus';
+    res.redirect('/admin/pendaftaran');
+  } catch (error) {
+    logger.error('Delete pendaftaran error:', error);
+    req.session.error = 'Gagal menghapus pendaftaran';
+    res.redirect('/admin/pendaftaran');
+  }
+};
+
 module.exports = {
   showManageAdminPage,
   addAdmin,
   updateAdmin,
-  deleteAdmin
+  deleteAdmin,
+  showPendaftaranPage,
+  viewPendaftaranDetail,
+  deletePendaftaran
 };

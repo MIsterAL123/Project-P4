@@ -1,0 +1,46 @@
+<div class="px-6 py-6">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Detail Pendaftaran</h1>
+      <p class="text-sm text-gray-600">Nomor Urut: <strong>#<%= pendaftaran.nomor_urut %></strong></p>
+    </div>
+    <div>
+      <a href="/admin/pendaftaran" class="text-sm text-gray-600 hover:text-gray-900">&larr; Kembali ke daftar</a>
+    </div>
+  </div>
+
+  <div class="bg-white shadow rounded-lg p-6">
+    <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Nama</dt>
+        <dd class="mt-1 text-sm text-gray-900"><%= pendaftaran.nama %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">NIK</dt>
+        <dd class="mt-1 text-sm text-gray-900"><%= pendaftaran.nik %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Email</dt>
+        <dd class="mt-1 text-sm text-gray-900"><%= pendaftaran.email %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Tahun Ajaran</dt>
+        <dd class="mt-1 text-sm text-gray-900"><%= pendaftaran.tahun_ajaran %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Status</dt>
+        <dd class="mt-1 text-sm text-gray-900"><%= pendaftaran.status %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Tanggal Daftar</dt>
+        <dd class="mt-1 text-sm text-gray-900"><%= pendaftaran.tanggal_daftar ? new Date(pendaftaran.tanggal_daftar).toLocaleString() : '-' %></dd>
+      </div>
+    </dl>
+
+    <div class="mt-6">
+      <form action="/admin/pendaftaran/<%= pendaftaran.id %>/delete" method="POST" onsubmit="return confirm('Hapus pendaftaran ini?');">
+        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Hapus Pendaftaran</button>
+      </form>
+    </div>
+  </div>
+</div>
