@@ -15,7 +15,8 @@ const showManageKuotaPage = async (req, res) => {
       layout: 'layouts/admin',
       kuotaList,
       activeKuota,
-      currentUser: req.user
+      currentUser: req.user,
+      user: req.user
     });
   } catch (error) {
     logger.error('Show manage kuota error:', error);

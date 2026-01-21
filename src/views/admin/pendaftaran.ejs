@@ -1,0 +1,52 @@
+<div class="px-6 py-6">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Pendaftaran P4</h1>
+      <% if (kuota) { %>
+      <p class="text-sm text-gray-600">Periode aktif: <strong><%= kuota.tahun_ajaran %></strong></p>
+      <% } %>
+    </div>
+  </div>
+
+  <% if (typeof registrations !== 'undefined' && registrations.length > 0) { %>
+  <div class="overflow-x-auto bg-white shadow rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIK</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Urut</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% registrations.forEach(function(reg, idx) { %>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap"><%= idx + 1 %></td>
+          <td class="px-6 py-4 whitespace-nowrap"><%= reg.nama %></td>
+          <td class="px-6 py-4 whitespace-nowrap"><%= reg.nik %></td>
+          <td class="px-6 py-4 whitespace-nowrap"><%= reg.email %></td>
+          <td class="px-6 py-4 whitespace-nowrap">#<%= reg.nomor_urut %></td>
+          <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= reg.status === 'registered' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>"><%= reg.status %></span></td>
+          <td class="px-6 py-4 whitespace-nowrap"><%= reg.tanggal_daftar ? new Date(reg.tanggal_daftar).toLocaleString() : '-' %></td>
+          <td class="px-6 py-4 whitespace-nowrap text-right">
+            <a href="/admin/pendaftaran/<%= reg.id %>" class="text-blue-600 hover:text-blue-800 mr-3">Lihat</a>
+            <form action="/admin/pendaftaran/<%= reg.id %>/delete" method="POST" class="inline" onsubmit="return confirm('Hapus pendaftaran ini?');">
+              <button type="submit" class="text-red-600 hover:text-red-800">Hapus</button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+  <% } else { %>
+  <div class="bg-white shadow rounded-lg p-6">
+    <p class="text-gray-600">Belum ada pendaftaran untuk periode ini.</p>
+  </div>
+  <% } %>
+</div>

@@ -59,8 +59,8 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    <% if (typeof kuotas !== 'undefined' && kuotas.length > 0) { %>
-                    <% kuotas.forEach(function(kuota) { %>
+                    <% if (typeof kuotaList !== 'undefined' && kuotaList.length > 0) { %>
+                    <% kuotaList.forEach(function(kuota) { %>
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900"><%= kuota.tahun_ajaran %></td>
                         <td class="px-6 py-4 whitespace-nowrap text-gray-600"><%= kuota.max_peserta %></td>
@@ -92,7 +92,7 @@
                                     </svg>
                                 </button>
                                 <% if (kuota.status !== 'open') { %>
-                                <form action="/admin/manage-kuota/<%= kuota.id %>/open" method="POST">
+                                <form action="/admin/kuota/<%= kuota.id %>/toggle-status" method="POST">
                                     <button type="submit" class="text-green-600 hover:text-green-800" title="Buka Kuota">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
@@ -100,7 +100,7 @@
                                     </button>
                                 </form>
                                 <% } else { %>
-                                <form action="/admin/manage-kuota/<%= kuota.id %>/close" method="POST">
+                                <form action="/admin/kuota/<%= kuota.id %>/toggle-status" method="POST">
                                     <button type="submit" class="text-yellow-600 hover:text-yellow-800" title="Tutup Kuota">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
@@ -108,7 +108,7 @@
                                     </button>
                                 </form>
                                 <% } %>
-                                <form action="/admin/manage-kuota/<%= kuota.id %>/delete" method="POST" onsubmit="return confirm('Yakin ingin menghapus kuota ini?')">
+                                <form action="/admin/kuota/<%= kuota.id %>/delete" method="POST" onsubmit="return confirm('Yakin ingin menghapus kuota ini?')">
                                     <button type="submit" class="text-red-600 hover:text-red-800" title="Hapus">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -142,6 +142,7 @@
             <h3 id="modalTitle" class="text-lg font-semibold text-gray-900">Tambah Kuota</h3>
         </div>
         <form id="kuotaForm" method="POST" class="p-6 space-y-4">
+            <input type="hidden" id="kuotaId" name="id" value="">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Tahun Ajaran</label>
                 <input type="text" id="kuotaTahunAjaran" name="tahun_ajaran" required 
@@ -168,6 +169,7 @@ function openAddModal() {
     document.getElementById('kuotaForm').action = '/admin/kuota/create';
     document.getElementById('kuotaTahunAjaran').value = '';
     document.getElementById('kuotaJumlah').value = '50';
+    document.getElementById('kuotaId').value = '';
     // tanggal_mulai/tanggal_selesai fields are not used in current schema
     document.getElementById('kuotaModal').classList.remove('hidden');
     document.getElementById('kuotaModal').classList.add('flex');
@@ -178,14 +180,10 @@ function editKuota(kuota) {
     document.getElementById('kuotaForm').action = '/admin/kuota/update';
     document.getElementById('kuotaTahunAjaran').value = kuota.tahun_ajaran;
     document.getElementById('kuotaJumlah').value = kuota.max_peserta;
+    document.getElementById('kuotaId').value = kuota.id;
     // tanggal_mulai/tanggal_selesai not available in schema
     document.getElementById('kuotaModal').classList.remove('hidden');
     document.getElementById('kuotaModal').classList.add('flex');
-}
-
-function closeModal() {
-    document.getElementById('kuotaModal').classList.add('hidden');
-    document.getElementById('kuotaModal').classList.remove('flex');
 }
 
 document.getElementById('kuotaModal').addEventListener('click', function(e) {
