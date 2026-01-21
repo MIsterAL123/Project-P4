@@ -1,1 +1,456 @@
-/* Responsive styles */
+/* ==============================================
+   RESPONSIVE.CSS - Responsive Design Styles
+   Website P4 Jakarta
+   ============================================== */
+
+/* ==============================================
+   BASE MOBILE STYLES (Mobile First)
+   ============================================== */
+   
+/* Container */
+.container {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ==============================================
+   NAVIGATION - MOBILE
+   ============================================== */
+.mobile-menu-btn {
+    display: flex;
+}
+
+.nav-links {
+    display: none;
+}
+
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+}
+
+.mobile-menu.active {
+    display: block;
+}
+
+.mobile-menu-content {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    background-color: white;
+    padding: 1rem;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 50;
+    overflow-y: auto;
+}
+
+.mobile-menu.active .mobile-menu-content {
+    transform: translateX(0);
+}
+
+/* ==============================================
+   SIDEBAR - MOBILE
+   ============================================== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 50;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+.main-content {
+    margin-left: 0;
+    width: 100%;
+}
+
+/* ==============================================
+   TABLES - MOBILE (Horizontal Scroll)
+   ============================================== */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.responsive-table {
+    min-width: 600px;
+}
+
+/* Card-style table for mobile */
+@media (max-width: 640px) {
+    .table-card-mobile thead {
+        display: none;
+    }
+    
+    .table-card-mobile tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        background-color: white;
+    }
+    
+    .table-card-mobile tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .table-card-mobile tbody td:last-child {
+        border-bottom: none;
+    }
+    
+    .table-card-mobile tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #374151;
+    }
+}
+
+/* ==============================================
+   FORMS - MOBILE
+   ============================================== */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 16px; /* Prevent zoom on iOS */
+}
+
+.form-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+}
+
+/* ==============================================
+   CARDS - MOBILE
+   ============================================== */
+.stat-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.stat-card {
+    padding: 1rem;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+/* ==============================================
+   MODALS - MOBILE
+   ============================================== */
+.modal-content {
+    width: 95%;
+    max-width: none;
+    margin: 1rem;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* ==============================================
+   BUTTONS - MOBILE
+   ============================================== */
+.btn-group-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.btn-group-mobile .btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Action buttons stack */
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* ==============================================
+   SMALL TABLETS (min-width: 640px)
+   ============================================== */
+@media (min-width: 640px) {
+    .container {
+        max-width: 640px;
+    }
+    
+    .stat-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .btn-group-mobile {
+        flex-direction: row;
+    }
+    
+    .btn-group-mobile .btn {
+        width: auto;
+    }
+}
+
+/* ==============================================
+   TABLETS (min-width: 768px)
+   ============================================== */
+@media (min-width: 768px) {
+    .container {
+        max-width: 768px;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+    
+    /* Navigation */
+    .mobile-menu-btn {
+        display: none;
+    }
+    
+    .nav-links {
+        display: flex;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 280px;
+        width: calc(100% - 280px);
+    }
+    
+    /* Collapsed sidebar */
+    .sidebar.collapsed {
+        width: 80px;
+    }
+    
+    .sidebar.collapsed ~ .main-content {
+        margin-left: 80px;
+        width: calc(100% - 80px);
+    }
+    
+    /* Tables */
+    .responsive-table {
+        min-width: auto;
+    }
+    
+    /* Cards */
+    .stat-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Modal */
+    .modal-content {
+        width: auto;
+        max-width: 500px;
+        margin: auto;
+    }
+}
+
+/* ==============================================
+   SMALL DESKTOPS (min-width: 1024px)
+   ============================================== */
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1024px;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+    
+    .stat-cards {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .form-grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .modal-content {
+        max-width: 600px;
+    }
+    
+    .modal-content.modal-lg {
+        max-width: 800px;
+    }
+}
+
+/* ==============================================
+   LARGE DESKTOPS (min-width: 1280px)
+   ============================================== */
+@media (min-width: 1280px) {
+    .container {
+        max-width: 1280px;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ==============================================
+   PRINT STYLES
+   ============================================== */
+@media print {
+    .sidebar,
+    .mobile-menu,
+    .mobile-menu-btn,
+    .btn,
+    .action-buttons,
+    .no-print {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    
+    .modal {
+        position: static;
+        display: block;
+    }
+    
+    .modal-content {
+        max-width: none;
+        box-shadow: none;
+    }
+}
+
+/* ==============================================
+   UTILITY CLASSES - RESPONSIVE
+   ============================================== */
+
+/* Hide on mobile */
+.hide-mobile {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .hide-mobile {
+        display: block;
+    }
+    
+    .hide-desktop {
+        display: none;
+    }
+}
+
+/* Text alignment responsive */
+.text-center-mobile {
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .text-center-mobile {
+        text-align: left;
+    }
+}
+
+/* Spacing responsive */
+.p-responsive {
+    padding: 1rem;
+}
+
+@media (min-width: 768px) {
+    .p-responsive {
+        padding: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .p-responsive {
+        padding: 2rem;
+    }
+}
+
+/* ==============================================
+   TOUCH FRIENDLY IMPROVEMENTS
+   ============================================== */
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    .btn,
+    .nav-link,
+    .menu-item {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Remove hover states */
+    .btn:hover,
+    .nav-link:hover {
+        transform: none;
+    }
+    
+    /* Add active states instead */
+    .btn:active {
+        transform: scale(0.98);
+    }
+}
+
+/* ==============================================
+   SAFE AREA (Notch Support)
+   ============================================== */
+@supports (padding: env(safe-area-inset-bottom)) {
+    .bottom-nav,
+    .fixed-bottom {
+        padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+    }
+    
+    .modal-content {
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    }
+}

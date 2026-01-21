@@ -104,13 +104,16 @@ app.use('/', routes);
 // 404 handler
 app.use((req, res, next) => {
   res.status(404).render('errors/404', {
-    title: 'Page Not Found',
-    message: 'The page you are looking for does not exist'
+    title: 'Halaman Tidak Ditemukan',
+    message: 'Halaman yang Anda cari tidak ditemukan'
   });
 });
 
 // Global error handler
-app.use(errorMiddleware);
+app.use(errorMiddleware.handleMulterError);
+app.use(errorMiddleware.handleValidationError);
+app.use(errorMiddleware.handleDatabaseError);
+app.use(errorMiddleware.errorHandler);
 
 // Start server
 const PORT = process.env.PORT || 3000;
