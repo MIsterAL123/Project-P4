@@ -86,7 +86,7 @@
                 <% months.forEach(function(month, idx) { %>
                 <div class="flex flex-col items-center flex-1">
                     <div class="w-full bg-blue-500 rounded-t transition-all hover:bg-blue-600" 
-                        style="height: <%= (monthlyData[idx] / maxVal) * 200 %>px; min-height: 4px;"></div>
+                        style="height: <%= Math.round((monthlyData[idx] / maxVal) * 200) %>px; min-height: 4px;"></div>
                     <span class="text-xs text-gray-500 mt-2"><%= month %></span>
                     <span class="text-xs font-medium text-gray-700"><%= monthlyData[idx] %></span>
                 </div>

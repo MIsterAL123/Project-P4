@@ -80,7 +80,7 @@
                                         Setujui
                                     </button>
                                 </form>
-                                <button onclick="openRejectModal(<%= guru.id %>, '<%= guru.nama || 'Guru' %>')" class="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors">
+                                <button data-guru-id="<%= guru.id %>" data-guru-name="<%= (guru.nama || 'Guru').replace(/\"/g, '&quot;').replace(/'/g, '&#39;') %>" onclick="openRejectModalFromButton(this)" class="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors">
                                     Tolak
                                 </button>
                             </div>
@@ -149,6 +149,12 @@ function openRejectModal(guruId, guruName) {
     document.getElementById('rejectForm').action = '/admin/guru/' + guruId + '/reject';
     document.getElementById('rejectModal').classList.remove('hidden');
     document.getElementById('rejectModal').classList.add('flex');
+}
+
+function openRejectModalFromButton(el) {
+    const id = el.getAttribute('data-guru-id');
+    const name = el.getAttribute('data-guru-name');
+    openRejectModal(id, name);
 }
 
 function closeRejectModal() {

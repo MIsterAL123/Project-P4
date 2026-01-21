@@ -126,6 +126,21 @@ CREATE TABLE IF NOT EXISTS activity_log (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
+-- TABLE: materials
+-- Description: Learning materials uploaded by gurus
+-- =====================================================
+CREATE TABLE IF NOT EXISTS materials (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    guru_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NULL,
+    file_path VARCHAR(500) NOT NULL,
+    file_type VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (guru_id) REFERENCES guru(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
 -- TRIGGER: Update kuota status when full
 -- =====================================================
 DELIMITER //

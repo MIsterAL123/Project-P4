@@ -82,9 +82,10 @@ app.set('layout extractStyles', true);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
-// Make user available in all views
+// Make user and current path available in all views
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
+  res.locals.currentPath = req.path || '';
   res.locals.success = req.session.success || null;
   res.locals.error = req.session.error || null;
   delete req.session.success;

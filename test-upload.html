@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Materials Upload Test</title>
+</head>
+<body>
+    <h1>Materials Upload Test</h1>
+    
+    <form id="uploadForm" action="http://localhost:3000/guru/materials/upload" method="POST" enctype="multipart/form-data">
+        <div>
+            <label>Title:</label>
+            <input type="text" name="title" value="Test Material Upload" required>
+        </div>
+        <div>
+            <label>Description:</label>
+            <textarea name="description">This is a test material uploaded via form</textarea>
+        </div>
+        <div>
+            <label>File:</label>
+            <input type="file" name="file" id="fileInput" required>
+        </div>
+        <button type="button" onclick="testUpload()">Test Upload (with fetch)</button>
+        <button type="submit">Traditional Form Submit</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+    async function testUpload() {
+        const form = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('fileInput');
+        
+        // Create a test PDF file if none selected
+        if (!fileInput.files.length) {
+            // Create a simple text file
+            const content = new Blob(['PDF mock content'], { type: 'application/pdf' });
+            const file = new File([content], 'test.pdf', { type: 'application/pdf' });
+            
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+        }
+        
+        const formData = new FormData(form);
+        
+        try {
+            const response = await fetch('/guru/materials/upload', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include' // Include cookies for session
+            });
+            
+            const text = await response.text();
+            document.getElementById('result').innerHTML = `
+                <p><strong>Status:</strong> ${response.status}</p>
+                <p><strong>Response:</strong></p>
+                <pre>${text.substring(0, 500)}</pre>
+            `;
+        } catch (error) {
+            document.getElementById('result').innerHTML = `<p>Error: ${error.message}</p>`;
+        }
+    }
+    </script>
+</body>
+</html>

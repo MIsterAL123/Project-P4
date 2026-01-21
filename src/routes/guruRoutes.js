@@ -19,13 +19,11 @@ router.post('/change-password', guruController.changePassword);
 // Students
 router.get('/students', guruController.showStudents);
 
-// Materials (placeholder for future)
-router.get('/materials', (req, res) => {
-  res.render('guru/materials', {
-    title: 'Materi Pelatihan - P4 Jakarta',
-    layout: 'layouts/admin',
-    currentUser: req.user
-  });
-});
+const upload = require('../config/upload');
+
+// Materials
+router.get('/materials', guruController.showMaterials);
+router.post('/materials/upload', upload.single('file'), guruController.uploadMaterial);
+router.post('/materials/:id/delete', guruController.deleteMaterial);
 
 module.exports = router;
