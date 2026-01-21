@@ -64,12 +64,12 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex space-x-2">
-                                <button data-peserta='<%= JSON.stringify(peserta).replace(/'/g, "&#39;") %>' type="button" class="btn-view-peserta text-blue-600 hover:text-blue-800" title="Detail">
+                                <a href="/admin/peserta/<%= peserta.id %>" data-peserta='<%= JSON.stringify(peserta).replace(/'/g, "&#39;") %>' class="text-blue-600 hover:text-blue-800 btn-view-peserta" title="Detail" aria-label="Lihat Detail">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                     </svg>
-                                </button>
+                                </a>
                                 <% if (peserta.link_dokumen) { %>
                                 <a href="<%= peserta.link_dokumen %>" target="_blank" class="text-green-600 hover:text-green-800" title="Lihat Dokumen">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,7 +212,10 @@ document.getElementById('detailModal').addEventListener('click', function(e) {
 // CSP-safe bindings
 document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.btn-view-peserta').forEach(function(btn){
-    btn.addEventListener('click', function(){
+    btn.addEventListener('click', function(e){
+      // If user wants to open in new tab/window (Ctrl/Cmd/middle/Shift), allow default behavior
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
+      e.preventDefault();
       try { viewDetailFromButton(this); } catch(e){console.error(e);}    
     });
   });

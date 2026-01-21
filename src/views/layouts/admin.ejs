@@ -147,5 +147,7 @@
             });
         }, 5000);
     </script>
+    <!-- View-extracted scripts (from views with inline <script>) -->
+    <%- typeof script !== 'undefined' ? script : '' %>
 </body>
 </html>

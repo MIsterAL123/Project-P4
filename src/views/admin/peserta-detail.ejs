@@ -1,0 +1,61 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <a href="/admin/manage-peserta" class="inline-flex items-center text-gray-500 hover:text-gray-700">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Kembali ke Daftar Peserta
+      </a>
+      <h1 class="text-2xl font-bold text-gray-900 mt-3"><%= peserta.nama || '-' %></h1>
+      <p class="text-gray-600 mt-1"><%= peserta.email || '-' %></p>
+    </div>
+    <div class="flex items-center space-x-2">
+      <form action="/admin/manage-peserta/<%= peserta.id %>/delete" method="POST" class="confirm-action" data-confirm="Yakin ingin menghapus peserta ini?">
+        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Hapus Peserta</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="bg-white p-6 rounded-lg shadow-sm">
+      <p class="text-sm text-gray-500">NIK</p>
+      <p class="font-medium text-gray-900"><%= peserta.nik || '-' %></p>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow-sm">
+      <p class="text-sm text-gray-500">Nomor Urut</p>
+      <p class="font-medium text-gray-900"><%= pendaftaran && pendaftaran.nomor_urut ? '#' + pendaftaran.nomor_urut : '-' %></p>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow-sm">
+      <p class="text-sm text-gray-500">Status</p>
+      <p class="font-medium <%= pendaftaran && pendaftaran.status === 'registered' ? 'text-green-600' : pendaftaran && pendaftaran.status === 'cancelled' ? 'text-red-600' : 'text-gray-600' %>">
+        <%= pendaftaran && pendaftaran.status === 'registered' ? 'Terdaftar' : pendaftaran && pendaftaran.status === 'cancelled' ? 'Dibatalkan' : 'Belum Daftar' %>
+      </p>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow-sm">
+      <p class="text-sm text-gray-500">Tahun Ajaran</p>
+      <p class="font-medium text-gray-900"><%= pendaftaran ? pendaftaran.tahun_ajaran : '-' %></p>
+    </div>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow-sm mt-4">
+    <p class="text-sm text-gray-500">Tanggal Daftar</p>
+    <p class="font-medium text-gray-900"><%= pendaftaran && pendaftaran.tanggal_daftar ? new Date(pendaftaran.tanggal_daftar).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '-' %></p>
+  </div>
+
+  <% if (peserta.link_dokumen) { %>
+  <div class="bg-white p-6 rounded-lg shadow-sm mt-4">
+    <p class="text-sm text-gray-500 mb-2">Link Dokumen</p>
+    <a href="<%= peserta.link_dokumen %>" target="_blank" class="text-blue-600 hover:underline break-all"><%= peserta.link_dokumen %></a>
+  </div>
+  <% } %>
+</div>
+
+<script>
+  // Small script for delete confirmation (CSP friendly - uses data-confirm in form)
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.confirm-action').forEach(function(form){
+      form.addEventListener('submit', function(e){ if (!confirm(form.dataset.confirm || 'Yakin?')) e.preventDefault(); });
+    });
+  });
+</script>
