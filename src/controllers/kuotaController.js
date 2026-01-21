@@ -63,12 +63,28 @@ const createKuota = async (req, res) => {
 // @route   POST /admin/kuota/update
 const updateKuota = async (req, res) => {
   try {
-    const { id, max_peserta, status } = req.body;
+    const { id, max_peserta, tahun_ajaran } = req.body;
+    let { status } = req.body;
 
     const kuota = await KuotaP4.findById(id);
     if (!kuota) {
       req.session.error = 'Kuota tidak ditemukan';
       return res.redirect('/admin/manage-kuota');
+    }
+
+    // Validate tahun_ajaran
+    if (!tahun_ajaran || tahun_ajaran.trim() === '') {
+      req.session.error = 'Tahun ajaran wajib diisi';
+      return res.redirect('/admin/manage-kuota');
+    }
+
+    // Check if tahun_ajaran conflicts with other records
+    if (tahun_ajaran !== kuota.tahun_ajaran) {
+      const exists = await KuotaP4.findByTahunAjaran(tahun_ajaran);
+      if (exists) {
+        req.session.error = 'Tahun ajaran sudah ada';
+        return res.redirect('/admin/manage-kuota');
+      }
     }
 
     // Validate max_peserta
@@ -84,7 +100,12 @@ const updateKuota = async (req, res) => {
       return res.redirect('/admin/manage-kuota');
     }
 
-    await KuotaP4.update(id, { max_peserta: newMax, status });
+    // If status not provided by the form, retain existing status
+    if (typeof status === 'undefined' || status === '') {
+      status = kuota.status;
+    }
+
+    await KuotaP4.update(id, { tahun_ajaran: tahun_ajaran.trim(), max_peserta: newMax, status });
 
     logger.info(`Kuota updated by ${req.user.email}: ID ${id}`);
     req.session.success = 'Kuota berhasil diperbarui';

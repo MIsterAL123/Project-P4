@@ -39,11 +39,12 @@ class KuotaP4 {
     };
   }
 
-  // Update kuota
+  // Update kuota (allows updating tahun_ajaran, max_peserta, status)
   static async update(id, kuotaData) {
-    const { max_peserta, status } = kuotaData;
-    const sql = 'UPDATE kuota_p4 SET max_peserta = ?, status = ? WHERE id = ?';
-    await query(sql, [max_peserta, status, id]);
+    const { tahun_ajaran, max_peserta, status } = kuotaData;
+    // Use provided values (caller ensures validation)
+    const sql = 'UPDATE kuota_p4 SET tahun_ajaran = ?, max_peserta = ?, status = ? WHERE id = ?';
+    await query(sql, [tahun_ajaran, max_peserta, status, id]);
     return this.findById(id);
   }
 
