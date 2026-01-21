@@ -5,13 +5,12 @@
             <h1 class="text-2xl font-bold text-gray-900">Materi Pembelajaran</h1>
             <p class="text-gray-600 mt-1">Kelola materi pembelajaran untuk peserta</p>
         </div>
-        <button type="button" onclick="openUploadModal()" class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        <button type="button" class="btn-open-upload mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
             </svg>
             Upload Materi
-        </button>
-    </div>
+        </button>    </div>
 
     <!-- Materials List -->
     <% if (typeof materials !== 'undefined' && materials && materials.length > 0) { %>
@@ -55,7 +54,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                                         </svg>
                                     </a>
-                                    <form action="/guru/materials/<%= material.id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Yakin ingin menghapus materi ini?');">
+                                    <form action="/guru/materials/<%= material.id %>/delete" method="POST" style="display: inline;" class="confirm-action" data-confirm="Yakin ingin menghapus materi ini?">
                                         <button type="submit" class="text-red-600 hover:text-red-800" title="Hapus">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -76,7 +75,7 @@
             </svg>
             <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Materi</h3>
             <p class="text-gray-500 mb-4">Anda belum mengunggah materi pembelajaran</p>
-            <button type="button" onclick="openUploadModal()" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <button type="button" class="btn-open-upload inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                 </svg>
@@ -92,7 +91,7 @@
         <div class="p-6 border-b border-gray-100">
             <div class="flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-gray-900">Upload Materi</h3>
-                <button type="button" onclick="closeUploadModal()" class="text-gray-400 hover:text-gray-600">
+                <button type="button" class="btn-close-upload text-gray-400 hover:text-gray-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -129,7 +128,7 @@
                 </div>
             </div>
             <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
-                <button type="button" onclick="closeUploadModal()" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
+                <button type="button" class="btn-close-upload px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
                 <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">Upload</button>
             </div>
         </form>
@@ -162,6 +161,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Bind open/close buttons
+    document.querySelectorAll('.btn-open-upload').forEach(btn => btn.addEventListener('click', openUploadModal));
+    document.querySelectorAll('.btn-close-upload').forEach(btn => btn.addEventListener('click', closeUploadModal));
+
+    // Confirm actions
+    document.querySelectorAll('.confirm-action').forEach(function(form){
+      form.addEventListener('submit', function(e){
+        if (!confirm(form.dataset.confirm || 'Yakin?')) e.preventDefault();
+      });
+    });
 });
 
 window.openUploadModal = openUploadModal;

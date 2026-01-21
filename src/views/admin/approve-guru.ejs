@@ -64,23 +64,19 @@
                             <%= guru.created_at ? new Date(guru.created_at).toLocaleDateString('id-ID') : '-' %>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-3 py-1 text-xs font-medium rounded-full 
-                                <%= guru.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                                   guru.status === 'active' ? 'bg-green-100 text-green-800' : 
-                                   'bg-red-100 text-red-800' %>
-                                <%= guru.status === 'pending' ? 'Menunggu' : 
-                                   guru.status === 'active' ? 'Terverifikasi' : 'Ditolak' %>
-                            </span>
+                            <% const statusClass = guru.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : guru.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; %>
+                            <% const statusText = guru.status === 'pending' ? 'Pending' : guru.status === 'active' ? 'Disetujui' : 'Ditolak'; %>
+                            <span class="px-3 py-1 text-xs font-medium rounded-full <%= statusClass %>"><%= statusText %></span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <% if (guru.status === 'pending') { %>
                             <div class="flex space-x-2">
-                                <form action="/admin/guru/<%= guru.id %>/approve" method="POST">
+                                <form action="/admin/guru/<%= guru.id %>/approve" method="POST" class="confirm-action" data-confirm="Yakin ingin menyetujui guru ini?">
                                     <button type="submit" class="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors">
                                         Setujui
                                     </button>
                                 </form>
-                                <button data-guru-id="<%= guru.id %>" data-guru-name="<%= (guru.nama || 'Guru').replace(/\"/g, '&quot;').replace(/'/g, '&#39;') %>" onclick="openRejectModalFromButton(this)" class="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors">
+                                <button data-guru-id="<%= guru.id %>" data-guru-name="<%= (guru.nama || 'Guru').replace(/\"/g, '&quot;').replace(/'/g, '&#39;') %>" type="button" class="btn-reject-guru px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors">
                                     Tolak
                                 </button>
                             </div>
@@ -136,7 +132,7 @@
                     placeholder="Masukkan alasan penolakan..."></textarea>
             </div>
             <div class="flex justify-end space-x-3 pt-4">
-                <button type="button" onclick="closeRejectModal()" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">Batal</button>
+                <button type="button" id="rejectModalCancelBtn" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">Batal</button>
                 <button type="submit" class="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700">Tolak</button>
             </div>
         </form>
@@ -151,6 +147,20 @@ function openRejectModal(guruId, guruName) {
     document.getElementById('rejectModal').classList.add('flex');
 }
 
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.btn-reject-guru').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      openRejectModal(this.dataset.guruId, this.dataset.guruName);
+    });
+  });
+
+  document.querySelectorAll('.confirm-action').forEach(function(form){
+    form.addEventListener('submit', function(e){ if (!confirm(form.dataset.confirm || 'Yakin?')) e.preventDefault(); });
+  });
+
+  const cancel = document.getElementById('rejectModalCancelBtn');
+  if (cancel) cancel.addEventListener('click', function(){ document.getElementById('rejectModal').classList.add('hidden'); document.getElementById('rejectModal').classList.remove('flex'); });
+});
 function openRejectModalFromButton(el) {
     const id = el.getAttribute('data-guru-id');
     const name = el.getAttribute('data-guru-name');
