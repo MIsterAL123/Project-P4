@@ -28,7 +28,8 @@ router.get('/', async (req, res) => {
 router.get('/about', (req, res) => {
   res.render('public/about', {
     title: 'Tentang Kami - P4 Jakarta',
-    layout: 'layouts/main'
+    layout: 'layouts/main',
+    sejarahImageUrl: process.env.ABOUT_SEJARAH_IMAGE_URL || null
   });
 });
 
