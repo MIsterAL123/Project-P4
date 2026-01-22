@@ -122,3 +122,6 @@
 2026-01-20T23:21:16.127Z [ERROR]: Register peserta error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
 2026-01-21T00:41:29.533Z [ERROR]: Database query error: Table 'p4.materials' doesn't exist
 2026-01-21T01:01:36.276Z [ERROR]: Database query error: Table 'p4.user' doesn't exist
+2026-01-22T00:37:57.329Z [ERROR]: Daftar P4 error: Anda sudah terdaftar pada periode ini
+2026-01-22T00:38:15.885Z [ERROR]: Daftar P4 error: Anda sudah terdaftar pada periode ini
+2026-01-22T00:49:55.884Z [ERROR]: Daftar P4 error: Anda sudah terdaftar pada periode ini

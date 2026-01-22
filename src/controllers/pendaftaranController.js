@@ -152,11 +152,33 @@ const cancelPendaftaran = async (req, res) => {
 // @route   GET /peserta/my-courses
 const showMyCourses = async (req, res) => {
   try {
+    const Material = require('../models/Material');
     const peserta = await Peserta.findByUserId(req.user.id);
     let pendaftaranList = [];
+    let currentPendaftaran = null;
+    let materials = [];
+    let isApproved = false;
 
     if (peserta) {
       pendaftaranList = await PendaftaranP4.findByPesertaId(peserta.id);
+      
+      // Get current/active pendaftaran
+      const kuota = await KuotaP4.findActiveKuota();
+      if (kuota) {
+        currentPendaftaran = await PendaftaranP4.findByPesertaAndKuota(peserta.id, kuota.id);
+        isApproved = currentPendaftaran && currentPendaftaran.status === 'registered';
+      }
+      
+      // Load all materials if approved
+      if (isApproved) {
+        try {
+          const result = await Material.findAll ? Material.findAll() : [];
+          materials = result;
+        } catch (err) {
+          logger.warn('Could not load materials:', err.message);
+          materials = [];
+        }
+      }
     }
 
     res.render('peserta/my-courses', {
@@ -164,6 +186,9 @@ const showMyCourses = async (req, res) => {
       layout: 'layouts/admin',
       peserta,
       pendaftaranList,
+      currentPendaftaran,
+      materials,
+      isApproved,
       currentUser: req.user
     });
   } catch (error) {
