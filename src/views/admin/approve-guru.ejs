@@ -55,10 +55,10 @@
                         <td class="px-6 py-4 whitespace-nowrap text-gray-600"><%= guru.nip || '-' %></td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <% if (guru.link_dokumen) { %>
-                            <a href="<%= guru.link_dokumen %>" target="_blank" class="text-blue-600 hover:underline">Lihat</a>
+                                <a href="<%= guru.link_dokumen %>" target="_blank" class="text-blue-600 hover:underline">Lihat</a>
                             <% } else { %>
-                            <span class="text-gray-400">-</span>
-                            <% } %>
+                                <span class="text-gray-400">-</span>
+                            <% } %> 
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-gray-600">
                             <%= guru.created_at ? new Date(guru.created_at).toLocaleDateString('id-ID') : '-' %>
@@ -81,23 +81,23 @@
                                 </button>
                             </div>
                             <% } else if (guru.status === 'active') { %>
-                            <div class="text-sm text-gray-500">
+                            <div class="text-sm text-gray-500 flex items-center space-x-3">
                                 <% if (guru.verified_at) { %>
                                 Disetujui: <%= new Date(guru.verified_at).toLocaleDateString('id-ID') %>
                                 <% } %>
                             </div>
                             <% } else { %>
-                            <div class="text-sm text-gray-500">
+                            <div class="flex items-center space-x-3">
                                 <% if (guru.rejection_reason) { %>
-                                <span class="text-red-600" title="<%= guru.rejection_reason %>">
-                                    <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <button type="button" class="text-red-600 hover:underline btn-view-reason flex items-center space-x-2" data-reason="<%= (guru.rejection_reason || '').replace(/\"/g, '&quot;').replace(/'/g, '&#39;') %>">
+                                    <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
-                                    Lihat Alasan
-                                </span>
+                                    <span>Lihat Alasan</span>
+                                </button>
                                 <% } %>
                             </div>
-                            <% } %>
+                            <% } %> 
                         </td>
                     </tr>
                     <% }); %>
@@ -127,7 +127,7 @@
         <form id="rejectForm" method="POST" class="p-6 space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Alasan Penolakan</label>
-                <textarea name="rejection_reason" rows="4" required 
+                <textarea name="reason" rows="4" required 
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     placeholder="Masukkan alasan penolakan..."></textarea>
             </div>
@@ -139,13 +139,28 @@
     </div>
 </div>
 
+<!-- View Reason Modal -->
+<div id="viewReasonModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+        <div class="p-6 border-b border-gray-100">
+            <h3 class="text-lg font-semibold text-gray-900">Alasan Penolakan</h3>
+        </div>
+        <div class="p-6">
+            <p id="viewReasonText" class="text-sm text-gray-700 whitespace-pre-line"></p>
+            <div class="flex justify-end pt-4">
+                <button type="button" id="viewReasonModalCloseBtn" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 function openRejectModal(guruId, guruName) {
     document.getElementById('rejectGuruName').textContent = guruName;
     document.getElementById('rejectForm').action = '/admin/guru/' + guruId + '/reject';
     document.getElementById('rejectModal').classList.remove('hidden');
     document.getElementById('rejectModal').classList.add('flex');
-}
+} 
 
 document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.btn-reject-guru').forEach(function(btn){
@@ -158,8 +173,21 @@ document.addEventListener('DOMContentLoaded', function(){
     form.addEventListener('submit', function(e){ if (!confirm(form.dataset.confirm || 'Yakin?')) e.preventDefault(); });
   });
 
+  document.querySelectorAll('.btn-view-reason').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var reason = this.getAttribute('data-reason') || '';
+      var txt = document.getElementById('viewReasonText');
+      if (txt) txt.textContent = reason;
+      var modal = document.getElementById('viewReasonModal');
+      if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+    });
+  });
+
   const cancel = document.getElementById('rejectModalCancelBtn');
   if (cancel) cancel.addEventListener('click', function(){ document.getElementById('rejectModal').classList.add('hidden'); document.getElementById('rejectModal').classList.remove('flex'); });
+
+  const viewClose = document.getElementById('viewReasonModalCloseBtn');
+  if (viewClose) viewClose.addEventListener('click', function(){ var m = document.getElementById('viewReasonModal'); if (m){ m.classList.add('hidden'); m.classList.remove('flex'); } });
 });
 function openRejectModalFromButton(el) {
     const id = el.getAttribute('data-guru-id');
