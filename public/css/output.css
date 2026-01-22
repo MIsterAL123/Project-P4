@@ -1323,10 +1323,6 @@ h1, h2, h3, h4, h5, h6 {
   height: 20rem;
 }
 
-.h-96 {
-  height: 24rem;
-}
-
 .h-full {
   height: 100%;
 }
@@ -1640,6 +1636,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .whitespace-nowrap {
   white-space: nowrap;
+}
+
+.whitespace-pre-line {
+  white-space: pre-line;
 }
 
 .break-all {
