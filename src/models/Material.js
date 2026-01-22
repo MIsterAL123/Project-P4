@@ -25,6 +25,11 @@ class Material {
     return results[0] || null;
   }
 
+  static async findAll() {
+    const sql = `SELECT m.*, u.nama as guru_nama FROM materials m LEFT JOIN guru g ON m.guru_id = g.id LEFT JOIN users u ON g.user_id = u.id ORDER BY m.created_at DESC`;
+    return query(sql);
+  }
+
   static async delete(id) {
     // delete row
     const sql = `DELETE FROM materials WHERE id = ?`;

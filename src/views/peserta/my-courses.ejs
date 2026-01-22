@@ -32,17 +32,17 @@
         <p class="text-gray-500 mt-2">Materi pembelajaran akan segera tersedia. Silakan cek kembali nanti.</p>
     </div>
     <% } else { %>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <% materials.forEach((material, index) => { %>
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
             <!-- Thumbnail -->
             <div class="h-40 bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                <% if (material.jenis === 'video') { %>
+                <% if (material.file_type === 'video' || material.jenis === 'video') { %>
                 <svg class="w-16 h-16 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <% } else if (material.jenis === 'pdf') { %>
+                <% } else if (material.file_type === 'pdf' || material.jenis === 'pdf') { %>
                 <svg class="w-16 h-16 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                 </svg>
@@ -55,30 +55,32 @@
             <div class="p-4">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-medium px-2 py-1 rounded-full 
-                        <% if (material.jenis === 'video') { %>
-                        bg-purple-100 text-purple-700
-                        <% } else if (material.jenis === 'pdf') { %>
-                        bg-red-100 text-red-700
+                        <% 
+                            const matType = material.file_type || material.jenis; 
+                            if (matType === 'video') { %>
+                            bg-purple-100 text-purple-700
+                        <% } else if (matType === 'pdf') { %>
+                            bg-red-100 text-red-700
                         <% } else { %>
-                        bg-blue-100 text-blue-700
+                            bg-blue-100 text-blue-700
                         <% } %>
                     ">
-                        <%= material.jenis ? material.jenis.toUpperCase() : 'MATERI' %>
+                        <%= (material.file_type || material.jenis || 'MATERI').toUpperCase() %>
                     </span>
                     <span class="text-xs text-gray-400">Modul <%= index + 1 %></span>
                 </div>
-                <h4 class="font-semibold text-gray-900 mb-2 line-clamp-2"><%= material.judul %></h4>
-                <p class="text-sm text-gray-500 mb-4 line-clamp-2"><%= material.deskripsi || 'Tidak ada deskripsi' %></p>
-                <div class="flex items-center justify-between">
-                    <span class="text-xs text-gray-400">
+                <h4 class="font-semibold text-gray-900 mb-2 line-clamp-2"><%= material.title || material.judul %></h4>
+                <p class="text-sm text-gray-500 mb-4 line-clamp-2"><%= material.description || material.deskripsi || 'Tidak ada deskripsi' %></p>
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs text-gray-400 truncate">
                         <% if (material.guru_nama) { %>
                         Oleh: <%= material.guru_nama %>
                         <% } else { %>
                         P4 Jakarta
                         <% } %>
                     </span>
-                    <% if (material.file_url) { %>
-                    <a href="<%= material.file_url %>" target="_blank" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                    <% if (material.file_path) { %>
+                    <a href="<%= material.file_path || material.file_url %>" target="_blank" class="text-blue-600 hover:text-blue-700 text-sm font-medium whitespace-nowrap">
                         Akses →
                     </a>
                     <% } %>
