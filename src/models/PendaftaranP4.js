@@ -6,7 +6,7 @@ class PendaftaranP4 {
   // Find pendaftaran by ID
   static async findById(id) {
     const sql = `
-      SELECT pd.*, p.nik, u.nama, u.email, k.tahun_ajaran, k.max_peserta
+      SELECT pd.*, p.nik, u.nama, u.email, k.judul_pelatihan, k.tahun_ajaran, k.max_peserta, k.tanggal_mulai, k.tanggal_selesai
       FROM pendaftaran_p4 pd
       JOIN peserta p ON pd.peserta_id = p.id
       JOIN users u ON p.user_id = u.id
@@ -20,7 +20,7 @@ class PendaftaranP4 {
   // Find pendaftaran by peserta_id
   static async findByPesertaId(pesertaId) {
     const sql = `
-      SELECT pd.*, k.tahun_ajaran, k.max_peserta, k.status as kuota_status
+      SELECT pd.*, k.judul_pelatihan, k.tahun_ajaran, k.max_peserta, k.status as kuota_status, k.tanggal_mulai, k.tanggal_selesai
       FROM pendaftaran_p4 pd
       JOIN kuota_p4 k ON pd.kuota_id = k.id
       WHERE pd.peserta_id = ?
@@ -32,7 +32,7 @@ class PendaftaranP4 {
   // Find pendaftaran by peserta_id and kuota_id
   static async findByPesertaAndKuota(pesertaId, kuotaId) {
     const sql = `
-      SELECT pd.*, k.tahun_ajaran
+      SELECT pd.*, k.judul_pelatihan, k.tahun_ajaran
       FROM pendaftaran_p4 pd
       JOIN kuota_p4 k ON pd.kuota_id = k.id
       WHERE pd.peserta_id = ? AND pd.kuota_id = ?
@@ -41,8 +41,27 @@ class PendaftaranP4 {
     return results[0] || null;
   }
 
-  // Create pendaftaran (with quota check)
+  // Count registrations in current year for a peserta
+  static async countRegistrationsThisYear(pesertaId) {
+    const sql = `
+      SELECT COUNT(*) as count 
+      FROM pendaftaran_p4 
+      WHERE peserta_id = ? 
+      AND status = 'registered'
+      AND YEAR(tanggal_daftar) = YEAR(CURDATE())
+    `;
+    const results = await query(sql, [pesertaId]);
+    return results[0].count;
+  }
+
+  // Create pendaftaran (with quota check and yearly limit)
   static async create(pesertaId, kuotaId) {
+    // Check yearly limit (max 3 per year)
+    const yearlyCount = await this.countRegistrationsThisYear(pesertaId);
+    if (yearlyCount >= 3) {
+      throw new Error('Anda sudah mencapai batas maksimal 3 kali pendaftaran pelatihan dalam tahun ini');
+    }
+
     // Check if kuota available
     const kuota = await KuotaP4.findById(kuotaId);
     if (!kuota) {
@@ -51,6 +70,10 @@ class PendaftaranP4 {
     if (kuota.status !== 'open') {
       throw new Error('Pendaftaran sudah ditutup');
     }
+    // Check target peserta
+    if (kuota.target_peserta === 'guru') {
+      throw new Error('Pelatihan ini hanya untuk tenaga kependidikan');
+    }
     if (kuota.peserta_terdaftar >= kuota.max_peserta) {
       throw new Error('Kuota sudah penuh');
     }
@@ -58,7 +81,7 @@ class PendaftaranP4 {
     // Check if peserta already registered
     const existing = await this.findByPesertaAndKuota(pesertaId, kuotaId);
     if (existing) {
-      throw new Error('Anda sudah terdaftar pada periode ini');
+      throw new Error('Anda sudah terdaftar pada pelatihan ini');
     }
 
     // Get next nomor urut
@@ -119,7 +142,7 @@ class PendaftaranP4 {
   // Get all pendaftaran (with peserta and kuota info)
   static async findAll() {
     const sql = `
-      SELECT pd.*, p.nik, u.nama, u.email, k.tahun_ajaran
+      SELECT pd.*, p.nik, u.nama, u.email, k.judul_pelatihan, k.tahun_ajaran
       FROM pendaftaran_p4 pd
       JOIN peserta p ON pd.peserta_id = p.id
       JOIN users u ON p.user_id = u.id

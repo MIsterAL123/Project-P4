@@ -17,15 +17,18 @@ router.get('/profile', pesertaController.showProfile);
 router.post('/profile/update', pesertaController.updateProfile);
 router.post('/change-password', pesertaController.changePassword);
 
-// Pendaftaran P4
-router.get('/daftar-p4', pendaftaranController.showDaftarP4Page);
-router.post('/daftar-p4', pendaftaranController.daftarP4);
+// Pelatihan List
+router.get('/pelatihan', pendaftaranController.showPelatihanList);
+
+// Daftar Pelatihan P4
+router.get('/daftar-pelatihan/:kuotaId', pendaftaranController.showDaftarPelatihanPage);
+router.post('/daftar-pelatihan/:kuotaId', pendaftaranController.daftarPelatihan);
 
 // Status Pendaftaran
 router.get('/status-pendaftaran', pendaftaranController.showStatusPendaftaran);
 router.post('/pendaftaran/:id/cancel', pendaftaranController.cancelPendaftaran);
 
-// My Courses
-router.get('/my-courses', pendaftaranController.showMyCourses);
+// Riwayat Pelatihan
+router.get('/riwayat-pelatihan', pendaftaranController.showRiwayatPelatihan);
 
 module.exports = router;

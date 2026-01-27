@@ -413,3 +413,85 @@
 2026-01-22T04:58:59.179Z [INFO]: Server running in development mode on port 3000
 2026-01-22T04:58:59.229Z [INFO]: ✅ Database connected successfully
 2026-01-22T04:58:59.236Z [INFO]: ✅ Database connected successfully
+2026-01-22T05:01:31.885Z [INFO]: Server running in development mode on port 3000
+2026-01-22T05:01:31.886Z [INFO]: Server running in development mode on port 3000
+2026-01-22T05:01:31.925Z [INFO]: ✅ Database connected successfully
+2026-01-22T05:01:31.931Z [INFO]: ✅ Database connected successfully
+2026-01-22T05:01:50.168Z [INFO]: Server running in development mode on port 3000
+2026-01-22T05:01:50.206Z [INFO]: ✅ Database connected successfully
+2026-01-22T05:01:50.197Z [INFO]: Server running in development mode on port 3000
+2026-01-22T05:01:50.237Z [INFO]: ✅ Database connected successfully
+2026-01-23T03:03:26.367Z [INFO]: Server running in development mode on port 3000
+2026-01-23T03:03:26.742Z [INFO]: ✅ Database connected successfully
+2026-01-23T03:05:58.253Z [INFO]: Server running in development mode on port 3000
+2026-01-23T03:05:58.301Z [INFO]: ✅ Database connected successfully
+2026-01-23T03:12:32.779Z [INFO]: Server running in development mode on port 3000
+2026-01-23T03:12:32.822Z [INFO]: ✅ Database connected successfully
+2026-01-23T03:18:34.819Z [INFO]: User logged in: admin@p4jakarta.go.id
+2026-01-23T03:19:09.832Z [INFO]: User logged in: aziz@gmail.com
+2026-01-23T03:22:22.170Z [INFO]: User logged in: guru@gmail.com
+2026-01-23T03:25:49.181Z [INFO]: User logged in: admin@p4jakarta.go.id
+2026-01-23T03:43:18.378Z [INFO]: Server running in development mode on port 3000
+2026-01-23T03:43:18.656Z [INFO]: ✅ Database connected successfully
+2026-01-23T03:43:26.553Z [INFO]: Server running in development mode on port 3000
+2026-01-23T03:43:26.640Z [INFO]: ✅ Database connected successfully
+2026-01-23T03:43:27.833Z [INFO]: Server running in development mode on port 3000
+2026-01-23T03:43:27.869Z [INFO]: ✅ Database connected successfully
+2026-01-23T03:43:45.477Z [INFO]: Server running in development mode on port 3000
+2026-01-23T03:43:45.523Z [INFO]: ✅ Database connected successfully
+2026-01-23T03:43:56.659Z [INFO]: Server running in development mode on port 3000
+2026-01-23T03:43:56.713Z [INFO]: ✅ Database connected successfully
+2026-01-23T03:44:19.320Z [INFO]: Server running in development mode on port 3000
+2026-01-23T03:44:19.365Z [INFO]: ✅ Database connected successfully
+2026-01-23T03:44:27.471Z [INFO]: Server running in development mode on port 3000
+2026-01-23T03:44:27.524Z [INFO]: ✅ Database connected successfully
+2026-01-23T04:11:18.699Z [INFO]: Server running in development mode on port 3000
+2026-01-23T04:11:18.735Z [INFO]: ✅ Database connected successfully
+2026-01-23T04:11:22.963Z [ERROR]: Database query error: Incorrect arguments to mysqld_stmt_execute
+2026-01-23T04:12:21.997Z [ERROR]: Database query error: Incorrect arguments to mysqld_stmt_execute
+2026-01-23T04:12:41.833Z [INFO]: User logged in: admin@p4jakarta.go.id
+2026-01-23T04:13:41.013Z [INFO]: Article created by admin@p4jakarta.go.id: p4 jaktim
+2026-01-23T04:13:47.863Z [INFO]: Article updated by admin@p4jakarta.go.id: p4 jaktim
+2026-01-23T04:13:56.060Z [INFO]: Article updated by admin@p4jakarta.go.id: p4 jaktim
+2026-01-23T04:14:43.010Z [ERROR]: Database query error: Unknown column 'a.no_hp' in 'field list'
+2026-01-23T04:14:43.011Z [ERROR]: Show manage admin error: Unknown column 'a.no_hp' in 'field list'
+2026-01-23T04:15:59.526Z [INFO]: New kuota created by admin@p4jakarta.go.id: pelattihan teknik komputer
+2026-01-23T04:16:15.808Z [ERROR]: Database query error: Incorrect arguments to mysqld_stmt_execute
+2026-01-23T04:16:18.404Z [ERROR]: Database query error: Incorrect arguments to mysqld_stmt_execute
+2026-01-23T04:17:08.259Z [INFO]: User logged in: aziz@gmail.com
+2026-01-23T04:17:38.154Z [ERROR]: Daftar pelatihan error: Anda sudah terdaftar pada pelatihan ini
+2026-01-23T04:18:10.764Z [INFO]: User logged in: guru@gmail.com
+2026-01-23T04:19:00.374Z [INFO]: Server running in development mode on port 3000
+2026-01-23T04:19:00.409Z [INFO]: ✅ Database connected successfully
+2026-01-23T04:19:41.296Z [INFO]: Server running in development mode on port 3000
+2026-01-23T04:19:41.337Z [INFO]: ✅ Database connected successfully
+2026-01-23T04:20:53.012Z [INFO]: Server running in development mode on port 3000
+2026-01-23T04:20:53.054Z [INFO]: ✅ Database connected successfully
+2026-01-23T04:21:26.123Z [ERROR]: Database query error: Incorrect arguments to mysqld_stmt_execute
+2026-01-23T04:22:18.782Z [INFO]: Server running in development mode on port 3000
+2026-01-23T04:22:18.824Z [INFO]: ✅ Database connected successfully
+2026-01-23T04:22:48.336Z [INFO]: Server running in development mode on port 3000
+2026-01-23T04:22:48.386Z [INFO]: ✅ Database connected successfully
+2026-01-23T04:24:08.023Z [INFO]: Server running in development mode on port 3000
+2026-01-23T04:24:08.065Z [INFO]: ✅ Database connected successfully
+2026-01-23T04:25:41.679Z [INFO]: Server running in development mode on port 3000
+2026-01-23T04:25:41.727Z [INFO]: ✅ Database connected successfully
+2026-01-23T04:26:16.718Z [INFO]: Server running in development mode on port 3000
+2026-01-23T04:26:16.759Z [INFO]: ✅ Database connected successfully
+2026-01-23T04:27:01.452Z [INFO]: Server running in development mode on port 3000
+2026-01-23T04:27:01.491Z [INFO]: ✅ Database connected successfully
+2026-01-23T04:35:19.915Z [INFO]: Server running in development mode on port 3000
+2026-01-23T04:35:19.974Z [INFO]: ✅ Database connected successfully
+2026-01-23T04:37:12.460Z [INFO]: User logged in: admin@p4jakarta.go.id
+2026-01-23T04:37:37.589Z [INFO]: Article updated by admin@p4jakarta.go.id: p4 jaktim
+2026-01-23T04:41:49.754Z [INFO]: Server running in development mode on port 3000
+2026-01-23T04:41:49.804Z [INFO]: ✅ Database connected successfully
+2026-01-27T03:05:43.199Z [INFO]: Server running in development mode on port 3000
+2026-01-27T03:05:43.489Z [INFO]: ✅ Database connected successfully
+2026-01-27T03:08:49.624Z [INFO]: Server running in development mode on port 3000
+2026-01-27T03:08:49.667Z [INFO]: ✅ Database connected successfully
+2026-01-27T03:14:43.438Z [INFO]: Server running in development mode on port 3000
+2026-01-27T03:14:43.464Z [INFO]: ✅ Database connected successfully
+2026-01-27T03:15:15.425Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-01-27T03:16:08.945Z [INFO]: Article created by admin@p4.jakarta.go.id: lekfbhu[0wqebgfuoq3if
+2026-01-27T03:16:18.950Z [INFO]: Article updated by admin@p4.jakarta.go.id: lekfbhu[0wqebgfuoq3if

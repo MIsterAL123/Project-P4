@@ -2,47 +2,72 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Kelola Kuota P4</h1>
-            <p class="text-gray-600 mt-1">Kelola kuota pendaftaran program P4</p>
+            <h1 class="text-2xl font-bold text-gray-900">Kelola Pelatihan</h1>
+            <p class="text-gray-600 mt-1">Kelola kuota dan jadwal pelatihan P4</p>
         </div>
         <button id="addKuotaBtn" type="button" class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
-            Tambah Kuota
+            Tambah Pelatihan
         </button>
     </div>
 
-    <!-- Current Active Kuota -->
-    <% if (typeof activeKuota !== 'undefined' && activeKuota) { %>
-    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-blue-200 text-sm">Kuota Aktif</p>
-                <h2 class="text-2xl font-bold mt-1"><%= activeKuota.tahun_ajaran %></h2>
-
-            </div>
-            <div class="text-right">
-                <div class="text-4xl font-bold">
-                    <%= activeKuota.peserta_terdaftar %>/<%= activeKuota.max_peserta %>
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div class="flex items-center">
+                <div class="p-2 bg-blue-100 rounded-lg">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
                 </div>
-                <p class="text-blue-200">Peserta Terdaftar</p>
-                <div class="mt-2 w-48 bg-blue-400 rounded-full h-3">
-                    <div class="bg-white h-3 rounded-full transition-all" style="width: <%= (activeKuota.peserta_terdaftar / activeKuota.max_peserta) * 100 %>%"></div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Total Pelatihan</p>
+                    <p class="text-xl font-bold text-gray-900"><%= typeof kuotaList !== 'undefined' ? kuotaList.length : 0 %></p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div class="flex items-center">
+                <div class="p-2 bg-green-100 rounded-lg">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Pelatihan Aktif</p>
+                    <p class="text-xl font-bold text-gray-900"><%= typeof kuotaList !== 'undefined' ? kuotaList.filter(k => k.status === 'open').length : 0 %></p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div class="flex items-center">
+                <div class="p-2 bg-purple-100 rounded-lg">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Untuk Pendidik</p>
+                    <p class="text-xl font-bold text-gray-900"><%= typeof kuotaList !== 'undefined' ? kuotaList.filter(k => k.target_peserta === 'guru' || k.target_peserta === 'semua').length : 0 %></p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div class="flex items-center">
+                <div class="p-2 bg-yellow-100 rounded-lg">
+                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Untuk Peserta Didik</p>
+                    <p class="text-xl font-bold text-gray-900"><%= typeof kuotaList !== 'undefined' ? kuotaList.filter(k => k.target_peserta === 'peserta' || k.target_peserta === 'semua').length : 0 %></p>
                 </div>
             </div>
         </div>
     </div>
-    <% } else { %>
-    <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
-        <div class="flex items-center">
-            <svg class="w-6 h-6 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-            </svg>
-            <p class="text-yellow-800">Tidak ada kuota yang aktif saat ini. Silakan tambah kuota baru.</p>
-        </div>
-    </div>
-    <% } %>
 
     <!-- Table -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -50,33 +75,53 @@
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tahun Ajaran</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Kuota</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Terdaftar</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Periode</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Pelatihan</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">Periode</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden lg:table-cell">Waktu</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Target</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Kuota</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     <% if (typeof kuotaList !== 'undefined' && kuotaList.length > 0) { %>
                     <% kuotaList.forEach(function(kuota) { %>
                     <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900"><%= kuota.tahun_ajaran %></td>
-                        <td class="px-6 py-4 whitespace-nowrap text-gray-600"><%= kuota.max_peserta %></td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 py-4">
+                            <div class="font-medium text-gray-900"><%= kuota.judul_pelatihan || kuota.tahun_ajaran %></div>
+                            <div class="text-sm text-gray-500"><%= kuota.tahun_ajaran %></div>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600 hidden md:table-cell">
+                            <% if (kuota.tanggal_mulai && kuota.tanggal_selesai) { %>
+                                <%= new Date(kuota.tanggal_mulai).toLocaleDateString('id-ID', {day: 'numeric', month: 'short'}) %> - 
+                                <%= new Date(kuota.tanggal_selesai).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) %>
+                            <% } else { %>
+                                <span class="text-gray-400">-</span>
+                            <% } %>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600 hidden lg:table-cell">
+                            <%= kuota.waktu_pelatihan || '-' %>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                <%= kuota.target_peserta === 'guru' ? 'bg-purple-100 text-purple-800' : 
+                                   kuota.target_peserta === 'peserta' ? 'bg-yellow-100 text-yellow-800' : 
+                                   'bg-blue-100 text-blue-800' %>">
+                                <%= kuota.target_peserta === 'guru' ? 'Pendidik' : 
+                                   kuota.target_peserta === 'peserta' ? 'Peserta Didik' : 'Semua' %>
+                            </span>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap">
                             <div class="flex items-center">
-                                <span class="text-gray-600"><%= kuota.peserta_terdaftar %></span>
-                                <div class="ml-3 w-24 bg-gray-200 rounded-full h-2">
-                                    <div class="<%= kuota.peserta_terdaftar >= kuota.max_peserta ? 'bg-red-500' : 'bg-blue-500' %> h-2 rounded-full" 
-                                        style="width: <%= Math.min((kuota.peserta_terdaftar / kuota.max_peserta) * 100, 100) %>%"></div>
+                                <span class="text-gray-600 mr-2"><%= kuota.peserta_terdaftar || 0 %>/<%= kuota.max_peserta %></span>
+                                <div class="w-16 bg-gray-200 rounded-full h-2 hidden sm:block">
+                                    <div class="<%= (kuota.peserta_terdaftar || 0) >= kuota.max_peserta ? 'bg-red-500' : 'bg-blue-500' %> h-2 rounded-full" 
+                                        style="width: <%= Math.min(((kuota.peserta_terdaftar || 0) / kuota.max_peserta) * 100, 100) %>%"></div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-gray-600 text-sm">
-                            -
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 py-4 whitespace-nowrap">
                             <span class="px-3 py-1 text-xs font-medium rounded-full 
                                 <%= kuota.status === 'open' ? 'bg-green-100 text-green-800' : 
                                    kuota.status === 'closed' ? 'bg-red-100 text-red-800' : 
@@ -84,7 +129,7 @@
                                 <%= kuota.status === 'open' ? 'Buka' : kuota.status === 'closed' ? 'Tutup' : 'Penuh' %>
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 py-4 whitespace-nowrap">
                             <div class="flex space-x-2">
                                 <button type="button" class="btn-edit-kuota text-blue-600 hover:text-blue-800" data-kuota='<%= JSON.stringify(kuota).replace(/'/g, "&#39;") %>' title="Edit">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,39 +137,40 @@
                                     </svg>
                                 </button>
                                 <% if (kuota.status !== 'open') { %>
-                                <form action="/admin/kuota/<%= kuota.id %>/toggle-status" method="POST">
-                                    <button type="submit" class="text-green-600 hover:text-green-800" title="Buka Kuota">
+                                <form action="/admin/kuota/<%= kuota.id %>/toggle-status" method="POST" class="inline">
+                                    <button type="submit" class="text-green-600 hover:text-green-800" title="Buka Pendaftaran">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
                                         </svg>
                                     </button>
                                 </form>
                                 <% } else { %>
-                                <form action="/admin/kuota/<%= kuota.id %>/toggle-status" method="POST">
-                                    <button type="submit" class="text-yellow-600 hover:text-yellow-800" title="Tutup Kuota">
+                                <form action="/admin/kuota/<%= kuota.id %>/toggle-status" method="POST" class="inline">
+                                    <button type="submit" class="text-yellow-600 hover:text-yellow-800" title="Tutup Pendaftaran">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                         </svg>
                                     </button>
                                 </form>
                                 <% } %>
-                                <form action="/admin/kuota/<%= kuota.id %>/delete" method="POST" class="confirm-action" data-confirm="Yakin ingin menghapus kuota ini?">
+                                <form action="/admin/kuota/<%= kuota.id %>/delete" method="POST" class="confirm-action inline" data-confirm="Yakin ingin menghapus pelatihan ini?">
                                     <button type="submit" class="text-red-600 hover:text-red-800" title="Hapus">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
                                     </button>
-                                </form>                            </div>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     <% }); %>
                     <% } else { %>
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                        <td colspan="7" class="px-6 py-12 text-center text-gray-500">
                             <svg class="w-12 h-12 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                             </svg>
-                            Belum ada data kuota
+                            Belum ada data pelatihan
                         </td>
                     </tr>
                     <% } %>
@@ -135,36 +181,90 @@
 </div>
 
 <!-- Add/Edit Modal -->
-<div id="kuotaModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
-        <div class="p-6 border-b border-gray-100">
-            <h3 id="modalTitle" class="text-lg font-semibold text-gray-900">Tambah Kuota</h3>
+<div id="kuotaModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-100 sticky top-0 bg-white">
+            <h3 id="modalTitle" class="text-lg font-semibold text-gray-900">Tambah Pelatihan</h3>
         </div>
         <form id="kuotaForm" method="POST" class="p-6 space-y-4">
             <input type="hidden" id="kuotaId" name="id" value="">
+            
+            <!-- Judul Pelatihan -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tahun Ajaran</label>
-                <input type="text" id="kuotaTahunAjaran" name="tahun_ajaran" required 
-                    placeholder="2024/2025"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Kuota Peserta</label>
-                <input type="number" id="kuotaJumlah" name="max_peserta" required min="1" max="100" value="50"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <select id="kuotaStatus" name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option value="open">Buka</option>
-                    <option value="closed">Tutup</option>
-                    <option value="full">Penuh</option>
-                </select>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Judul Pelatihan <span class="text-red-500">*</span></label>
+                <input type="text" id="kuotaJudul" name="judul_pelatihan" required 
+                    placeholder="Contoh: Pelatihan P4 Bidang Keahlian Teknik"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
 
-            <div class="flex justify-end space-x-3 pt-4">
-                <button type="button" id="kuotaModalCancelBtn" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">Batal</button>
-                <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">Simpan</button>
+            <!-- Tahun Ajaran & Target Peserta -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tahun Ajaran <span class="text-red-500">*</span></label>
+                    <input type="text" id="kuotaTahunAjaran" name="tahun_ajaran" required 
+                        placeholder="2024/2025"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Target Peserta <span class="text-red-500">*</span></label>
+                    <select id="kuotaTarget" name="target_peserta" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="semua">Semua (Pendidik & Peserta Didik)</option>
+                        <option value="guru">Pendidik/Tenaga Kependidikan</option>
+                        <option value="peserta">Peserta Didik</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tanggal Mulai & Selesai -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
+                    <input type="date" id="kuotaTanggalMulai" name="tanggal_mulai"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Selesai</label>
+                    <input type="date" id="kuotaTanggalSelesai" name="tanggal_selesai"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+
+            <!-- Waktu Pelatihan -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Waktu Pelatihan</label>
+                <input type="text" id="kuotaWaktu" name="waktu_pelatihan" 
+                    placeholder="Contoh: 08:00 - 16:00 WIB"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Kuota & Status -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kuota Peserta <span class="text-red-500">*</span></label>
+                    <input type="number" id="kuotaJumlah" name="max_peserta" required min="1" max="500" value="50"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select id="kuotaStatus" name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="open">Buka Pendaftaran</option>
+                        <option value="closed">Tutup Pendaftaran</option>
+                        <option value="full">Kuota Penuh</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Deskripsi -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
+                <textarea id="kuotaDeskripsi" name="deskripsi" rows="4" 
+                    placeholder="Deskripsi singkat tentang pelatihan ini..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                <button type="button" id="kuotaModalCancelBtn" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
+                <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">Simpan</button>
             </div>
         </form>
     </div>
@@ -172,13 +272,18 @@
 
 <script>
 function openAddModal() {
-    document.getElementById('modalTitle').textContent = 'Tambah Kuota';
+    document.getElementById('modalTitle').textContent = 'Tambah Pelatihan';
     document.getElementById('kuotaForm').action = '/admin/kuota/create';
-    document.getElementById('kuotaTahunAjaran').value = '';
-    document.getElementById('kuotaJumlah').value = '50';
     document.getElementById('kuotaId').value = '';
+    document.getElementById('kuotaJudul').value = '';
+    document.getElementById('kuotaTahunAjaran').value = '';
+    document.getElementById('kuotaTarget').value = 'semua';
+    document.getElementById('kuotaTanggalMulai').value = '';
+    document.getElementById('kuotaTanggalSelesai').value = '';
+    document.getElementById('kuotaWaktu').value = '';
+    document.getElementById('kuotaJumlah').value = '50';
     document.getElementById('kuotaStatus').value = 'open';
-    // tanggal_mulai/tanggal_selesai fields are not used in current schema
+    document.getElementById('kuotaDeskripsi').value = '';
     document.getElementById('kuotaModal').classList.remove('hidden');
     document.getElementById('kuotaModal').classList.add('flex');
 }
@@ -188,36 +293,68 @@ function closeModal() {
     document.getElementById('kuotaModal').classList.remove('flex');
 }
 
-document.addEventListener('DOMContentLoaded', function(){
-  const addBtn = document.getElementById('addKuotaBtn');
-  if (addBtn) addBtn.addEventListener('click', openAddModal);
+function formatDateForInput(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    return d.toISOString().split('T')[0];
+}
 
-  document.querySelectorAll('.btn-edit-kuota').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      try { editKuota(JSON.parse(this.getAttribute('data-kuota'))); } catch(e){console.error(e);}    
-    });
-  });
-
-  document.querySelectorAll('.confirm-action').forEach(function(form){
-    form.addEventListener('submit', function(e){
-      if (!confirm(form.dataset.confirm || 'Yakin?')) e.preventDefault();
-    });
-  });
-
-  const cancel = document.getElementById('kuotaModalCancelBtn');
-  if (cancel) cancel.addEventListener('click', closeModal);
-});
 function editKuota(kuota) {
-    document.getElementById('modalTitle').textContent = 'Edit Kuota';
+    document.getElementById('modalTitle').textContent = 'Edit Pelatihan';
     document.getElementById('kuotaForm').action = '/admin/kuota/update';
-    document.getElementById('kuotaTahunAjaran').value = kuota.tahun_ajaran;
-    document.getElementById('kuotaJumlah').value = kuota.max_peserta;
     document.getElementById('kuotaId').value = kuota.id;
+    document.getElementById('kuotaJudul').value = kuota.judul_pelatihan || '';
+    document.getElementById('kuotaTahunAjaran').value = kuota.tahun_ajaran || '';
+    document.getElementById('kuotaTarget').value = kuota.target_peserta || 'semua';
+    document.getElementById('kuotaTanggalMulai').value = formatDateForInput(kuota.tanggal_mulai);
+    document.getElementById('kuotaTanggalSelesai').value = formatDateForInput(kuota.tanggal_selesai);
+    document.getElementById('kuotaWaktu').value = kuota.waktu_pelatihan || '';
+    document.getElementById('kuotaJumlah').value = kuota.max_peserta || 50;
     document.getElementById('kuotaStatus').value = kuota.status || 'open';
-    // tanggal_mulai/tanggal_selesai not available in schema
+    document.getElementById('kuotaDeskripsi').value = kuota.deskripsi || '';
     document.getElementById('kuotaModal').classList.remove('hidden');
     document.getElementById('kuotaModal').classList.add('flex');
 }
+
+document.addEventListener('DOMContentLoaded', function(){
+    const addBtn = document.getElementById('addKuotaBtn');
+    if (addBtn) addBtn.addEventListener('click', openAddModal);
+
+    document.querySelectorAll('.btn-edit-kuota').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            try { 
+                editKuota(JSON.parse(this.getAttribute('data-kuota'))); 
+            } catch(e) {
+                console.error(e);
+            }    
+        });
+    });
+
+    document.querySelectorAll('.confirm-action').forEach(function(form){
+        form.addEventListener('submit', function(e){
+            if (!confirm(form.dataset.confirm || 'Yakin?')) e.preventDefault();
+        });
+    });
+
+    const cancel = document.getElementById('kuotaModalCancelBtn');
+    if (cancel) cancel.addEventListener('click', closeModal);
+    
+    // Date validation
+    const startDate = document.getElementById('kuotaTanggalMulai');
+    const endDate = document.getElementById('kuotaTanggalSelesai');
+    
+    startDate.addEventListener('change', function() {
+        endDate.min = this.value;
+    });
+    
+    endDate.addEventListener('change', function() {
+        if (startDate.value && this.value < startDate.value) {
+            alert('Tanggal selesai tidak boleh sebelum tanggal mulai');
+            this.value = startDate.value;
+        }
+    });
+});
 
 document.getElementById('kuotaModal').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
