@@ -56,9 +56,46 @@
             </div>
             
             <!-- Mobile Menu Button -->
-            <button class="md:hidden text-gray-700 hover:text-primary-600">
+            <button data-mobile-menu class="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none">
                 <i class="fas fa-bars text-2xl"></i>
             </button>
+        </div>
+    </div>
+
+    <!-- Mobile Menu (Hidden by default) -->
+    <div data-mobile-nav class="hidden md:hidden bg-white border-t border-gray-100 shadow-lg">
+        <div class="px-4 pt-2 pb-4 space-y-1">
+            <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Beranda</a>
+            <a href="/about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Tentang</a>
+            <a href="/programs" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Program</a>
+            <a href="/facilities" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Fasilitas</a>
+            <a href="/contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Kontak</a>
+            
+            <div class="border-t border-gray-100 my-2"></div>
+            
+            <% if (user) { %>
+                <div class="px-3 py-2">
+                    <span class="block text-sm font-medium text-gray-500 mb-2">Login sebagai: <%= user.nama %></span>
+                    <a href="/<%= user.role %>/dashboard" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">
+                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                    </a>
+                    <a href="/<%= user.role %>/profile" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">
+                        <i class="fas fa-user mr-2"></i> Profile
+                    </a>
+                    <a href="/auth/logout" class="block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </a>
+                </div>
+            <% } else { %>
+                <div class="flex flex-col space-y-2 px-3 pt-2">
+                    <a href="/auth/login" class="w-full text-center px-4 py-2 border border-primary-600 text-primary-600 rounded-lg hover:bg-primary-50">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Login
+                    </a>
+                    <a href="/auth/register-peserta" class="w-full text-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 shadow-md">
+                        <i class="fas fa-user-plus mr-2"></i> Daftar
+                    </a>
+                </div>
+            <% } %>
         </div>
     </div>
 </nav>
