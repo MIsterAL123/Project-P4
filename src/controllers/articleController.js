@@ -32,8 +32,14 @@ const showCreateArticle = async (req, res) => {
     article: null,
     isEdit: false,
     currentUser: req.user,
-    user: req.user
+    user: req.user,
+    success: req.session.success,
+    error: req.session.error
   });
+  
+  // Clear messages after displaying
+  delete req.session.success;
+  delete req.session.error;
 };
 
 // @desc    Create new article
@@ -78,22 +84,30 @@ const createArticle = async (req, res) => {
     // Get admin id
     const admin = await Admin.findByUserId(req.user.id);
 
+    // Handle image upload
+    let imageUrl = null;
+    if (req.file) {
+      imageUrl = '/uploads/articles/' + req.file.filename;
+      logger.info(`Image uploaded: ${imageUrl}`);
+    }
+
     // Create article
-    await Article.create({
+    const newArticle = await Article.create({
       title: title.trim(),
       slug,
       content: content.trim(),
       excerpt: excerpt ? excerpt.trim() : null,
+      featured_image: imageUrl,
       author_id: admin.id,
       status: status || 'draft'
     });
 
-    logger.info(`Article created by ${req.user.email}: ${title}`);
+    logger.info(`Article created by ${req.user.email}: ${title} (ID: ${newArticle.id})`);
     req.session.success = 'Artikel berhasil dibuat';
     res.redirect('/admin/articles');
   } catch (error) {
     logger.error('Create article error:', error);
-    req.session.error = 'Gagal membuat artikel';
+    req.session.error = 'Gagal membuat artikel: ' + error.message;
     res.redirect('/admin/articles/create');
   }
 };
@@ -116,8 +130,14 @@ const showEditArticle = async (req, res) => {
       article,
       isEdit: true,
       currentUser: req.user,
-      user: req.user
+      user: req.user,
+      success: req.session.success,
+      error: req.session.error
     });
+    
+    // Clear messages after displaying
+    delete req.session.success;
+    delete req.session.error;
   } catch (error) {
     logger.error('Show edit article error:', error);
     req.session.error = 'Gagal memuat artikel';
@@ -172,22 +192,35 @@ const updateArticle = async (req, res) => {
       }
     }
 
+    // Handle image upload
+    let imageUrl = article.featured_image;
+    if (req.file) {
+      imageUrl = '/uploads/articles/' + req.file.filename;
+      logger.info(`Image updated for article ${id}: ${imageUrl}`);
+    }
+
     // Update article
-    await Article.update(id, {
+    const updateData = {
       title: title.trim(),
       slug,
       content: content.trim(),
       excerpt: excerpt ? excerpt.trim() : null,
+      featured_image: imageUrl,
       status: status || 'draft'
-    });
+    };
+
+    logger.info(`Updating article ${id} with data:`, updateData);
+    
+    await Article.update(id, updateData);
 
     logger.info(`Article updated by ${req.user.email}: ${title}`);
     req.session.success = 'Artikel berhasil diperbarui';
     res.redirect('/admin/articles');
   } catch (error) {
     logger.error('Update article error:', error);
-    req.session.error = 'Gagal memperbarui artikel';
-    res.redirect('/admin/articles');
+    logger.error('Error stack:', error.stack);
+    req.session.error = 'Gagal memperbarui artikel: ' + error.message;
+    res.redirect('/admin/articles/' + req.params.id + '/edit');
   }
 };
 

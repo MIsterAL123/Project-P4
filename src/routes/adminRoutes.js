@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { protect } = require('../middlewares/authMiddleware');
 const { isAdmin } = require('../middlewares/roleMiddleware');
+const { uploadArticleImage } = require('../config/upload');
 const dashboardController = require('../controllers/dashboardController');
 const adminController = require('../controllers/adminController');
 const guruController = require('../controllers/guruController');
@@ -47,9 +48,25 @@ router.post('/pendaftaran/:id/delete', adminController.deletePendaftaran);
 // Articles (Artikel)
 router.get('/articles', articleController.showArticlesPage);
 router.get('/articles/create', articleController.showCreateArticle);
-router.post('/articles/create', articleController.createArticle);
+router.post('/articles/create', (req, res, next) => {
+  uploadArticleImage.single('image')(req, res, (err) => {
+    if (err) {
+      req.session.error = err.message || 'Gagal mengupload gambar';
+      return res.redirect('/admin/articles/create');
+    }
+    next();
+  });
+}, articleController.createArticle);
 router.get('/articles/:id/edit', articleController.showEditArticle);
-router.post('/articles/:id/update', articleController.updateArticle);
+router.post('/articles/:id/update', (req, res, next) => {
+  uploadArticleImage.single('image')(req, res, (err) => {
+    if (err) {
+      req.session.error = err.message || 'Gagal mengupload gambar';
+      return res.redirect('/admin/articles/' + req.params.id + '/edit');
+    }
+    next();
+  });
+}, articleController.updateArticle);
 router.post('/articles/:id/delete', articleController.deleteArticle);
 
 // Reports

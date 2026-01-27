@@ -9,8 +9,8 @@
         </nav>
 
         <article class="bg-white rounded-lg shadow overflow-hidden">
-            <% if (article.image_url) { %>
-            <img src="<%= article.image_url %>" alt="<%= article.title %>" class="w-full h-64 md:h-96 object-cover">
+            <% if (article.featured_image || article.image_url) { %>
+            <img src="<%= article.featured_image || article.image_url %>" alt="<%= article.title %>" class="w-full h-64 md:h-96 object-cover">
             <% } %>
             
             <div class="p-6 md:p-8">
