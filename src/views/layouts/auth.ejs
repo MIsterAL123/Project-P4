@@ -17,19 +17,6 @@
 <body class="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 min-h-screen">
     <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full space-y-8">
-            <!-- Logo and Header -->
-            <div class="text-center">
-                <a href="/" class="inline-block">
-                    <div class="flex items-center justify-center space-x-2">
-                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-                            <span class="text-blue-600 font-bold text-xl">P4</span>
-                        </div>
-                        <span class="text-white font-bold text-2xl">Jakarta</span>
-                    </div>
-                </a>
-                <p class="mt-3 text-blue-200 text-sm">Pusat Pelatihan dan Pengembangan Pendidikan</p>
-            </div>
-
             <!-- Flash Messages -->
             <% if (typeof success !== 'undefined' && success) { %>
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative" role="alert">
@@ -45,15 +32,6 @@
             <!-- Main Content Card -->
             <div class="bg-white rounded-2xl shadow-2xl p-8">
                 <%- body %>
-            </div>
-
-            <!-- Footer Links -->
-            <div class="text-center text-sm text-blue-200">
-                <a href="/" class="hover:text-white transition-colors">Beranda</a>
-                <span class="mx-2">|</span>
-                <a href="/about" class="hover:text-white transition-colors">Tentang Kami</a>
-                <span class="mx-2">|</span>
-                <a href="/contact" class="hover:text-white transition-colors">Kontak</a>
             </div>
 
             <p class="text-center text-xs text-blue-300">
