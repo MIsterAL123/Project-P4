@@ -16,14 +16,18 @@ router.get('/profile', guruController.showProfile);
 router.post('/profile/update', guruController.updateProfile);
 router.post('/change-password', guruController.changePassword);
 
-// Students
-router.get('/students', guruController.showStudents);
-
+// Upload config for surat tugas
 const upload = require('../config/upload');
 
-// Materials
-router.get('/materials', guruController.showMaterials);
-router.post('/materials/upload', upload.single('file'), guruController.uploadMaterial);
-router.post('/materials/:id/delete', guruController.deleteMaterial);
+// Daftar Pelatihan P4
+router.get('/daftar-pelatihan', guruController.showDaftarPelatihan);
+router.post('/daftar-pelatihan', upload.single('surat_tugas'), guruController.daftarPelatihan);
+
+// Status Pendaftaran
+router.get('/status-pendaftaran', guruController.showStatusPendaftaran);
+router.post('/pendaftaran/:id/cancel', guruController.cancelPendaftaran);
+
+// Riwayat Pelatihan
+router.get('/riwayat-pelatihan', guruController.showRiwayatPelatihan);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-// Manajemen kuota P4
+// Manajemen kuota P4 (Updated for pelatihan)
 const KuotaP4 = require('../models/KuotaP4');
 const PendaftaranP4 = require('../models/PendaftaranP4');
 const logger = require('../utils/logger');
@@ -11,7 +11,7 @@ const showManageKuotaPage = async (req, res) => {
     const activeKuota = await KuotaP4.findActiveKuota();
 
     res.render('admin/manage-kuota', {
-      title: 'Kelola Kuota - P4 Jakarta',
+      title: 'Kelola Kuota Pelatihan - P4 Jakarta',
       layout: 'layouts/admin',
       kuotaList,
       activeKuota,
@@ -29,28 +29,36 @@ const showManageKuotaPage = async (req, res) => {
 // @route   POST /admin/kuota/create
 const createKuota = async (req, res) => {
   try {
-    const { tahun_ajaran, max_peserta } = req.body;
+    const { 
+      judul_pelatihan, 
+      tahun_ajaran, 
+      waktu_pelatihan,
+      tanggal_mulai,
+      tanggal_selesai,
+      max_peserta,
+      target_peserta,
+      deskripsi
+    } = req.body;
 
     // Validation
-    if (!tahun_ajaran || tahun_ajaran.trim() === '') {
-      req.session.error = 'Tahun ajaran wajib diisi';
-      return res.redirect('/admin/manage-kuota');
-    }
-
-    // Check if tahun ajaran exists
-    const existing = await KuotaP4.findByTahunAjaran(tahun_ajaran);
-    if (existing) {
-      req.session.error = 'Tahun ajaran sudah ada';
+    if (!judul_pelatihan || judul_pelatihan.trim() === '') {
+      req.session.error = 'Judul pelatihan wajib diisi';
       return res.redirect('/admin/manage-kuota');
     }
 
     await KuotaP4.create({
-      tahun_ajaran,
-      max_peserta: parseInt(max_peserta) || 50
+      judul_pelatihan: judul_pelatihan.trim(),
+      tahun_ajaran: tahun_ajaran || new Date().getFullYear().toString(),
+      waktu_pelatihan: waktu_pelatihan || null,
+      tanggal_mulai: tanggal_mulai || null,
+      tanggal_selesai: tanggal_selesai || null,
+      max_peserta: parseInt(max_peserta) || 50,
+      target_peserta: target_peserta || 'semua',
+      deskripsi: deskripsi || null
     });
 
-    logger.info(`New kuota created by ${req.user.email}: ${tahun_ajaran}`);
-    req.session.success = 'Kuota baru berhasil dibuat';
+    logger.info(`New kuota created by ${req.user.email}: ${judul_pelatihan}`);
+    req.session.success = 'Kuota pelatihan baru berhasil dibuat';
     res.redirect('/admin/manage-kuota');
   } catch (error) {
     logger.error('Create kuota error:', error);
@@ -63,7 +71,17 @@ const createKuota = async (req, res) => {
 // @route   POST /admin/kuota/update
 const updateKuota = async (req, res) => {
   try {
-    const { id, max_peserta, tahun_ajaran } = req.body;
+    const { 
+      id, 
+      judul_pelatihan,
+      tahun_ajaran,
+      waktu_pelatihan,
+      tanggal_mulai,
+      tanggal_selesai,
+      max_peserta, 
+      target_peserta,
+      deskripsi
+    } = req.body;
     let { status } = req.body;
 
     const kuota = await KuotaP4.findById(id);
@@ -72,19 +90,10 @@ const updateKuota = async (req, res) => {
       return res.redirect('/admin/manage-kuota');
     }
 
-    // Validate tahun_ajaran
-    if (!tahun_ajaran || tahun_ajaran.trim() === '') {
-      req.session.error = 'Tahun ajaran wajib diisi';
+    // Validate judul_pelatihan
+    if (!judul_pelatihan || judul_pelatihan.trim() === '') {
+      req.session.error = 'Judul pelatihan wajib diisi';
       return res.redirect('/admin/manage-kuota');
-    }
-
-    // Check if tahun_ajaran conflicts with other records
-    if (tahun_ajaran !== kuota.tahun_ajaran) {
-      const exists = await KuotaP4.findByTahunAjaran(tahun_ajaran);
-      if (exists) {
-        req.session.error = 'Tahun ajaran sudah ada';
-        return res.redirect('/admin/manage-kuota');
-      }
     }
 
     // Validate max_peserta
@@ -95,8 +104,9 @@ const updateKuota = async (req, res) => {
     }
 
     // Cannot set max below current registered count
-    if (newMax < kuota.peserta_terdaftar) {
-      req.session.error = `Tidak bisa mengubah kuota di bawah jumlah peserta terdaftar (${kuota.peserta_terdaftar})`;
+    const totalRegistered = (kuota.peserta_terdaftar || 0) + (kuota.guru_terdaftar || 0);
+    if (newMax < totalRegistered) {
+      req.session.error = `Tidak bisa mengubah kuota di bawah jumlah peserta terdaftar (${totalRegistered})`;
       return res.redirect('/admin/manage-kuota');
     }
 
@@ -105,7 +115,17 @@ const updateKuota = async (req, res) => {
       status = kuota.status;
     }
 
-    await KuotaP4.update(id, { tahun_ajaran: tahun_ajaran.trim(), max_peserta: newMax, status });
+    await KuotaP4.update(id, { 
+      judul_pelatihan: judul_pelatihan.trim(),
+      tahun_ajaran: tahun_ajaran || kuota.tahun_ajaran,
+      waktu_pelatihan: waktu_pelatihan || null,
+      tanggal_mulai: tanggal_mulai || null,
+      tanggal_selesai: tanggal_selesai || null,
+      max_peserta: newMax, 
+      target_peserta: target_peserta || 'semua',
+      deskripsi: deskripsi || null,
+      status 
+    });
 
     logger.info(`Kuota updated by ${req.user.email}: ID ${id}`);
     req.session.success = 'Kuota berhasil diperbarui';

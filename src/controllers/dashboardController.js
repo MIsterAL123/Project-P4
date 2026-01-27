@@ -4,6 +4,7 @@ const Guru = require('../models/Guru');
 const Peserta = require('../models/Peserta');
 const KuotaP4 = require('../models/KuotaP4');
 const PendaftaranP4 = require('../models/PendaftaranP4');
+const PendaftaranGuruP4 = require('../models/PendaftaranGuruP4');
 const logger = require('../utils/logger');
 
 // @desc    Show admin dashboard
@@ -17,25 +18,31 @@ const showAdminDashboard = async (req, res) => {
       totalGuruActive,
       totalGuruRejected,
       totalPeserta,
-      activeKuota
+      kuotaList
     ] = await Promise.all([
       Admin.count(),
       Guru.countByStatus('pending'),
       Guru.countByStatus('active'),
       Guru.countByStatus('reject'),
       Peserta.count(),
-      KuotaP4.findActiveKuota()
+      KuotaP4.findAllActive()
     ]);
 
     // Get recent pending guru for quick action
     const pendingGurus = await Guru.findByStatus('pending');
     const recentPendingGurus = pendingGurus.slice(0, 5);
 
-    // Get recent peserta registrations
+    // Get recent peserta registrations from all active kuota
     let recentRegistrations = [];
-    if (activeKuota) {
-      const allRegistrations = await PendaftaranP4.findByKuotaId(activeKuota.id);
-      recentRegistrations = allRegistrations.slice(0, 5);
+    if (kuotaList && kuotaList.length > 0) {
+      for (const kuota of kuotaList) {
+        const registrations = await PendaftaranP4.findByKuotaId(kuota.id);
+        recentRegistrations = recentRegistrations.concat(registrations);
+      }
+      // Sort by created_at and take top 5
+      recentRegistrations = recentRegistrations
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .slice(0, 5);
     }
 
     res.render('admin/dashboard', {
@@ -50,7 +57,7 @@ const showAdminDashboard = async (req, res) => {
         totalPeserta,
         pendingGuru: totalGuruPending
       },
-      kuotaAktif: activeKuota,
+      kuotaList: kuotaList || [],
       pendingGurus: recentPendingGurus,
       recentPendaftaran: recentRegistrations,
       user: req.user,
@@ -67,7 +74,7 @@ const showAdminDashboard = async (req, res) => {
         totalPeserta: 0,
         pendingGuru: 0
       },
-      kuotaAktif: null,
+      kuotaList: [],
       pendingGurus: [],
       recentPendaftaran: [],
       user: req.user,
@@ -96,18 +103,37 @@ const showReportsPage = async (req, res) => {
       KuotaP4.findAll()
     ]);
 
-    // Get registration stats per kuota
+    // Get registration stats per kuota for peserta and guru
     const kuotaStats = await Promise.all(
       kuotaList.map(async (kuota) => {
-        const registered = await PendaftaranP4.countByStatus('registered', kuota.id);
-        const cancelled = await PendaftaranP4.countByStatus('cancelled', kuota.id);
+        const pesertaRegistered = await PendaftaranP4.countByStatus('registered', kuota.id);
+        const pesertaPending = await PendaftaranP4.countByStatus('pending', kuota.id);
+        const pesertaCancelled = await PendaftaranP4.countByStatus('cancelled', kuota.id);
+        
+        // Guru registrations
+        let guruRegistered = 0;
+        let guruPending = 0;
+        try {
+          guruRegistered = await PendaftaranGuruP4.countByKuotaAndStatus(kuota.id, 'approved');
+          guruPending = await PendaftaranGuruP4.countByKuotaAndStatus(kuota.id, 'pending');
+        } catch (e) {
+          // Table might not exist yet
+        }
+        
         return {
           ...kuota,
-          registered,
-          cancelled
+          pesertaRegistered,
+          pesertaPending,
+          pesertaCancelled,
+          guruRegistered,
+          guruPending
         };
       })
     );
+
+    // Calculate totals
+    const totalRegistrations = kuotaStats.reduce((sum, k) => sum + k.pesertaRegistered + k.guruRegistered, 0);
+    const totalPendingRegistrations = kuotaStats.reduce((sum, k) => sum + k.pesertaPending + k.guruPending, 0);
 
     res.render('admin/reports', {
       title: 'Laporan - P4 Jakarta',
@@ -117,7 +143,10 @@ const showReportsPage = async (req, res) => {
         totalGuruPending,
         totalGuruActive,
         totalGuruRejected,
-        totalPeserta
+        totalGuru: totalGuruPending + totalGuruActive + totalGuruRejected,
+        totalPeserta,
+        totalRegistrations,
+        totalPendingRegistrations
       },
       kuotaStats,
       currentUser: req.user

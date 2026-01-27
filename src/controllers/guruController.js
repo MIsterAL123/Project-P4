@@ -2,7 +2,11 @@
 const Guru = require('../models/Guru');
 const Admin = require('../models/Admin');
 const User = require('../models/User');
+const KuotaP4 = require('../models/KuotaP4');
+const PendaftaranGuruP4 = require('../models/PendaftaranGuruP4');
 const logger = require('../utils/logger');
+const path = require('path');
+const fs = require('fs');
 
 // =====================================================
 // ADMIN: Guru Approval Management
@@ -119,11 +123,21 @@ const rejectGuru = async (req, res) => {
 const showDashboard = async (req, res) => {
   try {
     const guru = await Guru.findByUserId(req.user.id);
+    
+    // Get guru's recent registrations
+    const pendaftaranList = await PendaftaranGuruP4.findByGuru(guru.id);
+    const recentPendaftaran = pendaftaranList.slice(0, 5);
+    
+    // Count registrations this year
+    const registrationsThisYear = await PendaftaranGuruP4.countRegistrationsThisYear(guru.id);
 
     res.render('guru/dashboard', {
-      title: 'Dashboard Guru - P4 Jakarta',
+      title: 'Dashboard Pendidik - P4 Jakarta',
       layout: 'layouts/admin',
       guru,
+      recentPendaftaran,
+      registrationsThisYear,
+      maxRegistrations: 3,
       currentUser: req.user
     });
   } catch (error) {
@@ -140,7 +154,7 @@ const showProfile = async (req, res) => {
     const guru = await Guru.findByUserId(req.user.id);
 
     res.render('guru/profile', {
-      title: 'Profil Guru - P4 Jakarta',
+      title: 'Profil Pendidik - P4 Jakarta',
       layout: 'layouts/admin',
       guru,
       currentUser: req.user
@@ -152,101 +166,195 @@ const showProfile = async (req, res) => {
   }
 };
 
-// @desc    Show materials page
-// @route   GET /guru/materials
-const showMaterials = async (req, res) => {
+// @desc    Show daftar pelatihan page
+// @route   GET /guru/daftar-pelatihan
+const showDaftarPelatihan = async (req, res) => {
   try {
     const guru = await Guru.findByUserId(req.user.id);
-    const Material = require('../models/Material');
-    const materials = await Material.findByGuru(guru.id);
+    
+    // Check registration count this year
+    const registrationsThisYear = await PendaftaranGuruP4.countRegistrationsThisYear(guru.id);
+    const canRegister = registrationsThisYear < 3;
+    
+    // Get available pelatihan (target guru or semua)
+    const kuotaList = await KuotaP4.findByTarget(['guru', 'semua']);
+    
+    // Filter out already registered
+    const guruRegistrations = await PendaftaranGuruP4.findByGuru(guru.id);
+    const registeredKuotaIds = guruRegistrations
+      .filter(r => ['pending', 'approved'].includes(r.status))
+      .map(r => r.kuota_id);
+    
+    const availableKuota = kuotaList.filter(k => !registeredKuotaIds.includes(k.id));
 
-    res.render('guru/materials', {
-      title: 'Materi Pelatihan - P4 Jakarta',
+    res.render('guru/daftar-pelatihan', {
+      title: 'Daftar Pelatihan - P4 Jakarta',
       layout: 'layouts/admin',
-      user: req.user,
-      currentUser: req.user,
       guru,
-      materials
+      kuotaList: availableKuota,
+      registrationsThisYear,
+      canRegister,
+      maxRegistrations: 3,
+      currentUser: req.user
     });
   } catch (error) {
-    logger.error('Show materials error:', error);
-    req.session.error = 'Gagal memuat materi';
+    logger.error('Show daftar pelatihan error:', error);
+    req.session.error = 'Gagal memuat daftar pelatihan';
     res.redirect('/guru/dashboard');
   }
 };
 
-// @desc    Upload material
-// @route   POST /guru/materials/upload
-const uploadMaterial = async (req, res) => {
+// @desc    Process pelatihan registration
+// @route   POST /guru/daftar-pelatihan
+const daftarPelatihan = async (req, res) => {
   try {
-    const { title, description } = req.body;
-    const file = req.file;
+    const { kuota_id } = req.body;
     const guru = await Guru.findByUserId(req.user.id);
-    const Material = require('../models/Material');
-
-    const errors = [];
-    if (!title || title.trim().length < 3) errors.push('Judul minimal 3 karakter');
-    if (!file) errors.push('File materi wajib diunggah');
-
-    if (errors.length > 0) {
-      req.session.error = errors.join('; ');
-      return res.redirect('/guru/materials');
+    
+    // Check registration limit
+    const registrationsThisYear = await PendaftaranGuruP4.countRegistrationsThisYear(guru.id);
+    if (registrationsThisYear >= 3) {
+      req.session.error = 'Anda sudah mencapai batas maksimal pendaftaran (3x per tahun)';
+      return res.redirect('/guru/daftar-pelatihan');
     }
-
-    const filePath = `/uploads/materials/${file.filename}`;
-    const fileType = file.originalname.split('.').pop().toLowerCase();
-
-    await Material.create({
+    
+    // Check if kuota exists and valid for guru
+    const kuota = await KuotaP4.findById(kuota_id);
+    if (!kuota) {
+      req.session.error = 'Pelatihan tidak ditemukan';
+      return res.redirect('/guru/daftar-pelatihan');
+    }
+    
+    if (!['guru', 'semua'].includes(kuota.target_peserta)) {
+      req.session.error = 'Pelatihan ini tidak tersedia untuk pendidik';
+      return res.redirect('/guru/daftar-pelatihan');
+    }
+    
+    // Check if already registered
+    const existingReg = await PendaftaranGuruP4.findByGuruAndKuota(guru.id, kuota_id);
+    if (existingReg && ['pending', 'approved'].includes(existingReg.status)) {
+      req.session.error = 'Anda sudah terdaftar pada pelatihan ini';
+      return res.redirect('/guru/daftar-pelatihan');
+    }
+    
+    // Check surat tugas file
+    if (!req.file) {
+      req.session.error = 'Surat tugas wajib diunggah';
+      return res.redirect('/guru/daftar-pelatihan');
+    }
+    
+    // Create registration
+    const pendaftaranData = {
       guru_id: guru.id,
-      title: title.trim(),
-      description: description || null,
-      file_path: file.filename,
-      file_type: fileType
-    });
-
-    logger.info(`Material uploaded by guru ${guru.id}: ${file.filename}`);
-    req.session.success = 'Materi berhasil diunggah';
-    res.redirect('/guru/materials');
+      kuota_id: kuota_id,
+      surat_tugas: req.file.filename
+    };
+    
+    await PendaftaranGuruP4.create(pendaftaranData);
+    
+    logger.info(`Guru ${guru.id} registered for pelatihan ${kuota_id}`);
+    req.session.success = 'Pendaftaran pelatihan berhasil diajukan';
+    res.redirect('/guru/status-pendaftaran');
   } catch (error) {
-    logger.error('Upload material error:', error);
-    req.session.error = 'Gagal mengunggah materi';
-    res.redirect('/guru/materials');
+    logger.error('Daftar pelatihan error:', error);
+    req.session.error = 'Gagal mendaftar pelatihan';
+    res.redirect('/guru/daftar-pelatihan');
   }
 };
 
-// @desc    Delete material
-// @route   POST /guru/materials/:id/delete
-const deleteMaterial = async (req, res) => {
+// @desc    Show status pendaftaran
+// @route   GET /guru/status-pendaftaran
+const showStatusPendaftaran = async (req, res) => {
+  try {
+    const guru = await Guru.findByUserId(req.user.id);
+    const pendaftaranList = await PendaftaranGuruP4.findByGuru(guru.id);
+    
+    // Filter active registrations (pending, approved)
+    const activePendaftaran = pendaftaranList.filter(p => 
+      ['pending', 'approved'].includes(p.status)
+    );
+
+    res.render('guru/status-pendaftaran', {
+      title: 'Status Pendaftaran - P4 Jakarta',
+      layout: 'layouts/admin',
+      guru,
+      pendaftaranList: activePendaftaran,
+      currentUser: req.user
+    });
+  } catch (error) {
+    logger.error('Show status pendaftaran error:', error);
+    req.session.error = 'Gagal memuat status pendaftaran';
+    res.redirect('/guru/dashboard');
+  }
+};
+
+// @desc    Cancel pendaftaran
+// @route   POST /guru/pendaftaran/:id/cancel
+const cancelPendaftaran = async (req, res) => {
   try {
     const { id } = req.params;
-    const Material = require('../models/Material');
-    const material = await Material.findById(id);
     const guru = await Guru.findByUserId(req.user.id);
-
-    if (!material) {
-      req.session.error = 'Materi tidak ditemukan';
-      return res.redirect('/guru/materials');
+    
+    const pendaftaran = await PendaftaranGuruP4.findById(id);
+    
+    if (!pendaftaran) {
+      req.session.error = 'Pendaftaran tidak ditemukan';
+      return res.redirect('/guru/status-pendaftaran');
     }
-
-    if (material.guru_id !== guru.id) {
-      req.session.error = 'Anda tidak berhak menghapus materi ini';
-      return res.redirect('/guru/materials');
+    
+    if (pendaftaran.guru_id !== guru.id) {
+      req.session.error = 'Anda tidak berhak membatalkan pendaftaran ini';
+      return res.redirect('/guru/status-pendaftaran');
     }
-
-    // Remove file from disk
-    const fs = require('fs');
-    const path = require('path');
-    const filePath = path.join(__dirname, '..', '..', 'public', 'uploads', 'materials', material.file_path);
-    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-
-    await Material.delete(id);
-    logger.info(`Material deleted by guru ${guru.id}: ${material.file_path}`);
-    req.session.success = 'Materi berhasil dihapus';
-    res.redirect('/guru/materials');
+    
+    if (pendaftaran.status !== 'pending') {
+      req.session.error = 'Hanya pendaftaran dengan status pending yang dapat dibatalkan';
+      return res.redirect('/guru/status-pendaftaran');
+    }
+    
+    await PendaftaranGuruP4.updateStatus(id, 'cancelled');
+    
+    // Delete surat tugas file
+    if (pendaftaran.surat_tugas) {
+      const filePath = path.join(__dirname, '..', '..', 'public', 'uploads', 'surat_tugas', pendaftaran.surat_tugas);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+    
+    logger.info(`Pendaftaran ${id} cancelled by guru ${guru.id}`);
+    req.session.success = 'Pendaftaran berhasil dibatalkan';
+    res.redirect('/guru/status-pendaftaran');
   } catch (error) {
-    logger.error('Delete material error:', error);
-    req.session.error = 'Gagal menghapus materi';
-    res.redirect('/guru/materials');
+    logger.error('Cancel pendaftaran error:', error);
+    req.session.error = 'Gagal membatalkan pendaftaran';
+    res.redirect('/guru/status-pendaftaran');
+  }
+};
+
+// @desc    Show riwayat pelatihan
+// @route   GET /guru/riwayat-pelatihan
+const showRiwayatPelatihan = async (req, res) => {
+  try {
+    const guru = await Guru.findByUserId(req.user.id);
+    const pendaftaranList = await PendaftaranGuruP4.findByGuru(guru.id);
+    
+    // Filter completed/rejected registrations
+    const riwayatPendaftaran = pendaftaranList.filter(p => 
+      ['completed', 'rejected', 'cancelled'].includes(p.status)
+    );
+
+    res.render('guru/riwayat-pelatihan', {
+      title: 'Riwayat Pelatihan - P4 Jakarta',
+      layout: 'layouts/admin',
+      guru,
+      riwayatList: riwayatPendaftaran,
+      currentUser: req.user
+    });
+  } catch (error) {
+    logger.error('Show riwayat pelatihan error:', error);
+    req.session.error = 'Gagal memuat riwayat pelatihan';
+    res.redirect('/guru/dashboard');
   }
 };
 
@@ -287,7 +395,7 @@ const updateProfile = async (req, res) => {
 
     if (errors.length > 0) {
       return res.render('guru/profile', {
-        title: 'Profil Guru - P4 Jakarta',
+        title: 'Profil Pendidik - P4 Jakarta',
         layout: 'layouts/admin',
         guru,
         currentUser: req.user,
@@ -340,7 +448,7 @@ const changePassword = async (req, res) => {
     if (errors.length > 0) {
       const guru = await Guru.findByUserId(req.user.id);
       return res.render('guru/profile', {
-        title: 'Profil Guru - P4 Jakarta',
+        title: 'Profil Pendidik - P4 Jakarta',
         layout: 'layouts/admin',
         guru,
         currentUser: req.user,
@@ -361,26 +469,6 @@ const changePassword = async (req, res) => {
   }
 };
 
-// @desc    Show students list (peserta)
-// @route   GET /guru/students
-const showStudents = async (req, res) => {
-  try {
-    const Peserta = require('../models/Peserta');
-    const pesertaList = await Peserta.findAllWithPendaftaran();
-
-    res.render('guru/students', {
-      title: 'Daftar Peserta - P4 Jakarta',
-      layout: 'layouts/admin',
-      students: pesertaList,
-      currentUser: req.user
-    });
-  } catch (error) {
-    logger.error('Show students error:', error);
-    req.session.error = 'Gagal memuat daftar peserta';
-    res.redirect('/guru/dashboard');
-  }
-};
-
 module.exports = {
   // Admin functions
   showApproveGuruPage,
@@ -389,10 +477,11 @@ module.exports = {
   // Guru functions
   showDashboard,
   showProfile,
-  showMaterials,
-  uploadMaterial,
-  deleteMaterial,
+  showDaftarPelatihan,
+  daftarPelatihan,
+  showStatusPendaftaran,
+  cancelPendaftaran,
+  showRiwayatPelatihan,
   updateProfile,
-  changePassword,
-  showStudents
+  changePassword
 };

@@ -125,3 +125,11 @@
 2026-01-22T00:37:57.329Z [ERROR]: Daftar P4 error: Anda sudah terdaftar pada periode ini
 2026-01-22T00:38:15.885Z [ERROR]: Daftar P4 error: Anda sudah terdaftar pada periode ini
 2026-01-22T00:49:55.884Z [ERROR]: Daftar P4 error: Anda sudah terdaftar pada periode ini
+2026-01-23T04:11:22.963Z [ERROR]: Database query error: Incorrect arguments to mysqld_stmt_execute
+2026-01-23T04:12:21.997Z [ERROR]: Database query error: Incorrect arguments to mysqld_stmt_execute
+2026-01-23T04:14:43.010Z [ERROR]: Database query error: Unknown column 'a.no_hp' in 'field list'
+2026-01-23T04:14:43.011Z [ERROR]: Show manage admin error: Unknown column 'a.no_hp' in 'field list'
+2026-01-23T04:16:15.808Z [ERROR]: Database query error: Incorrect arguments to mysqld_stmt_execute
+2026-01-23T04:16:18.404Z [ERROR]: Database query error: Incorrect arguments to mysqld_stmt_execute
+2026-01-23T04:17:38.154Z [ERROR]: Daftar pelatihan error: Anda sudah terdaftar pada pelatihan ini
+2026-01-23T04:21:26.123Z [ERROR]: Database query error: Incorrect arguments to mysqld_stmt_execute

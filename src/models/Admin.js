@@ -29,21 +29,27 @@ class Admin {
 
   // Create admin (by another admin)
   static async create(userData, addedByAdminId = null) {
+    const { nama, email, password, no_hp, is_active } = userData;
+    
     // First create the user
     const user = await User.create({
-      ...userData,
+      nama,
+      email,
+      password,
       role: 'admin'
     });
 
-    // Then create admin record
-    const sql = 'INSERT INTO admin (user_id, added_by) VALUES (?, ?)';
-    const result = await query(sql, [user.id, addedByAdminId]);
+    // Then create admin record with additional fields
+    const sql = 'INSERT INTO admin (user_id, added_by, no_hp, is_active) VALUES (?, ?, ?, ?)';
+    const result = await query(sql, [user.id, addedByAdminId, no_hp || null, is_active !== undefined ? is_active : 1]);
 
     return {
       id: result.insertId,
       user_id: user.id,
       nama: user.nama,
       email: user.email,
+      no_hp: no_hp || null,
+      is_active: is_active !== undefined ? is_active : 1,
       added_by: addedByAdminId
     };
   }
@@ -51,7 +57,7 @@ class Admin {
   // Get all admins
   static async findAll() {
     const sql = `
-      SELECT a.id, a.user_id, a.added_by, a.created_at,
+      SELECT a.id, a.user_id, a.added_by, a.no_hp, a.is_active, a.created_at,
              u.nama, u.email,
              adder.id as adder_admin_id,
              adder_user.nama as added_by_name
@@ -73,13 +79,35 @@ class Admin {
 
   // Update admin
   static async update(id, adminData) {
-    const { nama, email } = adminData;
+    const { nama, email, no_hp, is_active } = adminData;
     const admin = await this.findById(id);
     
     if (!admin) return null;
 
     // Update user data
     await User.update(admin.user_id, { nama, email });
+    
+    // Update admin specific data if provided
+    if (no_hp !== undefined || is_active !== undefined) {
+      let sql = 'UPDATE admin SET';
+      const params = [];
+      const updates = [];
+      
+      if (no_hp !== undefined) {
+        updates.push(' no_hp = ?');
+        params.push(no_hp);
+      }
+      if (is_active !== undefined) {
+        updates.push(' is_active = ?');
+        params.push(is_active);
+      }
+      
+      if (updates.length > 0) {
+        sql += updates.join(',') + ' WHERE id = ?';
+        params.push(id);
+        await query(sql, params);
+      }
+    }
     
     return this.findById(id);
   }

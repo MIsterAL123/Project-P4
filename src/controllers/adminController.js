@@ -46,7 +46,7 @@ const showManageAdminPage = async (req, res) => {
 // @route   POST /admin/add-admin
 const addAdmin = async (req, res) => {
   try {
-    const { nama, email, password, confirm_password } = req.body;
+    const { nama, email, password, confirm_password, no_hp, is_active } = req.body;
 
     // Only Super Admin can add admins
     if (!isSuperAdmin(req)) {
@@ -57,7 +57,7 @@ const addAdmin = async (req, res) => {
     // Validation
     const errors = [];
 
-    if (!nama || nama.length < 3) {
+    if (!nama || nama.trim().length < 3) {
       errors.push('Nama minimal 3 karakter');
     }
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
@@ -67,7 +67,7 @@ const addAdmin = async (req, res) => {
       errors.push('Password minimal 8 karakter');
     }
     if (password !== confirm_password) {
-      errors.push('Password tidak cocok');
+      errors.push('Konfirmasi password tidak cocok');
     }
 
     // Check if email exists
@@ -82,26 +82,31 @@ const addAdmin = async (req, res) => {
         layout: 'layouts/admin',
         admins,
         currentUser: req.user,
+        user: req.user,
+        isSuper: true,
         errors,
-        formData: { nama, email, no_hp: req.body.no_hp, is_active: req.body.is_active }
+        formData: { nama, email, no_hp, is_active }
       });
     }
 
     // Get current admin id
     const currentAdmin = await Admin.findByUserId(req.user.id);
 
-    // Create new admin (include phone and active flag)
-    const no_hp = req.body.no_hp || null;
-    const is_active = typeof req.body.is_active !== 'undefined' ? (req.body.is_active === '1' ? 1 : 0) : 1;
-
-    await Admin.create({ nama, email, password, no_hp, is_active }, currentAdmin.id);
+    // Create new admin
+    await Admin.create({ 
+      nama: nama.trim(), 
+      email: email.trim(), 
+      password, 
+      no_hp: no_hp || null, 
+      is_active: is_active === '1' ? 1 : 0
+    }, currentAdmin ? currentAdmin.id : null);
 
     logger.info(`New admin added by ${req.user.email}: ${email}`);
     req.session.success = 'Admin baru berhasil ditambahkan';
     res.redirect('/admin/manage-admin');
   } catch (error) {
     logger.error('Add admin error:', error);
-    req.session.error = 'Gagal menambahkan admin';
+    req.session.error = 'Gagal menambahkan admin: ' + (error.message || 'Unknown error');
     res.redirect('/admin/manage-admin');
   }
 };
