@@ -1,16 +1,16 @@
-<nav class="navbar sticky top-0 z-50">
+<nav class="navbar bg-white shadow-sm border-b z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
             <!-- Logo -->
             <div class="flex items-center">
                 <a href="/" class="navbar-brand flex items-center">
-                    <img src="https://res.cloudinary.com/dr5pehdsw/image/upload/v1768981418/Logo_P4.jpg_lq3y9v.jpg" alt="Logo P4 Jakarta" class="h-12 ml-12 mr-2 object-contain">
-                    <span class="font-heading font-bold text-lg bg-gradient-to-r from-primary-700 via-primary-600 to-primary-500 bg-clip-text text-transparent">P4 Jakarta Timur</span>
+                    <img src="https://res.cloudinary.com/dr5pehdsw/image/upload/v1768981418/Logo_P4.jpg_lq3y9v.jpg" alt="Logo P4 Jakarta" class="h-10 mr-3 object-contain">
+                    <span class="font-heading font-bold text-base md:text-lg bg-gradient-to-r from-primary-700 via-primary-600 to-primary-500 bg-clip-text text-transparent">P4 Jakarta Timur</span>
                 </a>
             </div>
             
             <!-- Navigation Links -->
-            <div class="hidden md:flex items-center space-x-2">
+            <div class="hidden md:flex items-center space-x-8">
                 <a href="/" class="navbar-link">Beranda</a>
                 <a href="/about" class="navbar-link">Tentang</a>
                 <a href="/programs" class="navbar-link">Program</a>
@@ -19,7 +19,7 @@
             </div>
             
             <!-- Auth Buttons -->
-            <div class="flex items-center space-x-2">
+            <div class="hidden md:flex items-center space-x-2 md:space-x-3">
                 <% if (user) { %>
                     <!-- User Dropdown -->
                     <div class="relative group">
