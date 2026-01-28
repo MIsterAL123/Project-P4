@@ -559,3 +559,82 @@
         font-size: 3rem;
     }
 }
+
+/* ==============================================
+   FACILITY THUMB - ensure full-bleed images with aspect ratio
+   ============================================== */
+.facility-thumb {
+    position: relative;
+    width: 100%;
+    /* 16:9 aspect ratio */
+    padding-bottom: 56.25%;
+    background-color: #e5e7eb; /* fallback while loading */
+    overflow: hidden;
+}
+
+.facility-thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+}
+
+/* Make grid rows equal height */
+.facilities-grid {
+    grid-auto-rows: 1fr;
+}
+
+/* Make card fill full height and distribute content */
+.facility-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0; /* allow children to shrink properly */
+}
+
+.facility-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Ensure titles have consistent height to align descriptions */
+.facility-content h3 {
+    min-height: 3.2rem; /* roughly two lines at current font-size */
+}
+
+/* Subtle hover zoom for visual balance */
+.facility-thumb img {
+    transition: transform 300ms ease;
+}
+
+.group:hover .facility-thumb img {
+    transform: scale(1.03);
+}
+
+@media (min-width: 768px) {
+    .facility-thumb {
+        padding-bottom: 52%;
+    }
+}
+
+@media (min-width: 1280px) {
+    .facility-thumb {
+        padding-bottom: 48%;
+    }
+
+    .facility-thumb img {
+        object-position: center center;
+        transition: transform 300ms ease;
+    }
+
+    .group:hover .facility-thumb img {
+        transform: scale(1.03);
+    }
+}
