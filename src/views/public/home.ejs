@@ -128,8 +128,8 @@
                     <p class="text-xs text-gray-500 mb-2">
                         <%= new Date(article.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %>
                     </p>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                        <a href="/artikel/<%= article.slug %>" class="hover:text-primary-600"><%= article.title %></a>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-primary-600 transition-colors cursor-pointer">
+                        <%= article.title %>
                     </h3>
                     <p class="text-gray-600 text-sm line-clamp-3">
                         <%= article.content.replace(/<[^>]*>/g, '').substring(0, 150) %>...
