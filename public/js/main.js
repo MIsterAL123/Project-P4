@@ -195,5 +195,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Ensure facility images lazy-load in case attributes were missed
+    document.querySelectorAll('.facility-thumb img').forEach(img => {
+        if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
+    });
+
     console.log('P4 Jakarta - Ready');
 });
