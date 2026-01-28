@@ -6,8 +6,47 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileMenu = document.querySelector('[data-mobile-nav]');
     
     if (mobileMenuBtn && mobileMenu) {
+        const mobileMenuIcon = mobileMenuBtn.querySelector('i');
+
         mobileMenuBtn.addEventListener('click', function() {
             mobileMenu.classList.toggle('hidden');
+
+            // Toggle icon between bars and times
+            if (mobileMenuIcon) {
+                mobileMenuIcon.classList.toggle('fa-bars');
+                mobileMenuIcon.classList.toggle('fa-times');
+            }
+
+            // Update aria-expanded for accessibility
+            const expanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+            mobileMenuBtn.setAttribute('aria-expanded', (!expanded).toString());
+        });
+
+        // Close menu when a mobile link is clicked and reset icon
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    if (mobileMenuIcon) {
+                        mobileMenuIcon.classList.remove('fa-times');
+                        mobileMenuIcon.classList.add('fa-bars');
+                    }
+                    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+                if (mobileMenuIcon) {
+                    mobileMenuIcon.classList.remove('fa-times');
+                    mobileMenuIcon.classList.add('fa-bars');
+                }
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
         });
     }
 
