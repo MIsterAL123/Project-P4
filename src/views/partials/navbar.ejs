@@ -56,14 +56,14 @@
             </div>
             
             <!-- Mobile Menu Button -->
-            <button data-mobile-menu class="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none">
+            <button data-mobile-menu aria-expanded="false" aria-controls="mobile-nav" aria-label="Toggle navigation" class="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none">
                 <i class="fas fa-bars text-2xl"></i>
             </button>
         </div>
     </div>
 
     <!-- Mobile Menu (Hidden by default) -->
-    <div data-mobile-nav class="hidden md:hidden bg-white border-t border-gray-100 shadow-lg">
+    <div id="mobile-nav" data-mobile-nav class="hidden md:hidden bg-white border-t border-gray-100 shadow-lg">
         <div class="px-4 pt-2 pb-4 space-y-1">
             <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Beranda</a>
             <a href="/about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Tentang</a>
