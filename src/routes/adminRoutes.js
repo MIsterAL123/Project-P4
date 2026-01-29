@@ -69,7 +69,6 @@ router.post('/articles/:id/update', (req, res, next) => {
 }, articleController.updateArticle);
 router.post('/articles/:id/delete', articleController.deleteArticle);
 
-// Reports
-router.get('/reports', dashboardController.showReportsPage);
+// Reports (removed)
 
 module.exports = router;
