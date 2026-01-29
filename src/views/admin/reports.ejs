@@ -77,7 +77,56 @@
         <div class="p-5 border-b border-gray-100">
             <h3 class="text-lg font-semibold text-gray-900">Statistik Per Pelatihan</h3>
         </div>
-        <div class="overflow-x-auto">
+        
+        <!-- Mobile Card View -->
+        <div class="md:hidden divide-y divide-gray-100">
+            <% if (typeof kuotaStats !== 'undefined' && kuotaStats && kuotaStats.length > 0) { %>
+                <% kuotaStats.forEach(function(kuota) { %>
+                <div class="p-4 space-y-3">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-medium text-gray-900"><%= kuota.judul_pelatihan || 'Pelatihan ' + kuota.tahun_ajaran %></p>
+                            <p class="text-xs text-gray-500"><%= kuota.tahun_ajaran %></p>
+                        </div>
+                        <% if (kuota.status === 'open') { %>
+                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Buka</span>
+                        <% } else { %>
+                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">Tutup</span>
+                        <% } %>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-medium px-2 py-0.5 rounded bg-gray-100 text-gray-600 uppercase">Target: <%= kuota.target_peserta %></span>
+                        <span class="text-xs font-medium px-2 py-0.5 rounded bg-blue-50 text-blue-600">Kuota: <%= kuota.max_peserta %></span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div class="bg-gray-50 p-2 rounded">
+                            <p class="text-xs text-gray-500 mb-1">Peserta Didik</p>
+                            <div class="flex justify-between">
+                                <span class="text-green-600 font-medium"><%= kuota.pesertaRegistered || 0 %> Oke</span>
+                                <span class="text-yellow-600"><%= kuota.pesertaPending || 0 %> Pending</span>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-2 rounded">
+                            <p class="text-xs text-gray-500 mb-1">Pendidik (Guru)</p>
+                            <div class="flex justify-between">
+                                <span class="text-green-600 font-medium"><%= kuota.guruRegistered || 0 %> Oke</span>
+                                <span class="text-yellow-600"><%= kuota.guruPending || 0 %> Pending</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+            <% } else { %>
+                <div class="p-6 text-center text-gray-500">
+                    Belum ada data statistik pelatihan
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Desktop Table View -->
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
