@@ -287,7 +287,16 @@ async function refreshStats() {
 function printSection(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
+        const clone = section.cloneNode(true);
+        // Remove elements that shouldn't appear in print (marked .no-print)
+        clone.querySelectorAll('.no-print').forEach(el => el.remove());
+
         const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            alert('Tidak dapat membuka jendela cetak. Pastikan pop-up tidak diblokir.');
+            return;
+        }
+
         printWindow.document.write(`
             <html>
                 <head>
@@ -297,17 +306,28 @@ function printSection(sectionId) {
                         body { padding: 2rem; }
                         @media print {
                             body { padding: 0; }
+                            .no-print { display: none !important; }
                         }
                     </style>
                 </head>
                 <body>
-                    ${section.innerHTML}
+                    ${clone.innerHTML}
                 </body>
             </html>
         `);
         printWindow.document.close();
-        setTimeout(() => printWindow.print(), 500);
+        setTimeout(() => { printWindow.focus(); printWindow.print(); }, 500);
     }
 }
+
+// Register print button handler (CSP-friendly)
+document.addEventListener('DOMContentLoaded', function() {
+    const printBtn = document.getElementById('btn-print-report');
+    if (printBtn) {
+        printBtn.addEventListener('click', function() {
+            printSection('report-root');
+        });
+    }
+});
 
 console.log('Admin.js loaded');
