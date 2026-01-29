@@ -104,6 +104,8 @@ function createApp() {
         res.locals.currentPath = req.path || '';
         res.locals.success = req.session.success || null;
         res.locals.error = req.session.error || null;
+        // Global site logo URL (can be overridden by env SITE_LOGO_URL)
+        res.locals.siteLogoUrl = process.env.SITE_LOGO_URL || 'https://res.cloudinary.com/dr5pehdsw/image/upload/v1769584551/Logop4-removebg-preview_wzy2u4.png';
         delete req.session.success;
         delete req.session.error;
         next();

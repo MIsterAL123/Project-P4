@@ -83,8 +83,82 @@ const showAdminDashboard = async (req, res) => {
   }
 };
 
-// Reports page removed - functionality deleted
+// @desc    Show admin reports page
+// @route   GET /admin/reports
+const showReportsPage = async (req, res) => {
+  try {
+    const [
+      totalAdmin,
+      totalGuruPending,
+      totalGuruActive,
+      totalGuruRejected,
+      totalPeserta,
+      kuotaList
+    ] = await Promise.all([
+      Admin.count(),
+      Guru.countByStatus('pending'),
+      Guru.countByStatus('active'),
+      Guru.countByStatus('reject'),
+      Peserta.count(),
+      KuotaP4.findAll()
+    ]);
+
+    // Get registration stats per kuota for peserta and guru
+    const kuotaStats = await Promise.all(
+      kuotaList.map(async (kuota) => {
+        const pesertaRegistered = await PendaftaranP4.countByStatus('registered', kuota.id);
+        const pesertaPending = await PendaftaranP4.countByStatus('pending', kuota.id);
+        const pesertaCancelled = await PendaftaranP4.countByStatus('cancelled', kuota.id);
+        
+        // Guru registrations
+        let guruRegistered = 0;
+        let guruPending = 0;
+        try {
+          guruRegistered = await PendaftaranGuruP4.countByKuotaAndStatus(kuota.id, 'approved');
+          guruPending = await PendaftaranGuruP4.countByKuotaAndStatus(kuota.id, 'pending');
+        } catch (e) {
+          // Table might not exist yet
+        }
+        
+        return {
+          ...kuota,
+          pesertaRegistered,
+          pesertaPending,
+          pesertaCancelled,
+          guruRegistered,
+          guruPending
+        };
+      })
+    );
+
+    // Calculate totals
+    const totalRegistrations = kuotaStats.reduce((sum, k) => sum + k.pesertaRegistered + k.guruRegistered, 0);
+    const totalPendingRegistrations = kuotaStats.reduce((sum, k) => sum + k.pesertaPending + k.guruPending, 0);
+
+    res.render('admin/reports', {
+      title: 'Laporan - P4 Jakarta',
+      layout: 'layouts/admin',
+      stats: {
+        totalAdmin,
+        totalGuruPending,
+        totalGuruActive,
+        totalGuruRejected,
+        totalGuru: totalGuruPending + totalGuruActive + totalGuruRejected,
+        totalPeserta,
+        totalRegistrations,
+        totalPendingRegistrations
+      },
+      kuotaStats,
+      currentUser: req.user
+    });
+  } catch (error) {
+    logger.error('Show reports page error:', error);
+    req.session.error = 'Gagal memuat laporan';
+    res.redirect('/admin/dashboard');
+  }
+};
 
 module.exports = {
-  showAdminDashboard
+  showAdminDashboard,
+  showReportsPage
 };
