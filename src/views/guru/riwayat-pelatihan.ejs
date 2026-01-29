@@ -23,7 +23,7 @@
           <% riwayatList.forEach(function(riwayat) { %>
           <tr class="hover:bg-gray-50">
             <td class="px-6 py-4">
-              <div class="text-sm font-medium text-gray-900"><%= riwayat.judul_pelatihan || 'Pelatihan ' + riwayat.tahun_ajaran %></div>
+              <div class="text-sm font-medium text-gray-900 break-words"><%= riwayat.judul_pelatihan || 'Pelatihan ' + riwayat.tahun_ajaran %></div>
               <div class="text-sm text-gray-500 md:hidden">
                 <%= new Date(riwayat.tanggal_daftar || riwayat.created_at).toLocaleDateString('id-ID') %>
               </div>

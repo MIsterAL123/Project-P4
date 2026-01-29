@@ -16,13 +16,19 @@
     <div class="min-h-screen flex">
         <!-- Sidebar -->
         <aside id="sidebar" class="w-64 bg-gray-800 min-h-screen fixed lg:static inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out z-30">
-            <div class="p-6 border-b border-gray-700">
+            <div class="p-6 border-b border-gray-700 flex items-center justify-between">
                 <a href="/guru/dashboard" class="flex items-center space-x-2">
                     <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
                         <span class="text-white font-bold text-lg">P4</span>
                     </div>
                     <span class="text-white font-bold text-xl">Guru</span>
                 </a>
+                <!-- Close Button -->
+                <button id="sidebarCloseBtn" type="button" class="lg:hidden text-gray-400 hover:text-white focus:outline-none z-50 ml-auto">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
             </div>
             <%- include('../partials/sidebar', { user: user, currentPath: typeof currentPath !== 'undefined' ? currentPath : '' }) %>
         </aside>
@@ -100,6 +106,16 @@
             sidebar.classList.toggle('-translate-x-full');
             overlay.classList.toggle('hidden');
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const closeBtn = document.getElementById('sidebarCloseBtn');
+            const toggleBtn = document.getElementById('sidebarToggleBtn');
+            const overlayEl = document.getElementById('sidebarOverlay');
+            
+            if (closeBtn) closeBtn.addEventListener('click', toggleSidebar);
+            if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
+            if (overlayEl) overlayEl.addEventListener('click', toggleSidebar);
+        });
 
         // Auto hide flash messages
         setTimeout(() => {

@@ -503,3 +503,63 @@
 2026-01-27T03:26:21.149Z [INFO]: ✅ Database connected successfully
 2026-01-27T03:26:49.138Z [INFO]: Server running in development mode on port 3000
 2026-01-27T03:26:49.162Z [INFO]: ✅ Database connected successfully
+2026-01-27T03:28:24.925Z [INFO]: Server running in development mode on port 3000
+2026-01-27T03:28:24.963Z [INFO]: ✅ Database connected successfully
+2026-01-27T05:02:25.647Z [INFO]: Server running in development mode on port 3000
+2026-01-27T05:02:25.678Z [INFO]: ✅ Database connected successfully
+2026-01-29T01:34:29.410Z [INFO]: Server running in development mode on port 3000
+2026-01-29T01:34:29.442Z [INFO]: ✅ Database connected successfully
+2026-01-29T01:37:21.203Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-01-29T02:16:57.940Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-01-29T02:18:34.328Z [INFO]: Image uploaded: /uploads/articles/1769653114315_018943800_1710311605-mountains-8451480_1280.webp
+2026-01-29T02:18:34.339Z [INFO]: Article created by admin@p4.jakarta.go.id: pelatihan p4 (ID: 2)
+2026-01-29T02:39:47.201Z [INFO]: Server running in development mode on port 3000
+2026-01-29T02:39:47.575Z [INFO]: ✅ Database connected successfully
+2026-01-29T02:41:00.104Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-01-29T02:46:24.913Z [INFO]: Server running in development mode on port 3000
+2026-01-29T02:46:24.949Z [INFO]: ✅ Database connected successfully
+2026-01-29T02:48:25.279Z [INFO]: Server running in development mode on port 3000
+2026-01-29T02:48:25.318Z [INFO]: ✅ Database connected successfully
+2026-01-29T02:48:52.032Z [INFO]: Server running in development mode on port 3000
+2026-01-29T02:48:52.069Z [INFO]: ✅ Database connected successfully
+2026-01-29T02:51:38.228Z [INFO]: New peserta registered: aziz@gmail.com
+2026-01-29T02:53:37.283Z [INFO]: New guru registered: guru@gmail.com (pending approval)
+2026-01-29T02:54:14.316Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-01-29T02:55:09.242Z [INFO]: Guru approved by admin@p4.jakarta.go.id: guru@gmail.com
+2026-01-29T02:57:21.700Z [INFO]: Server running in development mode on port 3000
+2026-01-29T02:57:21.748Z [INFO]: ✅ Database connected successfully
+2026-01-29T02:57:43.090Z [INFO]: Server running in development mode on port 3000
+2026-01-29T02:57:43.135Z [INFO]: ✅ Database connected successfully
+2026-01-29T03:00:35.378Z [INFO]: Server running in development mode on port 3000
+2026-01-29T03:00:35.414Z [INFO]: ✅ Database connected successfully
+2026-01-29T03:01:00.812Z [INFO]: Server running in development mode on port 3000
+2026-01-29T03:01:00.868Z [INFO]: ✅ Database connected successfully
+2026-01-29T03:01:21.968Z [INFO]: Server running in development mode on port 3000
+2026-01-29T03:01:22.008Z [INFO]: ✅ Database connected successfully
+2026-01-29T03:01:48.778Z [INFO]: Server running in development mode on port 3000
+2026-01-29T03:01:48.842Z [INFO]: ✅ Database connected successfully
+2026-01-29T03:06:03.844Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-01-29T03:06:25.364Z [INFO]: User logged in: aziz@gmail.com
+2026-01-29T03:06:40.970Z [INFO]: New pelatihan registration: aziz@gmail.com - Kuota: 1 - Nomor Urut: 1
+2026-01-29T03:07:26.942Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-01-29T03:12:06.213Z [INFO]: Server running in development mode on port 3000
+2026-01-29T03:12:06.484Z [INFO]: ✅ Database connected successfully
+2026-01-29T03:17:03.646Z [INFO]: Server running in development mode on port 3000
+2026-01-29T03:17:03.687Z [INFO]: ✅ Database connected successfully
+2026-01-29T03:23:14.925Z [INFO]: Server running in development mode on port 3000
+2026-01-29T03:23:14.966Z [INFO]: ✅ Database connected successfully
+2026-01-29T03:23:30.393Z [INFO]: Server running in development mode on port 3000
+2026-01-29T03:23:30.444Z [INFO]: ✅ Database connected successfully
+2026-01-29T03:24:31.187Z [INFO]: New admin added by admin@p4.jakarta.go.id: agung@gmail.com
+2026-01-29T03:24:46.102Z [INFO]: User logged in: agung@gmail.com
+2026-01-29T03:26:56.960Z [INFO]: New kuota created by agung@gmail.com: pelatihan TKJ 
+2026-01-29T03:27:22.164Z [INFO]: User logged in: guru@gmail.com
+2026-01-29T03:28:09.602Z [INFO]: User logged in: aziz@gmail.com
+2026-01-29T03:28:51.550Z [INFO]: User logged in: guru@gmail.com
+2026-01-29T03:30:43.635Z [INFO]: Server running in development mode on port 3000
+2026-01-29T03:30:43.682Z [INFO]: ✅ Database connected successfully
+2026-01-29T03:31:39.468Z [INFO]: Server running in development mode on port 3000
+2026-01-29T03:31:39.498Z [INFO]: ✅ Database connected successfully
+2026-01-29T03:32:25.143Z [INFO]: User logged in: guru@gmail.com
+2026-01-29T03:32:57.236Z [INFO]: Server running in development mode on port 3000
+2026-01-29T03:32:57.274Z [INFO]: ✅ Database connected successfully

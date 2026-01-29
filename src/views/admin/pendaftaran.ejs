@@ -13,26 +13,38 @@
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIK</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Urut</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">No</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama & Detail</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">NIK</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">Email</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">No. Urut</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Status</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Tanggal</th>
           <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
         <% registrations.forEach(function(reg, idx) { %>
         <tr>
-          <td class="px-6 py-4 whitespace-nowrap"><%= idx + 1 %></td>
-          <td class="px-6 py-4 whitespace-nowrap"><%= reg.nama %></td>
-          <td class="px-6 py-4 whitespace-nowrap"><%= reg.nik %></td>
-          <td class="px-6 py-4 whitespace-nowrap"><%= reg.email %></td>
-          <td class="px-6 py-4 whitespace-nowrap">#<%= reg.nomor_urut %></td>
-          <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= reg.status === 'registered' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>"><%= reg.status %></span></td>
-          <td class="px-6 py-4 whitespace-nowrap"><%= reg.tanggal_daftar ? new Date(reg.tanggal_daftar).toLocaleString() : '-' %></td>
+          <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell"><%= idx + 1 %></td>
+          <td class="px-6 py-4">
+            <div class="text-sm font-medium text-gray-900 break-words"><%= reg.nama %></div>
+            <div class="text-xs text-gray-500 hidden sm:block lg:hidden break-all"><%= reg.nik %></div>
+            
+            <!-- Mobile Only Details -->
+            <div class="sm:hidden mt-2 space-y-1">
+                <div class="text-xs text-gray-500">NIK: <%= reg.nik %></div>
+                <div class="text-xs font-medium text-gray-700">#<%= reg.nomor_urut %></div>
+                <div>
+                   <span class="inline-flex px-2 py-0.5 text-xs leading-4 font-semibold rounded-full <%= reg.status === 'registered' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>"><%= reg.status %></span>
+                </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap hidden lg:table-cell"><%= reg.nik %></td>
+          <td class="px-6 py-4 whitespace-nowrap hidden xl:table-cell"><%= reg.email %></td>
+          <td class="px-6 py-4 whitespace-nowrap hidden sm:table-cell">#<%= reg.nomor_urut %></td>
+          <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= reg.status === 'registered' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>"><%= reg.status %></span></td>
+          <td class="px-6 py-4 whitespace-nowrap hidden lg:table-cell"><%= reg.tanggal_daftar ? new Date(reg.tanggal_daftar).toLocaleString() : '-' %></td>
           <td class="px-6 py-4 whitespace-nowrap text-right">
             <a href="/admin/pendaftaran/<%= reg.id %>" class="text-blue-600 hover:text-blue-800 mr-3">Lihat</a>
             <form action="/admin/pendaftaran/<%= reg.id %>/delete" method="POST" class="inline confirm-action" data-confirm="Hapus pendaftaran ini?">

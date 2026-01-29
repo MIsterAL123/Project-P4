@@ -26,10 +26,10 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Peserta</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">NIK</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">No. Urut</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tgl Daftar</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden lg:table-cell">NIK</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">No. Urut</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden xl:table-cell">Tgl Daftar</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
@@ -37,23 +37,34 @@
                     <% if (typeof pesertas !== 'undefined' && pesertas.length > 0) { %>
                     <% pesertas.forEach(function(peserta) { %>
                     <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4">
                             <div class="flex items-center">
-                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                                     <span class="text-blue-700 font-semibold"><%= peserta.nama ? peserta.nama.charAt(0).toUpperCase() : '?' %></span>
                                 </div>
-                                <div class="ml-3">
-                                    <p class="font-medium text-gray-900"><%= peserta.nama || '-' %></p>
-                                    <p class="text-sm text-gray-500"><%= peserta.email || '-' %></p>
+                                <div class="ml-3 min-w-0 flex-1">
+                                    <p class="font-medium text-gray-900 break-words text-sm sm:text-base"><%= peserta.nama || '-' %></p>
+                                    <p class="text-sm text-gray-500 break-words"><%= peserta.email || '-' %></p>
+                                    
+                                    <div class="md:hidden mt-1.5 space-y-1">
+                                        <p class="text-xs text-gray-400">NIK: <%= peserta.nik || '-' %></p>
+                                        <span class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full 
+                                            <%= peserta.pendaftaran_status === 'registered' ? 'bg-green-100 text-green-800' : 
+                                               peserta.pendaftaran_status === 'cancelled' ? 'bg-red-100 text-red-800' : 
+                                               'bg-gray-100 text-gray-800' %>">
+                                            <%= peserta.pendaftaran_status === 'registered' ? 'Terdaftar' : 
+                                               peserta.pendaftaran_status === 'cancelled' ? 'Dibatalkan' : 'Belum Daftar' %>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-gray-600"><%= peserta.nik || '-' %></td>
-                        <td class="px-6 py-4 whitespace-nowrap text-gray-600"><%= peserta.nomor_urut ? '#' + peserta.nomor_urut : '-' %></td>
-                        <td class="px-6 py-4 whitespace-nowrap text-gray-600">
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-600 hidden lg:table-cell"><%= peserta.nik || '-' %></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-600 hidden md:table-cell"><%= peserta.nomor_urut ? '#' + peserta.nomor_urut : '-' %></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-600 hidden xl:table-cell">
                             <%= peserta.tanggal_daftar ? new Date(peserta.tanggal_daftar).toLocaleDateString('id-ID') : '-' %>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
                             <span class="px-3 py-1 text-xs font-medium rounded-full 
                                 <%= peserta.pendaftaran_status === 'registered' ? 'bg-green-100 text-green-800' : 
                                    peserta.pendaftaran_status === 'cancelled' ? 'bg-red-100 text-red-800' : 
