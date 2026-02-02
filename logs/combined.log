@@ -675,3 +675,20 @@
 2026-02-02T06:05:37.737Z [INFO]: Server running in development mode on port 3001
 2026-02-02T06:05:37.834Z [INFO]: ✅ Database connected successfully
 2026-02-02T06:25:26.776Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-02-02T06:27:50.021Z [INFO]: Server running in development mode on port 3001
+2026-02-02T06:27:50.114Z [INFO]: ✅ Database connected successfully
+2026-02-02T07:26:24.461Z [INFO]: Server running in development mode on port 3001
+2026-02-02T07:26:27.113Z [ERROR]: ❌ Database connection failed:
+2026-02-02T07:27:55.003Z [ERROR]: Database query error:
+2026-02-02T07:27:55.175Z [ERROR]: Database query error:
+2026-02-02T07:30:19.788Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-02-02T07:31:20.946Z [INFO]: User logged in: bintang@gmail.com
+2026-02-02T07:31:22.803Z [INFO]: User logged in: bintang@gmail.com
+2026-02-02T07:31:35.424Z [INFO]: New pelatihan registration: bintang@gmail.com - Kuota: 1 - Nomor Urut: 2
+2026-02-02T07:31:52.626Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-02-02T08:34:57.410Z [INFO]: Server running in development mode on port 3001
+2026-02-02T08:34:57.663Z [INFO]: ✅ Database connected successfully
+2026-02-02T08:35:28.974Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-02-02T08:39:39.023Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-02T08:40:36.495Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-02-02T08:41:44.866Z [INFO]: User logged in: bintang@gmail.com
