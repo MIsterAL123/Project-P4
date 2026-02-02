@@ -88,6 +88,21 @@ class Article {
     return query(sql);
   }
 
+  // Get published articles with pagination
+  static async findPublishedWithPagination(page = 1, limit = 10) {
+    const offset = (page - 1) * limit;
+    const sql = `
+      SELECT a.*, u.nama as author_name
+      FROM articles a
+      JOIN admin ad ON a.author_id = ad.id
+      JOIN users u ON ad.user_id = u.id
+      WHERE a.status = 'published'
+      ORDER BY a.published_at DESC
+      LIMIT ${parseInt(limit)} OFFSET ${parseInt(offset)}
+    `;
+    return query(sql);
+  }
+
   // Get all articles (for admin)
   static async findAll() {
     const sql = `

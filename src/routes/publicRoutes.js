@@ -52,6 +52,36 @@ router.get('/artikel/:slug', async (req, res) => {
   }
 });
 
+// Articles list page with pagination
+router.get('/artikel', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10; // Articles per page
+    
+    const articles = await Article.findPublishedWithPagination(page, limit);
+    const totalArticles = await Article.count('published');
+    const totalPages = Math.ceil(totalArticles / limit);
+    
+    res.render('public/articles', {
+      title: 'Artikel - P4 Jakarta',
+      layout: 'layouts/main',
+      articles,
+      currentPage: page,
+      totalPages,
+      totalArticles
+    });
+  } catch (error) {
+    res.render('public/articles', {
+      title: 'Artikel - P4 Jakarta',
+      layout: 'layouts/main',
+      articles: [],
+      currentPage: 1,
+      totalPages: 0,
+      totalArticles: 0
+    });
+  }
+});
+
 // About page
 router.get('/about', (req, res) => {
   res.render('public/about', {
