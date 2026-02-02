@@ -163,3 +163,5 @@
 2026-02-02T07:26:27.113Z [ERROR]: ❌ Database connection failed:
 2026-02-02T07:27:55.003Z [ERROR]: Database query error:
 2026-02-02T07:27:55.175Z [ERROR]: Database query error:
+2026-02-02T10:07:55.934Z [ERROR]: Database query error: Data truncated for column 'status' at row 1
+2026-02-02T10:07:55.934Z [ERROR]: Update status pendaftaran siswa error: Data truncated for column 'status' at row 1

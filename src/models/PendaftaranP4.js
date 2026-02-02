@@ -191,6 +191,65 @@ class PendaftaranP4 {
     await query(sql, [id]);
     return true;
   }
+
+  // Update status
+  static async updateStatus(id, status) {
+    const sql = 'UPDATE pendaftaran_p4 SET status = ? WHERE id = ?';
+    await query(sql, [status, id]);
+    return this.findById(id);
+  }
+
+  // Find pendaftaran peserta/siswa with filters (for admin)
+  static async findPesertaPendaftaran(kuotaId = null, status = null) {
+    let sql = `
+      SELECT pd.*, p.nik, u.nama as nama_peserta, u.email, k.judul_pelatihan, k.tahun_ajaran, 
+             COALESCE(pd.created_at, pd.tanggal_daftar) as created_at
+      FROM pendaftaran_p4 pd
+      JOIN peserta p ON pd.peserta_id = p.id
+      JOIN users u ON p.user_id = u.id
+      JOIN kuota_p4 k ON pd.kuota_id = k.id
+      WHERE 1=1
+    `;
+    const params = [];
+
+    if (kuotaId) {
+      sql += ' AND pd.kuota_id = ?';
+      params.push(kuotaId);
+    }
+    if (status) {
+      sql += ' AND pd.status = ?';
+      params.push(status);
+    }
+
+    sql += ' ORDER BY COALESCE(pd.created_at, pd.tanggal_daftar) DESC';
+    return query(sql, params);
+  }
+
+  // Find pendaftaran guru/pendidik with filters (for admin)
+  static async findGuruPendaftaran(kuotaId = null, status = null) {
+    let sql = `
+      SELECT pg.*, g.nip, u.nama as nama_guru, u.email, k.judul_pelatihan, k.tahun_ajaran, 
+             COALESCE(pg.created_at, pg.tanggal_daftar) as created_at
+      FROM pendaftaran_guru_p4 pg
+      JOIN guru g ON pg.guru_id = g.id
+      JOIN users u ON g.user_id = u.id
+      JOIN kuota_p4 k ON pg.kuota_id = k.id
+      WHERE 1=1
+    `;
+    const params = [];
+
+    if (kuotaId) {
+      sql += ' AND pg.kuota_id = ?';
+      params.push(kuotaId);
+    }
+    if (status) {
+      sql += ' AND pg.status = ?';
+      params.push(status);
+    }
+
+    sql += ' ORDER BY COALESCE(pg.created_at, pg.tanggal_daftar) DESC';
+    return query(sql, params);
+  }
 }
 
 module.exports = PendaftaranP4;

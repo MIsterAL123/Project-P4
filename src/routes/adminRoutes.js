@@ -45,6 +45,18 @@ router.get('/pendaftaran', adminController.showPendaftaranPage);
 router.get('/pendaftaran/:id', adminController.viewPendaftaranDetail);
 router.post('/pendaftaran/:id/delete', adminController.deletePendaftaran);
 
+// Pendaftaran Pendidik
+router.get('/pendaftaran-pendidik', adminController.showPendaftaranPendidikPage);
+router.post('/pendaftaran-pendidik/:id/approve', adminController.approvePendaftaranPendidik);
+router.post('/pendaftaran-pendidik/:id/reject', adminController.rejectPendaftaranPendidik);
+
+// Pendaftaran Siswa
+router.get('/pendaftaran-siswa', adminController.showPendaftaranSiswaPage);
+router.post('/pendaftaran-siswa/:id/approve', adminController.approvePendaftaranSiswa);
+router.post('/pendaftaran-siswa/:id/reject', adminController.rejectPendaftaranSiswa);
+router.post('/pendaftaran-siswa/:id/update-status', adminController.updateStatusPendaftaranSiswa);
+router.post('/pendaftaran-siswa/:id/delete', adminController.deletePendaftaranSiswa);
+
 // Articles (Artikel)
 router.get('/articles', articleController.showArticlesPage);
 router.get('/articles/create', articleController.showCreateArticle);

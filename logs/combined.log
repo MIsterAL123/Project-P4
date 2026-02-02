@@ -677,3 +677,38 @@
 2026-02-02T06:25:26.776Z [INFO]: User logged in: admin@p4.jakarta.go.id
 2026-02-02T09:33:56.770Z [INFO]: Server running in development mode on port 3000
 2026-02-02T09:33:56.813Z [INFO]: ✅ Database connected successfully
+2026-02-02T09:40:39.222Z [INFO]: Server running in development mode on port 3000
+2026-02-02T09:40:39.270Z [INFO]: ✅ Database connected successfully
+2026-02-02T09:43:55.161Z [INFO]: User logged in: guru@gmail.com
+2026-02-02T09:44:15.180Z [INFO]: User logged in: agung@gmail.com
+2026-02-02T09:55:24.566Z [INFO]: Server running in development mode on port 3000
+2026-02-02T09:55:24.614Z [INFO]: ✅ Database connected successfully
+2026-02-02T09:56:28.881Z [INFO]: Server running in development mode on port 3000
+2026-02-02T09:56:28.952Z [INFO]: ✅ Database connected successfully
+2026-02-02T09:56:30.404Z [INFO]: Server running in development mode on port 3000
+2026-02-02T09:56:30.450Z [INFO]: ✅ Database connected successfully
+2026-02-02T09:57:13.163Z [INFO]: Server running in development mode on port 3000
+2026-02-02T09:57:13.211Z [INFO]: ✅ Database connected successfully
+2026-02-02T09:59:55.608Z [INFO]: Server running in development mode on port 3000
+2026-02-02T09:59:55.649Z [INFO]: ✅ Database connected successfully
+2026-02-02T10:00:01.787Z [INFO]: Server running in development mode on port 3000
+2026-02-02T10:00:01.843Z [INFO]: ✅ Database connected successfully
+2026-02-02T10:00:29.043Z [INFO]: Server running in development mode on port 3000
+2026-02-02T10:00:29.116Z [INFO]: ✅ Database connected successfully
+2026-02-02T10:00:35.290Z [INFO]: Server running in development mode on port 3000
+2026-02-02T10:00:35.377Z [INFO]: ✅ Database connected successfully
+2026-02-02T10:00:46.522Z [INFO]: Server running in development mode on port 3000
+2026-02-02T10:00:46.576Z [INFO]: ✅ Database connected successfully
+2026-02-02T10:02:15.899Z [INFO]: Server running in development mode on port 3000
+2026-02-02T10:02:15.960Z [INFO]: ✅ Database connected successfully
+2026-02-02T10:02:45.203Z [INFO]: Server running in development mode on port 3000
+2026-02-02T10:02:45.249Z [INFO]: ✅ Database connected successfully
+2026-02-02T10:02:55.206Z [INFO]: User logged in: agung@gmail.com
+2026-02-02T10:06:57.917Z [INFO]: Server running in development mode on port 3000
+2026-02-02T10:06:57.960Z [INFO]: ✅ Database connected successfully
+2026-02-02T10:07:14.647Z [INFO]: Server running in development mode on port 3000
+2026-02-02T10:07:14.706Z [INFO]: ✅ Database connected successfully
+2026-02-02T10:07:37.842Z [INFO]: Server running in development mode on port 3000
+2026-02-02T10:07:37.889Z [INFO]: ✅ Database connected successfully
+2026-02-02T10:07:55.934Z [ERROR]: Database query error: Data truncated for column 'status' at row 1
+2026-02-02T10:07:55.934Z [ERROR]: Update status pendaftaran siswa error: Data truncated for column 'status' at row 1

@@ -3,6 +3,7 @@ const Admin = require('../models/Admin');
 const User = require('../models/User');
 const logger = require('../utils/logger');
 const PendaftaranP4 = require('../models/PendaftaranP4');
+const PendaftaranGuruP4 = require('../models/PendaftaranGuruP4');
 const KuotaP4 = require('../models/KuotaP4');
 
 // Helper: determine Super Admin (configurable via env)
@@ -294,6 +295,163 @@ const deletePendaftaran = async (req, res) => {
   }
 };
 
+// @desc    Show pendaftaran pendidik page
+// @route   GET /admin/pendaftaran-pendidik
+const showPendaftaranPendidikPage = async (req, res) => {
+  try {
+    const { kuota_id, status } = req.query;
+    
+    // Get all kuota for filter dropdown (target guru or semua)
+    const allKuota = await KuotaP4.findAll();
+    const kuotaList = allKuota.filter(k => k.target_peserta === 'guru' || k.target_peserta === 'semua');
+    
+    // Get pendaftaran guru based on filters
+    let pendaftaranList = await PendaftaranP4.findGuruPendaftaran(kuota_id, status);
+
+    res.render('admin/pendaftaran-pendidik', {
+      title: 'Pendaftaran Pendidik - P4 Jakarta',
+      layout: 'layouts/admin',
+      pendaftaranList,
+      kuotaList,
+      selectedKuota: kuota_id || '',
+      selectedStatus: status || '',
+      currentUser: req.user,
+      user: req.user
+    });
+  } catch (error) {
+    logger.error('Show pendaftaran pendidik error:', error);
+    req.session.error = 'Gagal memuat data pendaftaran pendidik';
+    res.redirect('/admin/dashboard');
+  }
+};
+
+// @desc    Approve pendaftaran pendidik
+// @route   POST /admin/pendaftaran-pendidik/:id/approve
+const approvePendaftaranPendidik = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await PendaftaranGuruP4.updateStatus(id, 'approved');
+    logger.info(`Pendaftaran pendidik approved by ${req.user.email}: ID ${id}`);
+    req.session.success = 'Pendaftaran pendidik berhasil disetujui';
+    res.redirect('/admin/pendaftaran-pendidik');
+  } catch (error) {
+    logger.error('Approve pendaftaran pendidik error:', error);
+    req.session.error = 'Gagal menyetujui pendaftaran';
+    res.redirect('/admin/pendaftaran-pendidik');
+  }
+};
+
+// @desc    Reject pendaftaran pendidik
+// @route   POST /admin/pendaftaran-pendidik/:id/reject
+const rejectPendaftaranPendidik = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await PendaftaranGuruP4.updateStatus(id, 'rejected');
+    logger.info(`Pendaftaran pendidik rejected by ${req.user.email}: ID ${id}`);
+    req.session.success = 'Pendaftaran pendidik berhasil ditolak';
+    res.redirect('/admin/pendaftaran-pendidik');
+  } catch (error) {
+    logger.error('Reject pendaftaran pendidik error:', error);
+    req.session.error = 'Gagal menolak pendaftaran';
+    res.redirect('/admin/pendaftaran-pendidik');
+  }
+};
+
+// @desc    Show pendaftaran siswa page
+// @route   GET /admin/pendaftaran-siswa
+const showPendaftaranSiswaPage = async (req, res) => {
+  try {
+    const { kuota_id, status } = req.query;
+    
+    // Get all kuota for filter dropdown (target peserta or semua)
+    const allKuota = await KuotaP4.findAll();
+    const kuotaList = allKuota.filter(k => k.target_peserta === 'peserta' || k.target_peserta === 'semua');
+    
+    // Get pendaftaran peserta based on filters
+    let pendaftaranList = await PendaftaranP4.findPesertaPendaftaran(kuota_id, status);
+
+    res.render('admin/pendaftaran-siswa', {
+      title: 'Pendaftaran Siswa - P4 Jakarta',
+      layout: 'layouts/admin',
+      pendaftaranList,
+      kuotaList,
+      selectedKuota: kuota_id || '',
+      selectedStatus: status || '',
+      currentUser: req.user,
+      user: req.user
+    });
+  } catch (error) {
+    logger.error('Show pendaftaran siswa error:', error);
+    req.session.error = 'Gagal memuat data pendaftaran siswa';
+    res.redirect('/admin/dashboard');
+  }
+};
+
+// @desc    Approve pendaftaran siswa
+// @route   POST /admin/pendaftaran-siswa/:id/approve
+const approvePendaftaranSiswa = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await PendaftaranP4.updateStatus(id, 'approved');
+    logger.info(`Pendaftaran siswa approved by ${req.user.email}: ID ${id}`);
+    req.session.success = 'Pendaftaran siswa berhasil disetujui';
+    res.redirect('/admin/pendaftaran-siswa');
+  } catch (error) {
+    logger.error('Approve pendaftaran siswa error:', error);
+    req.session.error = 'Gagal menyetujui pendaftaran';
+    res.redirect('/admin/pendaftaran-siswa');
+  }
+};
+
+// @desc    Reject pendaftaran siswa
+// @route   POST /admin/pendaftaran-siswa/:id/reject
+const rejectPendaftaranSiswa = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await PendaftaranP4.updateStatus(id, 'rejected');
+    logger.info(`Pendaftaran siswa rejected by ${req.user.email}: ID ${id}`);
+    req.session.success = 'Pendaftaran siswa berhasil ditolak';
+    res.redirect('/admin/pendaftaran-siswa');
+  } catch (error) {
+    logger.error('Reject pendaftaran siswa error:', error);
+    req.session.error = 'Gagal menolak pendaftaran';
+    res.redirect('/admin/pendaftaran-siswa');
+  }
+};
+
+// @desc    Update status pendaftaran siswa
+// @route   POST /admin/pendaftaran-siswa/:id/update-status
+const updateStatusPendaftaranSiswa = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    await PendaftaranP4.updateStatus(id, status);
+    logger.info(`Pendaftaran siswa status updated by ${req.user.email}: ID ${id} to ${status}`);
+    req.session.success = 'Status pendaftaran siswa berhasil diperbarui';
+    res.redirect('/admin/pendaftaran-siswa');
+  } catch (error) {
+    logger.error('Update status pendaftaran siswa error:', error);
+    req.session.error = 'Gagal memperbarui status pendaftaran';
+    res.redirect('/admin/pendaftaran-siswa');
+  }
+};
+
+// @desc    Delete pendaftaran siswa
+// @route   POST /admin/pendaftaran-siswa/:id/delete
+const deletePendaftaranSiswa = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await PendaftaranP4.delete(id);
+    logger.info(`Pendaftaran siswa deleted by ${req.user.email}: ID ${id}`);
+    req.session.success = 'Pendaftaran siswa berhasil dihapus';
+    res.redirect('/admin/pendaftaran-siswa');
+  } catch (error) {
+    logger.error('Delete pendaftaran siswa error:', error);
+    req.session.error = 'Gagal menghapus pendaftaran';
+    res.redirect('/admin/pendaftaran-siswa');
+  }
+};
+
 module.exports = {
   showManageAdminPage,
   addAdmin,
@@ -301,5 +459,13 @@ module.exports = {
   deleteAdmin,
   showPendaftaranPage,
   viewPendaftaranDetail,
-  deletePendaftaran
+  deletePendaftaran,
+  showPendaftaranPendidikPage,
+  approvePendaftaranPendidik,
+  rejectPendaftaranPendidik,
+  showPendaftaranSiswaPage,
+  approvePendaftaranSiswa,
+  rejectPendaftaranSiswa,
+  updateStatusPendaftaranSiswa,
+  deletePendaftaranSiswa
 };
