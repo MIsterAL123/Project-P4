@@ -133,3 +133,30 @@
 2026-01-23T04:16:18.404Z [ERROR]: Database query error: Incorrect arguments to mysqld_stmt_execute
 2026-01-23T04:17:38.154Z [ERROR]: Daftar pelatihan error: Anda sudah terdaftar pada pelatihan ini
 2026-01-23T04:21:26.123Z [ERROR]: Database query error: Incorrect arguments to mysqld_stmt_execute
+2026-02-02T03:01:28.526Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:01:28.658Z [ERROR]: Database query error: Table 'p4.articles' doesn't exist
+2026-02-02T03:01:38.771Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:01:51.373Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:01:51.406Z [ERROR]: Database query error: Table 'p4.articles' doesn't exist
+2026-02-02T03:02:15.539Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:02:20.473Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:02:41.818Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:02:41.904Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:02:41.934Z [ERROR]: Database query error: Unknown column 'tanggal_mulai' in 'order clause'
+2026-02-02T03:02:51.549Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:02:51.581Z [ERROR]: Database query error: Table 'p4.articles' doesn't exist
+2026-02-02T03:02:59.815Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:29:01.535Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:29:01.564Z [ERROR]: Database query error: Table 'p4.articles' doesn't exist
+2026-02-02T03:29:04.487Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:29:17.198Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:29:18.169Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:29:18.200Z [ERROR]: Database query error: Table 'p4.articles' doesn't exist
+2026-02-02T03:31:33.930Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:31:34.617Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:31:39.942Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:31:40.327Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:31:42.462Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:31:43.153Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:32:02.738Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T03:33:00.480Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
