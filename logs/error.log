@@ -160,3 +160,6 @@
 2026-02-02T03:31:43.153Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
 2026-02-02T03:32:02.738Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
 2026-02-02T03:33:00.480Z [ERROR]: Database query error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-02-02T07:26:27.113Z [ERROR]: ❌ Database connection failed:
+2026-02-02T07:27:55.003Z [ERROR]: Database query error:
+2026-02-02T07:27:55.175Z [ERROR]: Database query error:
