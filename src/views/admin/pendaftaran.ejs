@@ -1,74 +1,76 @@
-<div class="px-6 py-6">
-  <div class="flex items-center justify-between mb-6">
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
     <div>
       <h1 class="text-2xl font-bold text-gray-900">Pendaftaran P4</h1>
       <% if (kuota) { %>
-      <p class="text-sm text-gray-600">Periode aktif: <strong><%= kuota.tahun_ajaran %></strong></p>
+      <p class="text-gray-600 mt-1">Periode aktif: <strong><%= kuota.tahun_ajaran %></strong></p>
       <% } %>
     </div>
   </div>
 
   <% if (typeof registrations !== 'undefined' && registrations.length > 0) { %>
-  <div class="overflow-x-auto bg-white shadow rounded-lg">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-50">
-        <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">No</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama & Detail</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">NIK</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">Email</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">No. Urut</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Status</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Tanggal</th>
-          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <% registrations.forEach(function(reg, idx) { %>
-        <tr>
-          <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell"><%= idx + 1 %></td>
-          <td class="px-6 py-4">
-            <div class="text-sm font-medium text-gray-900 break-words"><%= reg.nama %></div>
-            <div class="text-xs text-gray-500 hidden sm:block lg:hidden break-all"><%= reg.nik %></div>
-            
-            <!-- Mobile Only Details -->
-            <div class="sm:hidden mt-2 space-y-1">
-                <div class="text-xs text-gray-500">NIK: <%= reg.nik %></div>
-                <div class="text-xs font-medium text-gray-700">#<%= reg.nomor_urut %></div>
-                <div>
-                   <span class="inline-flex px-2 py-0.5 text-xs leading-4 font-semibold rounded-full <%= reg.status === 'registered' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>"><%= reg.status %></span>
-                </div>
-            </div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap hidden lg:table-cell"><%= reg.nik %></td>
-          <td class="px-6 py-4 whitespace-nowrap hidden xl:table-cell"><%= reg.email %></td>
-          <td class="px-6 py-4 whitespace-nowrap hidden sm:table-cell">#<%= reg.nomor_urut %></td>
-          <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= reg.status === 'registered' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>"><%= reg.status %></span></td>
-          <td class="px-6 py-4 whitespace-nowrap hidden lg:table-cell"><%= reg.tanggal_daftar ? new Date(reg.tanggal_daftar).toLocaleString() : '-' %></td>
-          <td class="px-6 py-4 whitespace-nowrap text-right">
-            <div class="flex space-x-2 justify-end">
-              <a href="/admin/pendaftaran/<%= reg.id %>" class="text-blue-600 hover:text-blue-800" title="Lihat Detail" aria-label="Lihat Detail">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                </svg>
-              </a>
-              <form action="/admin/pendaftaran/<%= reg.id %>/delete" method="POST" class="inline confirm-action" data-confirm="Hapus pendaftaran ini?">
-                <button type="submit" class="text-red-600 hover:text-red-800" title="Hapus">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">No</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nama & Detail</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden lg:table-cell">NIK</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden xl:table-cell">Email</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden sm:table-cell">No. Urut</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">Status</th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden lg:table-cell">Tanggal</th>
+            <th class="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% registrations.forEach(function(reg, idx) { %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-4 whitespace-nowrap hidden md:table-cell"><%= idx + 1 %></td>
+            <td class="px-4 py-4">
+              <div class="text-sm font-medium text-gray-900 break-words"><%= reg.nama %></div>
+              <div class="text-xs text-gray-500 hidden sm:block lg:hidden break-all"><%= reg.nik %></div>
+              
+              <!-- Mobile Only Details -->
+              <div class="sm:hidden mt-2 space-y-1">
+                  <div class="text-xs text-gray-500">NIK: <%= reg.nik %></div>
+                  <div class="text-xs font-medium text-gray-700">#<%= reg.nomor_urut %></div>
+                  <div>
+                     <span class="inline-flex px-2 py-0.5 text-xs leading-4 font-semibold rounded-full <%= reg.status === 'registered' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>"><%= reg.status %></span>
+                  </div>
+              </div>
+            </td>
+            <td class="px-4 py-4 whitespace-nowrap hidden lg:table-cell"><%= reg.nik %></td>
+            <td class="px-4 py-4 whitespace-nowrap hidden xl:table-cell"><%= reg.email %></td>
+            <td class="px-4 py-4 whitespace-nowrap hidden sm:table-cell">#<%= reg.nomor_urut %></td>
+            <td class="px-4 py-4 whitespace-nowrap hidden md:table-cell"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= reg.status === 'registered' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>"><%= reg.status %></span></td>
+            <td class="px-4 py-4 whitespace-nowrap hidden lg:table-cell"><%= reg.tanggal_daftar ? new Date(reg.tanggal_daftar).toLocaleString() : '-' %></td>
+            <td class="px-4 py-4 whitespace-nowrap text-right">
+              <div class="flex space-x-2 justify-end">
+                <a href="/admin/pendaftaran/<%= reg.id %>" class="text-blue-600 hover:text-blue-800" title="Lihat Detail" aria-label="Lihat Detail">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                   </svg>
-                </button>
-              </form>
-            </div>
-          </td>
-        </tr>
-        <% }); %>
-      </tbody>
-    </table>
+                </a>
+                <form action="/admin/pendaftaran/<%= reg.id %>/delete" method="POST" class="inline confirm-action" data-confirm="Hapus pendaftaran ini?">
+                  <button type="submit" class="text-red-600 hover:text-red-800" title="Hapus">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
   </div>
   <% } else { %>
-  <div class="bg-white shadow rounded-lg p-6">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
     <p class="text-gray-600">Belum ada pendaftaran untuk periode ini.</p>
   </div>
   <% } %>
