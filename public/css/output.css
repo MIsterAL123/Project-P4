@@ -1733,6 +1733,10 @@ body {
   margin-bottom: 2rem;
 }
 
+.ml-0 {
+  margin-left: 0px;
+}
+
 .ml-1 {
   margin-left: 0.25rem;
 }
@@ -2504,6 +2508,11 @@ body {
 .bg-orange-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(255 237 213 / var(--tw-bg-opacity, 1));
+}
+
+.bg-orange-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 115 22 / var(--tw-bg-opacity, 1));
 }
 
 .bg-orange-600 {
@@ -3571,6 +3580,10 @@ body {
 }
 
 @media (min-width: 640px) {
+  .sm\:ml-4 {
+    margin-left: 1rem;
+  }
+
   .sm\:mt-0 {
     margin-top: 0px;
   }

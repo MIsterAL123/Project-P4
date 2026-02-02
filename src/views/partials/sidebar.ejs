@@ -62,14 +62,33 @@
             </svg>
             Kelola Pelatihan
         </a>
-        <a href="/admin/pendaftaran"
-            class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors <%= currentPath === '/admin/pendaftaran' ? 'bg-gray-700 text-white border-l-4 border-blue-500' : '' %>">
+        <a href="/admin/pendaftaran-pendidik"
+            class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors <%= currentPath === '/admin/pendaftaran-pendidik' ? 'bg-gray-700 text-white border-l-4 border-blue-500' : '' %>">
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
                 </path>
             </svg>
-            Pendaftaran Pelatihan
+            Pendaftaran Pendidik
+            <% if (typeof pendingGuruPelatihanCount !=='undefined' && pendingGuruPelatihanCount> 0) { %>
+                <span class="ml-auto bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+                    <%= pendingGuruPelatihanCount %>
+                </span>
+            <% } %>
+        </a>
+        <a href="/admin/pendaftaran-siswa"
+            class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors <%= currentPath === '/admin/pendaftaran-siswa' ? 'bg-gray-700 text-white border-l-4 border-blue-500' : '' %>">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                </path>
+            </svg>
+            Pendaftaran Siswa
+            <% if (typeof pendingPesertaPelatihanCount !=='undefined' && pendingPesertaPelatihanCount> 0) { %>
+                <span class="ml-auto bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">
+                    <%= pendingPesertaPelatihanCount %>
+                </span>
+            <% } %>
         </a>
 
         <div class="px-4 py-2 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">

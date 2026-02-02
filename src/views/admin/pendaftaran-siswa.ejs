@@ -1,0 +1,279 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Pendaftaran Siswa</h1>
+            <p class="text-gray-600 mt-1">Kelola pendaftaran pelatihan dari peserta didik</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div class="flex items-center">
+                <div class="p-2 bg-blue-100 rounded-lg">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Total Pendaftaran</p>
+                    <p class="text-xl font-bold text-gray-900"><%= typeof pendaftaranList !== 'undefined' ? pendaftaranList.length : 0 %></p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div class="flex items-center">
+                <div class="p-2 bg-yellow-100 rounded-lg">
+                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Menunggu Approval</p>
+                    <p class="text-xl font-bold text-gray-900"><%= typeof pendaftaranList !== 'undefined' ? pendaftaranList.filter(p => p.status === 'pending').length : 0 %></p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div class="flex items-center">
+                <div class="p-2 bg-green-100 rounded-lg">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Disetujui</p>
+                    <p class="text-xl font-bold text-gray-900"><%= typeof pendaftaranList !== 'undefined' ? pendaftaranList.filter(p => p.status === 'approved').length : 0 %></p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div class="flex items-center">
+                <div class="p-2 bg-red-100 rounded-lg">
+                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500">Ditolak</p>
+                    <p class="text-xl font-bold text-gray-900"><%= typeof pendaftaranList !== 'undefined' ? pendaftaranList.filter(p => p.status === 'rejected').length : 0 %></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter by Pelatihan -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+            <label class="text-sm font-medium text-gray-700">Filter Pelatihan:</label>
+            <select id="filterPelatihan" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">Semua Pelatihan</option>
+                <% if (typeof kuotaList !== 'undefined' && kuotaList.length > 0) { %>
+                <% kuotaList.forEach(function(kuota) { %>
+                <option value="<%= kuota.id %>" <%= typeof selectedKuota !== 'undefined' && selectedKuota == kuota.id ? 'selected' : '' %>><%= kuota.judul_pelatihan || kuota.tahun_ajaran %></option>
+                <% }); %>
+                <% } %>
+            </select>
+            <label class="text-sm font-medium text-gray-700 ml-0 sm:ml-4">Status:</label>
+            <select id="filterStatus" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">Semua Status</option>
+                <option value="pending" <%= typeof selectedStatus !== 'undefined' && selectedStatus === 'pending' ? 'selected' : '' %>>Menunggu Approval</option>
+                <option value="approved" <%= typeof selectedStatus !== 'undefined' && selectedStatus === 'approved' ? 'selected' : '' %>>Disetujui</option>
+                <option value="rejected" <%= typeof selectedStatus !== 'undefined' && selectedStatus === 'rejected' ? 'selected' : '' %>>Ditolak</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Peserta Didik</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">Pelatihan</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden sm:table-cell">Tanggal Daftar</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Surat Tugas</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <% if (typeof pendaftaranList !== 'undefined' && pendaftaranList.length > 0) { %>
+                    <% pendaftaranList.forEach(function(pendaftaran) { %>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-4">
+                            <div class="font-medium text-gray-900"><%= pendaftaran.nama_peserta || pendaftaran.nama %></div>
+                            <div class="text-sm text-gray-500">NIK: <%= pendaftaran.nik || '-' %></div>
+                            <div class="text-sm text-gray-500"><%= pendaftaran.email %></div>
+                        </td>
+                        <td class="px-4 py-4 hidden md:table-cell">
+                            <div class="font-medium text-gray-900"><%= pendaftaran.judul_pelatihan || '-' %></div>
+                            <div class="text-sm text-gray-500"><%= pendaftaran.tahun_ajaran || '-' %></div>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600 hidden sm:table-cell">
+                            <%= pendaftaran.created_at ? new Date(pendaftaran.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-' %>
+                        </td>
+                        <td class="px-4 py-4">
+                            <% if (pendaftaran.surat_tugas) { %>
+                            <a href="/uploads/<%= pendaftaran.surat_tugas %>" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                Lihat
+                            </a>
+                            <% } else { %>
+                            <span class="text-gray-400">Tidak ada</span>
+                            <% } %>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 text-xs font-medium rounded-full 
+                                <%= pendaftaran.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                                   pendaftaran.status === 'approved' ? 'bg-green-100 text-green-800' : 
+                                   'bg-red-100 text-red-800' %>">
+                                <%= pendaftaran.status === 'pending' ? 'Menunggu' : 
+                                   pendaftaran.status === 'approved' ? 'Disetujui' : 'Ditolak' %>
+                            </span>
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <div class="flex space-x-2">
+                                <% if (pendaftaran.status === 'pending') { %>
+                                <form action="/admin/pendaftaran-siswa/<%= pendaftaran.id %>/approve" method="POST" class="inline">
+                                    <button type="submit" class="text-green-600 hover:text-green-800" title="Setujui">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                                <form action="/admin/pendaftaran-siswa/<%= pendaftaran.id %>/reject" method="POST" class="inline confirm-action" data-confirm="Yakin ingin menolak pendaftaran ini?">
+                                    <button type="submit" class="text-red-600 hover:text-red-800" title="Tolak">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                                <% } %>
+                                <button type="button" class="btn-edit-pendaftaran text-blue-600 hover:text-blue-800" 
+                                    data-id="<%= pendaftaran.id %>"
+                                    data-status="<%= pendaftaran.status %>"
+                                    title="Edit">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </button>
+                                <form action="/admin/pendaftaran-siswa/<%= pendaftaran.id %>/delete" method="POST" class="inline confirm-action" data-confirm="Yakin ingin menghapus pendaftaran ini?">
+                                    <button type="submit" class="text-red-600 hover:text-red-800" title="Hapus">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    <% } else { %>
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                            <svg class="w-12 h-12 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            Belum ada pendaftaran dari peserta didik
+                        </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+        <div class="p-6 border-b border-gray-100">
+            <h3 class="text-lg font-semibold text-gray-900">Edit Status Pendaftaran</h3>
+        </div>
+        <form id="editForm" method="POST" class="p-6 space-y-4">
+            <input type="hidden" id="editId" name="id" value="">
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select id="editStatus" name="status" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="pending">Menunggu Approval</option>
+                    <option value="approved">Disetujui</option>
+                    <option value="rejected">Ditolak</option>
+                    <option value="registered">Terdaftar</option>
+                    <option value="cancelled">Dibatalkan</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                <button type="button" id="closeEditModal" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
+                <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterPelatihan = document.getElementById('filterPelatihan');
+    const filterStatus = document.getElementById('filterStatus');
+    const editModal = document.getElementById('editModal');
+    const editForm = document.getElementById('editForm');
+    const editId = document.getElementById('editId');
+    const editStatusSelect = document.getElementById('editStatus');
+    const closeEditModal = document.getElementById('closeEditModal');
+    
+    function applyFilter() {
+        const kuotaId = filterPelatihan.value;
+        const status = filterStatus.value;
+        let url = '/admin/pendaftaran-siswa?';
+        if (kuotaId) url += 'kuota_id=' + kuotaId + '&';
+        if (status) url += 'status=' + status;
+        window.location.href = url;
+    }
+    
+    filterPelatihan.addEventListener('change', applyFilter);
+    filterStatus.addEventListener('change', applyFilter);
+    
+    // Edit button handlers
+    document.querySelectorAll('.btn-edit-pendaftaran').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const status = this.getAttribute('data-status');
+            
+            editId.value = id;
+            editStatusSelect.value = status;
+            editForm.action = '/admin/pendaftaran-siswa/' + id + '/update-status';
+            
+            editModal.classList.remove('hidden');
+            editModal.classList.add('flex');
+        });
+    });
+    
+    // Close modal
+    closeEditModal.addEventListener('click', function() {
+        editModal.classList.add('hidden');
+        editModal.classList.remove('flex');
+    });
+    
+    // Close modal when clicking outside
+    editModal.addEventListener('click', function(e) {
+        if (e.target === this) {
+            editModal.classList.add('hidden');
+            editModal.classList.remove('flex');
+        }
+    });
+    
+    // Confirm actions
+    document.querySelectorAll('.confirm-action').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            if (!confirm(form.dataset.confirm || 'Yakin?')) e.preventDefault();
+        });
+    });
+});
+</script>
