@@ -21,7 +21,9 @@ class Guru {
   // Find guru by user_id
   static async findByUserId(userId) {
     const sql = `
-      SELECT g.*, u.nama, u.email, u.role
+      SELECT g.id, g.user_id, g.nip, g.link_dokumen, g.no_hp, g.sekolah_asal, g.mata_pelajaran, 
+             g.status, g.verified_by, g.verified_at, g.rejection_reason, g.created_at, g.updated_at,
+             u.nama, u.email, u.role
       FROM guru g
       JOIN users u ON g.user_id = u.id
       WHERE g.user_id = ?
