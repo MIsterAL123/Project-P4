@@ -712,3 +712,7 @@
 2026-02-02T10:07:37.889Z [INFO]: ✅ Database connected successfully
 2026-02-02T10:07:55.934Z [ERROR]: Database query error: Data truncated for column 'status' at row 1
 2026-02-02T10:07:55.934Z [ERROR]: Update status pendaftaran siswa error: Data truncated for column 'status' at row 1
+2026-02-03T06:11:27.310Z [INFO]: Server running in development mode on port 3001
+2026-02-03T06:11:27.394Z [INFO]: ✅ Database connected successfully
+2026-02-03T06:12:26.856Z [INFO]: Pendaftaran siswa status updated by admin@p4.jakarta.go.id: ID 2 to rejected
+2026-02-03T06:13:26.752Z [INFO]: Pendaftaran siswa status updated by admin@p4.jakarta.go.id: ID 2 to pending
