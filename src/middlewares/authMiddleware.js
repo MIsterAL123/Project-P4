@@ -39,8 +39,10 @@ const protect = async (req, res, next) => {
       });
     }
 
-    // Attach user to request
+    // Attach user to request and response locals
     req.user = user[0];
+    res.locals.user = user[0];
+    res.locals.currentUser = user[0];
     next();
   } catch (error) {
     console.error('Auth middleware error:', error);
@@ -66,6 +68,8 @@ const optionalAuth = async (req, res, next) => {
 
       if (user && user.length > 0) {
         req.user = user[0];
+        res.locals.user = user[0];
+        res.locals.currentUser = user[0];
       }
     }
 
