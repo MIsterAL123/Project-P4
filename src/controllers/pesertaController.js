@@ -106,8 +106,14 @@ const showProfile = async (req, res) => {
       title: 'Profil Peserta - P4 Jakarta',
       layout: 'layouts/admin',
       peserta,
-      currentUser: req.user
+      currentUser: req.user,
+      success: req.session.success,
+      error: req.session.error
     });
+    
+    // Clear flash messages after rendering
+    delete req.session.success;
+    delete req.session.error;
   } catch (error) {
     logger.error('Show peserta profile error:', error);
     req.session.error = 'Gagal memuat profil';
@@ -119,7 +125,7 @@ const showProfile = async (req, res) => {
 // @route   POST /peserta/profile/update
 const updateProfile = async (req, res) => {
   try {
-    const { nama, email, nik, link_dokumen } = req.body;
+    const { nama, email, nik, link_dokumen, sekolah_asal } = req.body;
     const peserta = await Peserta.findByUserId(req.user.id);
 
     if (!peserta) {
@@ -136,8 +142,11 @@ const updateProfile = async (req, res) => {
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
       errors.push('Email tidak valid');
     }
-    if (!nik || nik.length !== 16) {
-      errors.push('NIK harus 16 digit');
+    if (!nik || nik.length < 10 || nik.length > 16 || !/^[0-9]+$/.test(nik)) {
+      errors.push('NIK harus 10-16 digit angka');
+    }
+    if (!sekolah_asal || sekolah_asal.trim() === '') {
+      errors.push('Asal sekolah harus diisi');
     }
 
     // Check email uniqueness
@@ -145,8 +154,8 @@ const updateProfile = async (req, res) => {
       errors.push('Email sudah digunakan');
     }
 
-    // Check NIK uniqueness
-    if (nik !== peserta.nik && await Peserta.nikExists(nik)) {
+    // Check NIK uniqueness (exclude current peserta)
+    if (nik !== peserta.nik && await Peserta.nikExists(nik, peserta.id)) {
       errors.push('NIK sudah digunakan');
     }
 
@@ -160,7 +169,7 @@ const updateProfile = async (req, res) => {
       });
     }
 
-    await Peserta.update(peserta.id, { nama, email, nik, link_dokumen });
+    await Peserta.update(peserta.id, { nama, email, nik, link_dokumen, sekolah_asal });
 
     // Update session
     req.session.user.nama = nama;

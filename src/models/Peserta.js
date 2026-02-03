@@ -18,7 +18,8 @@ class Peserta {
   // Find peserta by user_id
   static async findByUserId(userId) {
     const sql = `
-      SELECT p.*, u.nama, u.email, u.role
+      SELECT p.id, p.user_id, p.nik, p.link_dokumen, p.no_hp, p.sekolah_asal, p.kelas, p.created_at, p.updated_at,
+             u.nama, u.email, u.role
       FROM peserta p
       JOIN users u ON p.user_id = u.id
       WHERE p.user_id = ?

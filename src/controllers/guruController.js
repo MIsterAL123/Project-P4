@@ -157,8 +157,14 @@ const showProfile = async (req, res) => {
       title: 'Profil Pendidik - P4 Jakarta',
       layout: 'layouts/admin',
       guru,
-      currentUser: req.user
+      currentUser: req.user,
+      success: req.session.success,
+      error: req.session.error
     });
+    
+    // Clear flash messages after rendering
+    delete req.session.success;
+    delete req.session.error;
   } catch (error) {
     logger.error('Show guru profile error:', error);
     req.session.error = 'Gagal memuat profil';
@@ -362,7 +368,7 @@ const showRiwayatPelatihan = async (req, res) => {
 // @route   POST /guru/profile/update
 const updateProfile = async (req, res) => {
   try {
-    const { nama, email, nip, link_dokumen } = req.body;
+    const { nama, email, nip, link_dokumen, sekolah_asal } = req.body;
     const guru = await Guru.findByUserId(req.user.id);
 
     if (!guru) {
@@ -382,14 +388,17 @@ const updateProfile = async (req, res) => {
     if (!nip || nip.length < 10) {
       errors.push('NIP minimal 10 karakter');
     }
+    if (!sekolah_asal || sekolah_asal.trim() === '') {
+      errors.push('Asal sekolah harus diisi');
+    }
 
     // Check email uniqueness
     if (email !== guru.email && await User.emailExists(email)) {
       errors.push('Email sudah digunakan');
     }
 
-    // Check NIP uniqueness
-    if (nip !== guru.nip && await Guru.nipExists(nip)) {
+    // Check NIP uniqueness (exclude current guru)
+    if (nip !== guru.nip && await Guru.nipExists(nip, guru.id)) {
       errors.push('NIP sudah digunakan');
     }
 
@@ -403,7 +412,7 @@ const updateProfile = async (req, res) => {
       });
     }
 
-    await Guru.update(guru.id, { nama, email, nip, link_dokumen });
+    await Guru.update(guru.id, { nama, email, nip, link_dokumen, sekolah_asal });
 
     // Update session
     req.session.user.nama = nama;
