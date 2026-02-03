@@ -141,7 +141,7 @@ CREATE TABLE pendaftaran_p4 (
     kuota_id INT NOT NULL,
     nomor_urut INT NOT NULL,
     tanggal_daftar TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status ENUM('registered', 'cancelled') DEFAULT 'registered',
+    status ENUM('pending', 'approved', 'rejected', 'registered', 'cancelled') DEFAULT 'registered',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (peserta_id) REFERENCES peserta(id) ON DELETE CASCADE,
