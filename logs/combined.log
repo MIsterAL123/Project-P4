@@ -716,3 +716,171 @@
 2026-02-03T06:11:27.394Z [INFO]: ✅ Database connected successfully
 2026-02-03T06:12:26.856Z [INFO]: Pendaftaran siswa status updated by admin@p4.jakarta.go.id: ID 2 to rejected
 2026-02-03T06:13:26.752Z [INFO]: Pendaftaran siswa status updated by admin@p4.jakarta.go.id: ID 2 to pending
+2026-02-04T01:01:53.250Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:01:53.274Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:03:31.636Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:03:31.659Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:05:52.916Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:05:52.939Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:07:05.409Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:07:05.433Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:07:12.614Z [ERROR]: Proses pendaftaran error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T01:15:13.589Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:15:13.612Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:15:28.293Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:15:28.318Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:15:47.684Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:15:47.707Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:16:06.009Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:16:06.034Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:16:15.771Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:16:15.794Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:16:30.929Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:16:30.956Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:18:04.234Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:18:04.257Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:18:25.424Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:18:25.449Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:18:32.717Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:18:32.741Z [INFO]: ✅ Database connected successfully
+2026-02-04T01:19:36.783Z [INFO]: User logged in: lakal@example.com
+2026-02-04T01:21:02.339Z [INFO]: User logged in: lakal@example.com
+2026-02-04T01:21:28.664Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T01:41:35.321Z [INFO]: Server running in development mode on port 3001
+2026-02-04T01:41:35.349Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:06:27.864Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T02:06:42.946Z [ERROR]: Error: Tipe file tidak diizinkan
+2026-02-04T02:08:42.763Z [ERROR]: Error: Tipe file tidak diizinkan
+2026-02-04T02:08:49.813Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:08:49.845Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:09:05.765Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:09:05.807Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:09:14.399Z [ERROR]: Proses pendaftaran error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T02:09:23.923Z [ERROR]: Proses pendaftaran error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T02:09:51.265Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:09:51.288Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:10:21.512Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:10:21.536Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:10:36.827Z [ERROR]: Proses pendaftaran error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T02:12:04.472Z [INFO]: User logged in: lakal@example.com
+2026-02-04T02:12:16.918Z [ERROR]: Daftar pelatihan error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T02:12:34.336Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:12:34.359Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:12:40.566Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:12:40.589Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:12:45.359Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T02:12:45.573Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T02:13:01.298Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:13:01.321Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:13:38.387Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:13:38.408Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:19:37.892Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:19:37.925Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:19:43.245Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:19:43.267Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:19:49.464Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:19:49.486Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:24:50.805Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:24:50.835Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:26:46.247Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:26:46.273Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:27:02.765Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T02:27:12.506Z [INFO]: Guru upload file:
+2026-02-04T02:27:12.512Z [ERROR]: Proses pendaftaran error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T02:27:27.950Z [INFO]: Guru upload file:
+2026-02-04T02:27:27.955Z [ERROR]: Proses pendaftaran error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T02:27:36.985Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-02-04T02:46:03.096Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-02-04T02:47:14.733Z [INFO]: Pendaftaran siswa status updated by admin@p4.jakarta.go.id: ID 1 to approved
+2026-02-04T02:48:29.315Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:48:29.349Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:49:16.922Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:49:16.960Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:50:15.737Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:50:15.787Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:50:26.217Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:50:26.257Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:50:43.568Z [INFO]: Pendaftaran siswa status updated by admin@p4.jakarta.go.id: ID 1 to pending
+2026-02-04T02:52:18.002Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:52:18.046Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:53:28.597Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:53:28.644Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:53:35.945Z [INFO]: Server running in development mode on port 3001
+2026-02-04T02:53:35.980Z [INFO]: ✅ Database connected successfully
+2026-02-04T02:53:51.074Z [INFO]: Pendaftaran pendidik status updated by admin@p4.jakarta.go.id: ID 1 to pending
+2026-02-04T02:53:56.083Z [INFO]: Pendaftaran pendidik status updated by admin@p4.jakarta.go.id: ID 1 to approved
+2026-02-04T02:54:01.238Z [INFO]: Pendaftaran pendidik status updated by admin@p4.jakarta.go.id: ID 1 to rejected
+2026-02-04T02:54:05.883Z [INFO]: Pendaftaran pendidik status updated by admin@p4.jakarta.go.id: ID 1 to approved
+2026-02-04T02:54:16.239Z [INFO]: Pendaftaran pendidik status updated by admin@p4.jakarta.go.id: ID 1 to rejected
+2026-02-04T02:54:26.913Z [INFO]: Pendaftaran pendidik status updated by admin@p4.jakarta.go.id: ID 1 to approved
+2026-02-04T02:54:38.464Z [INFO]: Pendaftaran siswa approved by admin@p4.jakarta.go.id: ID 1
+2026-02-04T02:55:00.266Z [INFO]: User logged in: lakal@example.com
+2026-02-04T02:55:18.224Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T02:56:50.665Z [INFO]: User logged in: admin@p4.jakarta.go.id
+2026-02-04T02:57:01.026Z [INFO]: Pendaftaran siswa status updated by admin@p4.jakarta.go.id: ID 1 to approved
+2026-02-04T02:58:04.056Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T02:58:36.922Z [INFO]: User logged in: lakal@example.com
+2026-02-04T03:03:05.928Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:03:05.955Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:03:15.716Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:03:15.749Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:03:22.397Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:03:22.427Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:03:30.358Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:03:30.392Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:04:16.796Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:04:16.829Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:04:59.853Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T03:07:19.644Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:07:19.673Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:07:40.756Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:07:40.805Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:07:50.848Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:07:50.892Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:08:01.607Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:08:01.639Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:08:28.625Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:08:28.657Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:09:07.101Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:09:07.224Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:09:20.639Z [INFO]: User logged in: lakal@example.com
+2026-02-04T03:09:41.589Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:09:41.608Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:13:00.717Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:13:00.736Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:14:08.623Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T03:14:29.244Z [INFO]: User logged in: lakal@example.com
+2026-02-04T03:16:14.042Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T03:16:32.093Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:16:32.135Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:16:38.264Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:16:38.297Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:16:39.659Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:16:39.685Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:19:17.642Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:19:17.721Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:19:26.451Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:19:26.498Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:22:25.525Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:22:25.546Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:22:53.392Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:22:53.408Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:23:19.339Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:23:19.361Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:23:45.994Z [INFO]: User logged in: lakal@example.com
+2026-02-04T03:27:58.854Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T03:28:12.572Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:28:12.590Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:28:25.927Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:28:25.944Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:29:42.755Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:29:42.783Z [INFO]: ✅ Database connected successfully
+2026-02-04T03:30:28.515Z [INFO]: User logged in: lakal@example.com
+2026-02-04T03:31:12.062Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T03:31:42.848Z [INFO]: Guru profile updated: kinanderyl@gmail.com
+2026-02-04T03:31:43.402Z [INFO]: Guru profile updated: kinanderyl@gmail.com
+2026-02-04T03:31:43.603Z [INFO]: Guru profile updated: kinanderyl@gmail.com
+2026-02-04T03:32:01.764Z [INFO]: User logged in: lakal@example.com
+2026-02-04T03:34:09.357Z [INFO]: User logged in: kinanderyl@gmail.com
+2026-02-04T03:38:08.119Z [INFO]: Server running in development mode on port 3001
+2026-02-04T03:38:08.136Z [INFO]: ✅ Database connected successfully

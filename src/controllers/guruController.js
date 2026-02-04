@@ -172,7 +172,7 @@ const showProfile = async (req, res) => {
   }
 };
 
-// @desc    Show daftar pelatihan page
+// @desc    Show daftar pelatihan list page
 // @route   GET /guru/daftar-pelatihan
 const showDaftarPelatihan = async (req, res) => {
   try {
@@ -194,15 +194,20 @@ const showDaftarPelatihan = async (req, res) => {
     const availableKuota = kuotaList.filter(k => !registeredKuotaIds.includes(k.id));
 
     res.render('guru/daftar-pelatihan', {
-      title: 'Daftar Pelatihan - P4 Jakarta',
+      title: 'Daftar Pelatihan Tersedia - P4 Jakarta',
       layout: 'layouts/admin',
       guru,
       kuotaList: availableKuota,
       registrationsThisYear,
       canRegister,
       maxRegistrations: 3,
-      currentUser: req.user
+      currentUser: req.user,
+      success: req.session.success,
+      error: req.session.error
     });
+    
+    delete req.session.success;
+    delete req.session.error;
   } catch (error) {
     logger.error('Show daftar pelatihan error:', error);
     req.session.error = 'Gagal memuat daftar pelatihan';
@@ -210,7 +215,233 @@ const showDaftarPelatihan = async (req, res) => {
   }
 };
 
-// @desc    Process pelatihan registration
+// @desc    Show konfirmasi pendaftaran page (detail pelatihan)
+// @route   GET /guru/daftar-pelatihan/:kuotaId
+const showKonfirmasiPendaftaran = async (req, res) => {
+  try {
+    const { kuotaId } = req.params;
+    const guru = await Guru.findByUserId(req.user.id);
+    
+    // Get specific kuota
+    const kuota = await KuotaP4.findById(kuotaId);
+    
+    if (!kuota) {
+      req.session.error = 'Pelatihan tidak ditemukan';
+      return res.redirect('/guru/daftar-pelatihan');
+    }
+    
+    // Check if target is for guru or semua
+    if (!['guru', 'semua'].includes(kuota.target_peserta)) {
+      req.session.error = 'Pelatihan ini tidak tersedia untuk pendidik';
+      return res.redirect('/guru/daftar-pelatihan');
+    }
+    
+    // Check registration count this year
+    const registrationsThisYear = await PendaftaranGuruP4.countRegistrationsThisYear(guru.id);
+    const canRegister = registrationsThisYear < 3;
+    
+    // Check if already registered for this kuota
+    let pendaftaran = null;
+    let alreadyRegistered = false;
+    
+    if (guru && kuota) {
+      pendaftaran = await PendaftaranGuruP4.findByGuruAndKuota(guru.id, kuota.id);
+      alreadyRegistered = pendaftaran && ['pending', 'approved'].includes(pendaftaran.status);
+    }
+
+    res.render('guru/konfirmasi-pendaftaran', {
+      title: 'Konfirmasi Pendaftaran - P4 Jakarta',
+      layout: 'layouts/admin',
+      guru,
+      kuota,
+      pendaftaran,
+      alreadyRegistered,
+      registrationsThisYear,
+      canRegister,
+      maxRegistrations: 3,
+      currentUser: req.user,
+      error: req.session.error
+    });
+    
+    delete req.session.error;
+  } catch (error) {
+    logger.error('Show konfirmasi pendaftaran page error:', error);
+    req.session.error = 'Gagal memuat halaman pendaftaran';
+    res.redirect('/guru/daftar-pelatihan');
+  }
+};
+
+// @desc    Process konfirmasi pendaftaran (create registration with surat tugas)
+// @route   POST /guru/konfirmasi-pendaftaran/:kuotaId
+const prosesPendaftaran = async (req, res) => {
+  try {
+    const { kuotaId } = req.params;
+    const guru = await Guru.findByUserId(req.user.id);
+    
+    if (!guru) {
+      req.session.error = 'Data guru tidak ditemukan';
+      return res.redirect(`/guru/daftar-pelatihan/${kuotaId}`);
+    }
+
+    // Check registration limit
+    const registrationsThisYear = await PendaftaranGuruP4.countRegistrationsThisYear(guru.id);
+    if (registrationsThisYear >= 3) {
+      req.session.error = 'Anda sudah mencapai batas maksimal pendaftaran (3x per tahun)';
+      return res.redirect('/guru/daftar-pelatihan');
+    }
+
+    const kuota = await KuotaP4.findById(kuotaId);
+    
+    if (!kuota) {
+      req.session.error = 'Pelatihan tidak ditemukan';
+      return res.redirect('/guru/daftar-pelatihan');
+    }
+
+    // Check if target is valid
+    if (!['guru', 'semua'].includes(kuota.target_peserta)) {
+      req.session.error = 'Pelatihan ini tidak tersedia untuk pendidik';
+      return res.redirect('/guru/daftar-pelatihan');
+    }
+
+    // Check if kuota is open
+    if (kuota.status !== 'open') {
+      req.session.error = 'Pendaftaran sudah ditutup';
+      return res.redirect('/guru/daftar-pelatihan');
+    }
+
+    // Check if already registered
+    const existing = await PendaftaranGuruP4.findByGuruAndKuota(guru.id, kuota.id);
+    if (existing && ['pending', 'approved'].includes(existing.status)) {
+      req.session.error = 'Anda sudah terdaftar pada pelatihan ini';
+      return res.redirect('/guru/daftar-pelatihan');
+    }
+
+    // Check if file uploaded
+    if (!req.file) {
+      req.session.error = 'Surat tugas wajib diunggah';
+      return res.redirect(`/guru/daftar-pelatihan/${kuotaId}`);
+    }
+
+    // Log upload info for debugging
+    logger.info('Guru upload file:', { file: req.file.originalname, filename: req.file.filename, size: req.file.size });
+
+    // Server-side size check (safety)
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    if (req.file.size > MAX_SIZE) {
+      req.session.error = 'Ukuran file melebihi batas 5MB';
+      return res.redirect(`/guru/daftar-pelatihan/${kuotaId}`);
+    }
+
+    // Create registration with surat tugas
+    const pendaftaranData = {
+      guru_id: guru.id,
+      kuota_id: kuota.id,
+      surat_tugas: req.file.filename
+    };
+    
+    const pendaftaran = await PendaftaranGuruP4.create(pendaftaranData);
+
+    logger.info(`Guru ${guru.id} registered for pelatihan ${kuota.id} with surat tugas`);
+    req.session.success = 'Pendaftaran pelatihan berhasil diajukan!';
+    res.redirect('/guru/status-pendaftaran');
+  } catch (error) {
+    logger.error('Proses pendaftaran error:', error);
+    req.session.error = error.message || 'Gagal melakukan pendaftaran';
+    res.redirect('/guru/daftar-pelatihan');
+  }
+};
+
+// @desc    Show upload surat tugas page
+// @route   GET /guru/upload-surat-tugas/:pendaftaranId
+const showUploadSuratTugas = async (req, res) => {
+  try {
+    const { pendaftaranId } = req.params;
+    const guru = await Guru.findByUserId(req.user.id);
+    
+    const pendaftaran = await PendaftaranGuruP4.findById(pendaftaranId);
+    
+    if (!pendaftaran) {
+      req.session.error = 'Pendaftaran tidak ditemukan';
+      return res.redirect('/guru/status-pendaftaran');
+    }
+    
+    // Check ownership
+    if (pendaftaran.guru_id !== guru.id) {
+      req.session.error = 'Anda tidak memiliki akses ke halaman ini';
+      return res.redirect('/guru/status-pendaftaran');
+    }
+    
+    // Get kuota info
+    const kuota = await KuotaP4.findById(pendaftaran.kuota_id);
+    
+    res.render('guru/upload-surat-tugas', {
+      title: 'Upload Surat Tugas - P4 Jakarta',
+      layout: 'layouts/admin',
+      guru,
+      pendaftaran,
+      kuota,
+      currentUser: req.user,
+      success: req.session.success,
+      error: req.session.error
+    });
+    
+    delete req.session.success;
+    delete req.session.error;
+  } catch (error) {
+    logger.error('Show upload surat tugas error:', error);
+    req.session.error = 'Gagal memuat halaman upload';
+    res.redirect('/guru/status-pendaftaran');
+  }
+};
+
+// @desc    Process upload surat tugas
+// @route   POST /guru/upload-surat-tugas/:pendaftaranId
+const uploadSuratTugas = async (req, res) => {
+  try {
+    const { pendaftaranId } = req.params;
+    const guru = await Guru.findByUserId(req.user.id);
+    
+    const pendaftaran = await PendaftaranGuruP4.findById(pendaftaranId);
+    
+    if (!pendaftaran) {
+      req.session.error = 'Pendaftaran tidak ditemukan';
+      return res.redirect('/guru/status-pendaftaran');
+    }
+    
+    // Check ownership
+    if (pendaftaran.guru_id !== guru.id) {
+      req.session.error = 'Anda tidak memiliki akses ke halaman ini';
+      return res.redirect('/guru/status-pendaftaran');
+    }
+    
+    // Check if file uploaded
+    if (!req.file) {
+      req.session.error = 'File surat tugas wajib diunggah';
+      return res.redirect(`/guru/upload-surat-tugas/${pendaftaranId}`);
+    }
+    
+    // Delete old file if exists
+    if (pendaftaran.surat_tugas) {
+      const oldFilePath = path.join(__dirname, '..', '..', 'public', 'uploads', 'surat_tugas', pendaftaran.surat_tugas);
+      if (fs.existsSync(oldFilePath)) {
+        fs.unlinkSync(oldFilePath);
+      }
+    }
+    
+    // Update pendaftaran with surat tugas
+    await PendaftaranGuruP4.updateSuratTugas(pendaftaranId, req.file.filename);
+    
+    logger.info(`Surat tugas uploaded for pendaftaran ${pendaftaranId}`);
+    req.session.success = 'Surat tugas berhasil diunggah. Pendaftaran Anda akan segera diverifikasi oleh admin.';
+    res.redirect('/guru/status-pendaftaran');
+  } catch (error) {
+    logger.error('Upload surat tugas error:', error);
+    req.session.error = 'Gagal mengunggah surat tugas';
+    res.redirect(`/guru/upload-surat-tugas/${req.params.pendaftaranId}`);
+  }
+};
+
+// @desc    Process pelatihan registration (OLD - DEPRECATED)
 // @route   POST /guru/daftar-pelatihan
 const daftarPelatihan = async (req, res) => {
   try {
@@ -285,8 +516,13 @@ const showStatusPendaftaran = async (req, res) => {
       layout: 'layouts/admin',
       guru,
       pendaftaranList: activePendaftaran,
-      currentUser: req.user
+      currentUser: req.user,
+      success: req.session.success,
+      error: req.session.error
     });
+    
+    delete req.session.success;
+    delete req.session.error;
   } catch (error) {
     logger.error('Show status pendaftaran error:', error);
     req.session.error = 'Gagal memuat status pendaftaran';
@@ -487,7 +723,11 @@ module.exports = {
   showDashboard,
   showProfile,
   showDaftarPelatihan,
-  daftarPelatihan,
+  showKonfirmasiPendaftaran,
+  prosesPendaftaran,
+  showUploadSuratTugas,
+  uploadSuratTugas,
+  daftarPelatihan, // Deprecated - kept for backward compatibility
   showStatusPendaftaran,
   cancelPendaftaran,
   showRiwayatPelatihan,

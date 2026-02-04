@@ -139,8 +139,24 @@ const daftarPelatihan = async (req, res) => {
       return res.redirect('/peserta/pelatihan');
     }
 
-    // Register
-    const pendaftaran = await PendaftaranP4.create(peserta.id, kuota.id);
+    // Check if file uploaded
+    if (!req.file) {
+      req.session.error = 'Surat keterangan sekolah wajib diunggah';
+      return res.redirect(`/peserta/daftar-pelatihan/${kuotaId}`);
+    }
+
+    // Log upload info for debugging
+    logger.info('Peserta upload file:', { file: req.file.originalname, filename: req.file.filename, size: req.file.size });
+
+    // Server-side size check (safety)
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    if (req.file.size > MAX_SIZE) {
+      req.session.error = 'Ukuran file melebihi batas 5MB';
+      return res.redirect(`/peserta/daftar-pelatihan/${kuotaId}`);
+    }
+
+    // Register with document
+    const pendaftaran = await PendaftaranP4.create(peserta.id, kuota.id, req.file.filename);
 
     logger.info(`New pelatihan registration: ${req.user.email} - Kuota: ${kuota.id} - Nomor Urut: ${pendaftaran.nomor_urut}`);
     req.session.success = `Pendaftaran berhasil! Nomor urut Anda: ${pendaftaran.nomor_urut}`;

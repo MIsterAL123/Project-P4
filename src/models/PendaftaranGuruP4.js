@@ -55,7 +55,21 @@ class PendaftaranGuruP4 {
   }
 
   // Create pendaftaran (with quota check and yearly limit)
-  static async create(guruId, kuotaId, suratTugasPath = null) {
+  static async create(data) {
+    // Support both new object format and old (guruId, kuotaId, suratTugasPath) format
+    let guruId, kuotaId, suratTugasPath;
+    
+    if (typeof data === 'object' && data !== null && !Array.isArray(data)) {
+      guruId = data.guru_id;
+      kuotaId = data.kuota_id;
+      suratTugasPath = data.surat_tugas || null;
+    } else {
+      // Legacy support
+      guruId = arguments[0];
+      kuotaId = arguments[1];
+      suratTugasPath = arguments[2] || null;
+    }
+    
     // Check yearly limit (max 3 per year)
     const yearlyCount = await this.countRegistrationsThisYear(guruId);
     if (yearlyCount >= 3) {
@@ -86,15 +100,18 @@ class PendaftaranGuruP4 {
     const countResult = await query(countSql, [kuotaId]);
     const nomorUrut = countResult[0].count + 1;
 
-    // Insert pendaftaran
+    // Insert pendaftaran with status 'pending' if no surat tugas, otherwise 'registered'
+    const status = suratTugasPath ? 'registered' : 'pending';
     const sql = `
       INSERT INTO pendaftaran_guru_p4 (guru_id, kuota_id, nomor_urut, surat_tugas, status) 
-      VALUES (?, ?, ?, ?, 'registered')
+      VALUES (?, ?, ?, ?, ?)
     `;
-    const result = await query(sql, [guruId, kuotaId, nomorUrut, suratTugasPath]);
+    const result = await query(sql, [guruId, kuotaId, nomorUrut, suratTugasPath, status]);
 
-    // Update guru_terdaftar count in kuota
-    await KuotaP4.incrementGuruPeserta(kuotaId);
+    // Update guru_terdaftar count in kuota only if registered
+    if (status === 'registered') {
+      await KuotaP4.incrementGuruPeserta(kuotaId);
+    }
 
     return {
       id: result.insertId,
@@ -102,7 +119,7 @@ class PendaftaranGuruP4 {
       kuota_id: kuotaId,
       nomor_urut: nomorUrut,
       surat_tugas: suratTugasPath,
-      status: 'registered'
+      status: status
     };
   }
 
@@ -177,6 +194,13 @@ class PendaftaranGuruP4 {
   static async updateStatus(id, status) {
     const sql = 'UPDATE pendaftaran_guru_p4 SET status = ? WHERE id = ?';
     await query(sql, [status, id]);
+    return this.findById(id);
+  }
+
+  // Update surat tugas
+  static async updateSuratTugas(id, suratTugasPath) {
+    const sql = 'UPDATE pendaftaran_guru_p4 SET surat_tugas = ? WHERE id = ?';
+    await query(sql, [suratTugasPath, id]);
     return this.findById(id);
   }
 
