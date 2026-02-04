@@ -8,6 +8,16 @@
             <span class="text-gray-700">Artikel</span>
         </nav>
 
+        <!-- Back button (moved to top-left under breadcrumb) -->
+        <div class="mb-4">
+            <a href="/" class="inline-flex items-center border border-primary-600 bg-primary-600 text-white px-3 py-2 rounded-md hover:bg-primary-700 transition-colors font-medium">
+                <svg class="w-5 h-5 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Kembali ke Beranda
+            </a>
+        </div>
+
         <article class="bg-white rounded-lg shadow overflow-hidden">
             <% if (article.featured_image || article.image_url) { %>
             <img src="<%= article.featured_image || article.image_url %>" alt="<%= article.title %>" class="w-full h-64 md:h-96 object-cover">
@@ -44,14 +54,6 @@
             </div>
         </article>
 
-        <!-- Back Link -->
-        <div class="mt-6 text-center">
-            <a href="/" class="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Kembali ke Beranda
-            </a>
-        </div>
+
     </div>
 </section>
