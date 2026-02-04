@@ -35,7 +35,7 @@ function handleMulterUpload(fieldName, uploader) {
 // Daftar Pelatihan P4 - New Flow (urutan penting!)
 router.get('/daftar-pelatihan', guruController.showDaftarPelatihan); // List pelatihan
 router.get('/daftar-pelatihan/:kuotaId', guruController.showKonfirmasiPendaftaran); // Konfirmasi page
-router.post('/konfirmasi-pendaftaran/:kuotaId', handleMulterUpload('surat_tugas', uploadSuratTugas), guruController.prosesPendaftaran); // Process registration with file
+router.post('/konfirmasi-pendaftaran/:kuotaId', guruController.prosesPendaftaran); // Process registration (no file upload at this stage)
 
 // Upload Surat Tugas (Optional - for later upload)
 router.get('/upload-surat-tugas/:pendaftaranId', guruController.showUploadSuratTugas); // Upload page

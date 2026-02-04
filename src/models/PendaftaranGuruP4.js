@@ -47,7 +47,7 @@ class PendaftaranGuruP4 {
       SELECT COUNT(*) as count 
       FROM pendaftaran_guru_p4 
       WHERE guru_id = ? 
-      AND status = 'registered'
+      AND status IN ('registered', 'approved', 'surat_terkirim')
       AND YEAR(tanggal_daftar) = YEAR(CURDATE())
     `;
     const results = await query(sql, [guruId]);
@@ -137,8 +137,10 @@ class PendaftaranGuruP4 {
     const sql = "UPDATE pendaftaran_guru_p4 SET status = 'cancelled' WHERE id = ?";
     await query(sql, [id]);
 
-    // Decrement guru count
-    await KuotaP4.decrementGuruPeserta(pendaftaran.kuota_id);
+    // Decrement guru count only if this registration had incremented it (registered/approved)
+    if (pendaftaran.status === 'registered' || pendaftaran.status === 'approved') {
+      await KuotaP4.decrementGuruPeserta(pendaftaran.kuota_id);
+    }
 
     return this.findById(id);
   }
@@ -197,10 +199,10 @@ class PendaftaranGuruP4 {
     return this.findById(id);
   }
 
-  // Update surat tugas
+  // Update surat tugas and mark as 'surat_terkirim'
   static async updateSuratTugas(id, suratTugasPath) {
-    const sql = 'UPDATE pendaftaran_guru_p4 SET surat_tugas = ? WHERE id = ?';
-    await query(sql, [suratTugasPath, id]);
+    const sql = 'UPDATE pendaftaran_guru_p4 SET surat_tugas = ?, status = ? WHERE id = ?';
+    await query(sql, [suratTugasPath, 'surat_terkirim', id]);
     return this.findById(id);
   }
 
@@ -212,7 +214,7 @@ class PendaftaranGuruP4 {
   // Delete pendaftaran
   static async delete(id) {
     const pendaftaran = await this.findById(id);
-    if (pendaftaran && pendaftaran.status === 'registered') {
+    if (pendaftaran && (pendaftaran.status === 'registered' || pendaftaran.status === 'approved')) {
       await KuotaP4.decrementGuruPeserta(pendaftaran.kuota_id);
     }
     

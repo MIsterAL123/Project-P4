@@ -3,6 +3,8 @@ const PendaftaranP4 = require('../models/PendaftaranP4');
 const KuotaP4 = require('../models/KuotaP4');
 const Peserta = require('../models/Peserta');
 const logger = require('../utils/logger');
+const fs = require('fs');
+const path = require('path');
 
 // @desc    Show daftar pelatihan page
 // @route   GET /peserta/daftar-pelatihan/:kuotaId
@@ -139,27 +141,11 @@ const daftarPelatihan = async (req, res) => {
       return res.redirect('/peserta/pelatihan');
     }
 
-    // Check if file uploaded
-    if (!req.file) {
-      req.session.error = 'Surat keterangan sekolah wajib diunggah';
-      return res.redirect(`/peserta/daftar-pelatihan/${kuotaId}`);
-    }
+    // Create registration (no file required at this stage)
+    const pendaftaran = await PendaftaranP4.create(peserta.id, kuota.id);
 
-    // Log upload info for debugging
-    logger.info('Peserta upload file:', { file: req.file.originalname, filename: req.file.filename, size: req.file.size });
-
-    // Server-side size check (safety)
-    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
-    if (req.file.size > MAX_SIZE) {
-      req.session.error = 'Ukuran file melebihi batas 5MB';
-      return res.redirect(`/peserta/daftar-pelatihan/${kuotaId}`);
-    }
-
-    // Register with document
-    const pendaftaran = await PendaftaranP4.create(peserta.id, kuota.id, req.file.filename);
-
-    logger.info(`New pelatihan registration: ${req.user.email} - Kuota: ${kuota.id} - Nomor Urut: ${pendaftaran.nomor_urut}`);
-    req.session.success = `Pendaftaran berhasil! Nomor urut Anda: ${pendaftaran.nomor_urut}`;
+    logger.info(`New pelatihan registration (pending approval): ${req.user.email} - Kuota: ${kuota.id} - Nomor Urut: ${pendaftaran.nomor_urut}`);
+    req.session.success = `Pendaftaran Anda untuk pelatihan "${kuota.judul_pelatihan || 'Pelatihan ' + kuota.tahun_ajaran}" telah berhasil diajukan.`;
     res.redirect('/peserta/status-pendaftaran');
   } catch (error) {
     logger.error('Daftar pelatihan error:', error);
@@ -178,9 +164,9 @@ const showStatusPendaftaran = async (req, res) => {
     if (peserta) {
       pendaftaranList = await PendaftaranP4.findByPesertaId(peserta.id);
       
-      // Filter active registrations
+      // Filter active registrations (pending, approved, document submitted)
       pendaftaranList = pendaftaranList.filter(p => 
-        ['pending', 'approved', 'registered'].includes(p.status)
+        ['pending', 'approved', 'surat_terkirim'].includes(p.status)
       );
     }
 
@@ -271,11 +257,100 @@ const showRiwayatPelatihan = async (req, res) => {
   }
 };
 
+// @desc    Show upload surat keterangan page (only after approved)
+// @route   GET /peserta/upload-surat-keterangan/:pendaftaranId
+const showUploadSuratKeterangan = async (req, res) => {
+  try {
+    const { pendaftaranId } = req.params;
+    const peserta = await Peserta.findByUserId(req.user.id);
+    const pendaftaran = await PendaftaranP4.findById(pendaftaranId);
+
+    if (!pendaftaran) {
+      req.session.error = 'Pendaftaran tidak ditemukan';
+      return res.redirect('/peserta/status-pendaftaran');
+    }
+
+    if (pendaftaran.peserta_id !== peserta.id) {
+      req.session.error = 'Anda tidak memiliki akses ke halaman ini';
+      return res.redirect('/peserta/status-pendaftaran');
+    }
+
+    if (pendaftaran.status !== 'approved') {
+      req.session.error = 'Upload hanya tersedia setelah pendaftaran disetujui oleh admin';
+      return res.redirect('/peserta/status-pendaftaran');
+    }
+
+    const kuota = await KuotaP4.findById(pendaftaran.kuota_id);
+
+    res.render('peserta/upload-surat-keterangan', {
+      title: 'Upload Surat Keterangan - P4 Jakarta',
+      layout: 'layouts/admin',
+      peserta,
+      pendaftaran,
+      kuota,
+      currentUser: req.user,
+      success: req.session.success,
+      error: req.session.error
+    });
+
+    delete req.session.success;
+    delete req.session.error;
+  } catch (error) {
+    logger.error('Show upload surat keterangan error:', error);
+    req.session.error = 'Gagal memuat halaman upload';
+    res.redirect('/peserta/status-pendaftaran');
+  }
+};
+
+// @desc    Process upload surat keterangan
+// @route   POST /peserta/upload-surat-keterangan/:pendaftaranId
+const uploadSuratKeterangan = async (req, res) => {
+  try {
+    const { pendaftaranId } = req.params;
+    const peserta = await Peserta.findByUserId(req.user.id);
+    const pendaftaran = await PendaftaranP4.findById(pendaftaranId);
+
+    if (!pendaftaran) {
+      req.session.error = 'Pendaftaran tidak ditemukan';
+      return res.redirect('/peserta/status-pendaftaran');
+    }
+
+    if (pendaftaran.peserta_id !== peserta.id) {
+      req.session.error = 'Anda tidak memiliki akses ke halaman ini';
+      return res.redirect('/peserta/status-pendaftaran');
+    }
+
+    if (!req.file) {
+      req.session.error = 'File surat keterangan wajib diunggah';
+      return res.redirect(`/peserta/upload-surat-keterangan/${pendaftaranId}`);
+    }
+
+    // Delete old file if exists
+    if (pendaftaran.surat_keterangan) {
+      const oldFilePath = path.join(__dirname, '..', '..', 'public', 'uploads', 'surat_keterangan', pendaftaran.surat_keterangan);
+      if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
+    }
+
+    // Update pendaftaran with file and set status
+    await PendaftaranP4.updateSuratKeterangan(pendaftaranId, req.file.filename);
+
+    logger.info(`Surat keterangan uploaded for pendaftaran ${pendaftaranId}`);
+    req.session.success = 'Surat keterangan berhasil diunggah.';
+    res.redirect('/peserta/status-pendaftaran');
+  } catch (error) {
+    logger.error('Upload surat keterangan error:', error);
+    req.session.error = 'Gagal mengunggah surat keterangan';
+    res.redirect(`/peserta/upload-surat-keterangan/${req.params.pendaftaranId}`);
+  }
+};
+
 module.exports = {
   showDaftarPelatihanPage,
   showPelatihanList,
   daftarPelatihan,
   showStatusPendaftaran,
   cancelPendaftaran,
-  showRiwayatPelatihan
+  showRiwayatPelatihan,
+  showUploadSuratKeterangan,
+  uploadSuratKeterangan
 };
