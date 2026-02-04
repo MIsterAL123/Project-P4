@@ -316,33 +316,18 @@ const prosesPendaftaran = async (req, res) => {
       return res.redirect('/guru/daftar-pelatihan');
     }
 
-    // Check if file uploaded
-    if (!req.file) {
-      req.session.error = 'Surat tugas wajib diunggah';
-      return res.redirect(`/guru/daftar-pelatihan/${kuotaId}`);
-    }
-
-    // Log upload info for debugging
-    logger.info('Guru upload file:', { file: req.file.originalname, filename: req.file.filename, size: req.file.size });
-
-    // Server-side size check (safety)
-    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
-    if (req.file.size > MAX_SIZE) {
-      req.session.error = 'Ukuran file melebihi batas 5MB';
-      return res.redirect(`/guru/daftar-pelatihan/${kuotaId}`);
-    }
-
-    // Create registration with surat tugas
+    // Create registration (no file required at this stage)
     const pendaftaranData = {
       guru_id: guru.id,
-      kuota_id: kuota.id,
-      surat_tugas: req.file.filename
+      kuota_id: kuota.id
     };
     
     const pendaftaran = await PendaftaranGuruP4.create(pendaftaranData);
 
+    logger.info(`Guru ${guru.id} registered for pelatihan ${kuota.id} (pending approval)`);
+
     logger.info(`Guru ${guru.id} registered for pelatihan ${kuota.id} with surat tugas`);
-    req.session.success = 'Pendaftaran pelatihan berhasil diajukan!';
+    req.session.success = `Pendaftaran Anda untuk pelatihan "${kuota.judul_pelatihan || 'Pelatihan ' + kuota.tahun_ajaran}" telah berhasil diajukan.`;
     res.redirect('/guru/status-pendaftaran');
   } catch (error) {
     logger.error('Proses pendaftaran error:', error);
@@ -368,6 +353,12 @@ const showUploadSuratTugas = async (req, res) => {
     // Check ownership
     if (pendaftaran.guru_id !== guru.id) {
       req.session.error = 'Anda tidak memiliki akses ke halaman ini';
+      return res.redirect('/guru/status-pendaftaran');
+    }
+
+    // Only allow upload if registration is approved by admin
+    if (pendaftaran.status !== 'approved') {
+      req.session.error = 'Upload hanya tersedia setelah pendaftaran disetujui oleh admin';
       return res.redirect('/guru/status-pendaftaran');
     }
     
@@ -419,7 +410,7 @@ const uploadSuratTugas = async (req, res) => {
       req.session.error = 'File surat tugas wajib diunggah';
       return res.redirect(`/guru/upload-surat-tugas/${pendaftaranId}`);
     }
-    
+
     // Delete old file if exists
     if (pendaftaran.surat_tugas) {
       const oldFilePath = path.join(__dirname, '..', '..', 'public', 'uploads', 'surat_tugas', pendaftaran.surat_tugas);
@@ -427,12 +418,12 @@ const uploadSuratTugas = async (req, res) => {
         fs.unlinkSync(oldFilePath);
       }
     }
-    
-    // Update pendaftaran with surat tugas
+
+    // Update pendaftaran with surat tugas and set status 'surat_terkirim'
     await PendaftaranGuruP4.updateSuratTugas(pendaftaranId, req.file.filename);
     
     logger.info(`Surat tugas uploaded for pendaftaran ${pendaftaranId}`);
-    req.session.success = 'Surat tugas berhasil diunggah. Pendaftaran Anda akan segera diverifikasi oleh admin.';
+    req.session.success = 'Surat tugas berhasil diunggah.';
     res.redirect('/guru/status-pendaftaran');
   } catch (error) {
     logger.error('Upload surat tugas error:', error);
@@ -506,9 +497,9 @@ const showStatusPendaftaran = async (req, res) => {
     const guru = await Guru.findByUserId(req.user.id);
     const pendaftaranList = await PendaftaranGuruP4.findByGuru(guru.id);
     
-    // Filter active registrations (pending, approved)
+    // Filter active registrations (pending, approved, document submitted)
     const activePendaftaran = pendaftaranList.filter(p => 
-      ['pending', 'approved'].includes(p.status)
+      ['pending', 'approved', 'surat_terkirim'].includes(p.status)
     );
 
     res.render('guru/status-pendaftaran', {

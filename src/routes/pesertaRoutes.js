@@ -43,7 +43,11 @@ router.get('/pelatihan', pendaftaranController.showPelatihanList);
 
 // Daftar Pelatihan P4
 router.get('/daftar-pelatihan/:kuotaId', pendaftaranController.showDaftarPelatihanPage);
-router.post('/daftar-pelatihan/:kuotaId', handleMulterUpload('surat_keterangan', uploadSuratKeterangan), pendaftaranController.daftarPelatihan);
+router.post('/daftar-pelatihan/:kuotaId', pendaftaranController.daftarPelatihan);
+
+// Upload Surat Keterangan (after approval)
+router.get('/upload-surat-keterangan/:pendaftaranId', pendaftaranController.showUploadSuratKeterangan);
+router.post('/upload-surat-keterangan/:pendaftaranId', handleMulterUpload('surat_keterangan', uploadSuratKeterangan), pendaftaranController.uploadSuratKeterangan);
 
 // Status Pendaftaran
 router.get('/status-pendaftaran', pendaftaranController.showStatusPendaftaran);

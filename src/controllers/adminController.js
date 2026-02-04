@@ -330,7 +330,16 @@ const showPendaftaranPendidikPage = async (req, res) => {
 const approvePendaftaranPendidik = async (req, res) => {
   try {
     const { id } = req.params;
+    const pendaftaran = await PendaftaranGuruP4.findById(id);
+    if (!pendaftaran) {
+      req.session.error = 'Pendaftaran tidak ditemukan';
+      return res.redirect('/admin/pendaftaran-pendidik');
+    }
+
     await PendaftaranGuruP4.updateStatus(id, 'approved');
+    // Increment kuota count for guru
+    await KuotaP4.incrementGuruPeserta(pendaftaran.kuota_id);
+
     logger.info(`Pendaftaran pendidik approved by ${req.user.email}: ID ${id}`);
     req.session.success = 'Pendaftaran pendidik berhasil disetujui';
     res.redirect('/admin/pendaftaran-pendidik');
@@ -346,6 +355,17 @@ const approvePendaftaranPendidik = async (req, res) => {
 const rejectPendaftaranPendidik = async (req, res) => {
   try {
     const { id } = req.params;
+    const pendaftaran = await PendaftaranGuruP4.findById(id);
+    if (!pendaftaran) {
+      req.session.error = 'Pendaftaran tidak ditemukan';
+      return res.redirect('/admin/pendaftaran-pendidik');
+    }
+
+    // If it was already approved, decrement kuota
+    if (pendaftaran.status === 'approved') {
+      await KuotaP4.decrementGuruPeserta(pendaftaran.kuota_id);
+    }
+
     await PendaftaranGuruP4.updateStatus(id, 'rejected');
     logger.info(`Pendaftaran pendidik rejected by ${req.user.email}: ID ${id}`);
     req.session.success = 'Pendaftaran pendidik berhasil ditolak';
@@ -392,7 +412,16 @@ const showPendaftaranSiswaPage = async (req, res) => {
 const approvePendaftaranSiswa = async (req, res) => {
   try {
     const { id } = req.params;
+    const pendaftaran = await PendaftaranP4.findById(id);
+    if (!pendaftaran) {
+      req.session.error = 'Pendaftaran tidak ditemukan';
+      return res.redirect('/admin/pendaftaran-siswa');
+    }
+
     await PendaftaranP4.updateStatus(id, 'approved');
+    // Increment kuota count for peserta
+    await KuotaP4.incrementPeserta(pendaftaran.kuota_id);
+
     logger.info(`Pendaftaran siswa approved by ${req.user.email}: ID ${id}`);
     req.session.success = 'Pendaftaran siswa berhasil disetujui';
     res.redirect('/admin/pendaftaran-siswa');
@@ -408,6 +437,17 @@ const approvePendaftaranSiswa = async (req, res) => {
 const rejectPendaftaranSiswa = async (req, res) => {
   try {
     const { id } = req.params;
+    const pendaftaran = await PendaftaranP4.findById(id);
+    if (!pendaftaran) {
+      req.session.error = 'Pendaftaran tidak ditemukan';
+      return res.redirect('/admin/pendaftaran-siswa');
+    }
+
+    // If it was already approved, decrement kuota
+    if (pendaftaran.status === 'approved') {
+      await KuotaP4.decrementPeserta(pendaftaran.kuota_id);
+    }
+
     await PendaftaranP4.updateStatus(id, 'rejected');
     logger.info(`Pendaftaran siswa rejected by ${req.user.email}: ID ${id}`);
     req.session.success = 'Pendaftaran siswa berhasil ditolak';

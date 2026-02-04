@@ -47,7 +47,7 @@ class PendaftaranP4 {
       SELECT COUNT(*) as count 
       FROM pendaftaran_p4 
       WHERE peserta_id = ? 
-      AND status = 'registered'
+      AND status IN ('registered', 'approved', 'surat_terkirim')
       AND YEAR(tanggal_daftar) = YEAR(CURDATE())
     `;
     const results = await query(sql, [pesertaId]);
@@ -87,15 +87,14 @@ class PendaftaranP4 {
     // Get next nomor urut
     const nomorUrut = kuota.peserta_terdaftar + 1;
 
-    // Insert pendaftaran
+    // Insert pendaftaran with status 'pending' (waiting for admin approval)
     const sql = `
       INSERT INTO pendaftaran_p4 (peserta_id, kuota_id, nomor_urut, surat_keterangan, status) 
-      VALUES (?, ?, ?, ?, 'registered')
+      VALUES (?, ?, ?, ?, 'pending')
     `;
     const result = await query(sql, [pesertaId, kuotaId, nomorUrut, suratKeteranganPath]);
 
-    // Update kuota count
-    await KuotaP4.incrementPeserta(kuotaId);
+    // Note: Do NOT update kuota count here. Kuota increments when admin approves the registration.
 
     return {
       id: result.insertId,
@@ -103,8 +102,15 @@ class PendaftaranP4 {
       kuota_id: kuotaId,
       nomor_urut: nomorUrut,
       surat_keterangan: suratKeteranganPath,
-      status: 'registered'
+      status: 'pending'
     };
+  }
+
+  // Update surat keterangan and set status to 'surat_terkirim'
+  static async updateSuratKeterangan(id, suratKeteranganPath) {
+    const sql = 'UPDATE pendaftaran_p4 SET surat_keterangan = ?, status = ? WHERE id = ?';
+    await query(sql, [suratKeteranganPath, 'surat_terkirim', id]);
+    return this.findById(id);
   }
 
   // Cancel pendaftaran
@@ -121,8 +127,10 @@ class PendaftaranP4 {
     const sql = "UPDATE pendaftaran_p4 SET status = 'cancelled' WHERE id = ?";
     await query(sql, [id]);
 
-    // Decrement kuota count
-    await KuotaP4.decrementPeserta(pendaftaran.kuota_id);
+    // Decrement kuota count only if this registration had incremented it (approved/registered state)
+    if (pendaftaran.status === 'registered' || pendaftaran.status === 'approved') {
+      await KuotaP4.decrementPeserta(pendaftaran.kuota_id);
+    }
 
     return this.findById(id);
   }
@@ -184,7 +192,7 @@ class PendaftaranP4 {
   // Delete pendaftaran
   static async delete(id) {
     const pendaftaran = await this.findById(id);
-    if (pendaftaran && pendaftaran.status === 'registered') {
+    if (pendaftaran && (pendaftaran.status === 'registered' || pendaftaran.status === 'approved')) {
       await KuotaP4.decrementPeserta(pendaftaran.kuota_id);
     }
     
