@@ -452,6 +452,39 @@ const deletePendaftaranSiswa = async (req, res) => {
   }
 };
 
+// @desc    Update status pendaftaran pendidik
+// @route   POST /admin/pendaftaran-pendidik/:id/update-status
+const updateStatusPendaftaranPendidik = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    await PendaftaranGuruP4.updateStatus(id, status);
+    logger.info(`Pendaftaran pendidik status updated by ${req.user.email}: ID ${id} to ${status}`);
+    req.session.success = 'Status pendaftaran pendidik berhasil diperbarui';
+    res.redirect('/admin/pendaftaran-pendidik');
+  } catch (error) {
+    logger.error('Update status pendaftaran pendidik error:', error);
+    req.session.error = 'Gagal memperbarui status pendaftaran pendidik';
+    res.redirect('/admin/pendaftaran-pendidik');
+  }
+};
+
+// @desc    Delete pendaftaran pendidik
+// @route   POST /admin/pendaftaran-pendidik/:id/delete
+const deletePendaftaranPendidik = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await PendaftaranGuruP4.delete(id);
+    logger.info(`Pendaftaran pendidik deleted by ${req.user.email}: ID ${id}`);
+    req.session.success = 'Pendaftaran pendidik berhasil dihapus';
+    res.redirect('/admin/pendaftaran-pendidik');
+  } catch (error) {
+    logger.error('Delete pendaftaran pendidik error:', error);
+    req.session.error = 'Gagal menghapus pendaftaran pendidik';
+    res.redirect('/admin/pendaftaran-pendidik');
+  }
+};
+
 module.exports = {
   showManageAdminPage,
   addAdmin,
@@ -463,6 +496,8 @@ module.exports = {
   showPendaftaranPendidikPage,
   approvePendaftaranPendidik,
   rejectPendaftaranPendidik,
+  updateStatusPendaftaranPendidik,
+  deletePendaftaranPendidik,
   showPendaftaranSiswaPage,
   approvePendaftaranSiswa,
   rejectPendaftaranSiswa,

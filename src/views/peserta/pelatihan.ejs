@@ -34,64 +34,69 @@
   </div>
   <% } %>
 
-  <!-- Pelatihan Grid -->
+  <!-- Pelatihan Grid: filter out kuota yang sudah terdaftar -->
   <% if (kuotaList && kuotaList.length > 0) { %>
-  <div class="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
-    <% kuotaList.forEach(function(kuota) { 
-       const isRegistered = registeredKuotaIds.includes(kuota.id);
-    %>
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-      <div class="p-4 md:p-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-2">
-          <%= kuota.judul_pelatihan || 'Pelatihan ' + kuota.tahun_ajaran %>
-        </h3>
-        <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-          <%= kuota.deskripsi || 'Program pelatihan P4 Jakarta Timur' %>
-        </p>
-        
-        <div class="space-y-2 text-sm text-gray-600 mb-4">
-          <div class="flex items-center">
-            <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-            </svg>
-            <span class="truncate">
-              <% if (kuota.tanggal_mulai && kuota.tanggal_selesai) { %>
-              <%= new Date(kuota.tanggal_mulai).toLocaleDateString('id-ID', {day: 'numeric', month: 'short'}) %> - <%= new Date(kuota.tanggal_selesai).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) %>
-              <% } else { %>
-              <%= kuota.tahun_ajaran %>
-              <% } %>
+    <% const availableKuota = kuotaList.filter(k => !registeredKuotaIds.includes(k.id)); %>
+    <% if (availableKuota && availableKuota.length > 0) { %>
+      <div class="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <% availableKuota.forEach(function(kuota) { %>
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <div class="p-4 md:p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">
+              <%= kuota.judul_pelatihan || 'Pelatihan ' + kuota.tahun_ajaran %>
+            </h3>
+            <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+              <%= kuota.deskripsi || 'Program pelatihan P4 Jakarta Timur' %>
+            </p>
+            
+            <div class="space-y-2 text-sm text-gray-600 mb-4">
+              <div class="flex items-center">
+                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span class="truncate">
+                  <% if (kuota.tanggal_mulai && kuota.tanggal_selesai) { %>
+                  <%= new Date(kuota.tanggal_mulai).toLocaleDateString('id-ID', {day: 'numeric', month: 'short'}) %> - <%= new Date(kuota.tanggal_selesai).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) %>
+                  <% } else { %>
+                  <%= kuota.tahun_ajaran %>
+                  <% } %>
+                </span>
+              </div>
+              <div class="flex items-center">
+                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                <span><%= kuota.peserta_terdaftar || 0 %>/<%= kuota.max_peserta %> peserta</span>
+              </div>
+            </div>
+
+            <% if (kuota.status === 'open' && canRegister) { %>
+            <a href="/peserta/daftar-pelatihan/<%= kuota.id %>" 
+              class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              Daftar Sekarang
+            </a>
+            <% } else if (!canRegister) { %>
+            <span class="block w-full text-center px-4 py-2 bg-gray-200 text-gray-600 rounded-lg">
+              Batas Tercapai
             </span>
-          </div>
-          <div class="flex items-center">
-            <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-            </svg>
-            <span><%= kuota.peserta_terdaftar || 0 %>/<%= kuota.max_peserta %> peserta</span>
+            <% } else { %>
+            <span class="block w-full text-center px-4 py-2 bg-gray-200 text-gray-600 rounded-lg">
+              Pendaftaran Ditutup
+            </span>
+            <% } %>
           </div>
         </div>
-        
-        <% if (isRegistered) { %>
-        <span class="block w-full text-center px-4 py-2 bg-green-100 text-green-700 rounded-lg">
-          Sudah Terdaftar
-        </span>
-        <% } else if (kuota.status === 'open' && canRegister) { %>
-        <a href="/peserta/daftar-pelatihan/<%= kuota.id %>" 
-          class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-          Daftar Sekarang
-        </a>
-        <% } else if (!canRegister) { %>
-        <span class="block w-full text-center px-4 py-2 bg-gray-200 text-gray-600 rounded-lg">
-          Batas Tercapai
-        </span>
-        <% } else { %>
-        <span class="block w-full text-center px-4 py-2 bg-gray-200 text-gray-600 rounded-lg">
-          Pendaftaran Ditutup
-        </span>
-        <% } %>
+        <% }); %>
       </div>
-    </div>
-    <% }); %>
-  </div>
+    <% } else { %>
+      <div class="bg-white rounded-lg shadow p-8 text-center">
+        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Tidak Ada Pelatihan Tersedia</h3>
+        <p class="text-gray-500">Anda sudah terdaftar pada semua pelatihan yang tersedia. Periksa <a href="/peserta/status-pendaftaran" class="text-blue-600 hover:text-blue-800">Status Pendaftaran</a>.</p>
+      </div>
+    <% } %>
   <% } else { %>
   <div class="bg-white rounded-lg shadow p-8 text-center">
     <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

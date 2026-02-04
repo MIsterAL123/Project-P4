@@ -55,7 +55,7 @@ class PendaftaranP4 {
   }
 
   // Create pendaftaran (with quota check and yearly limit)
-  static async create(pesertaId, kuotaId) {
+  static async create(pesertaId, kuotaId, suratKeteranganPath = null) {
     // Check yearly limit (max 3 per year)
     const yearlyCount = await this.countRegistrationsThisYear(pesertaId);
     if (yearlyCount >= 3) {
@@ -89,10 +89,10 @@ class PendaftaranP4 {
 
     // Insert pendaftaran
     const sql = `
-      INSERT INTO pendaftaran_p4 (peserta_id, kuota_id, nomor_urut, status) 
-      VALUES (?, ?, ?, 'registered')
+      INSERT INTO pendaftaran_p4 (peserta_id, kuota_id, nomor_urut, surat_keterangan, status) 
+      VALUES (?, ?, ?, ?, 'registered')
     `;
-    const result = await query(sql, [pesertaId, kuotaId, nomorUrut]);
+    const result = await query(sql, [pesertaId, kuotaId, nomorUrut, suratKeteranganPath]);
 
     // Update kuota count
     await KuotaP4.incrementPeserta(kuotaId);
@@ -102,6 +102,7 @@ class PendaftaranP4 {
       peserta_id: pesertaId,
       kuota_id: kuotaId,
       nomor_urut: nomorUrut,
+      surat_keterangan: suratKeteranganPath,
       status: 'registered'
     };
   }

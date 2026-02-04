@@ -165,3 +165,12 @@
 2026-02-02T07:27:55.175Z [ERROR]: Database query error:
 2026-02-02T10:07:55.934Z [ERROR]: Database query error: Data truncated for column 'status' at row 1
 2026-02-02T10:07:55.934Z [ERROR]: Update status pendaftaran siswa error: Data truncated for column 'status' at row 1
+2026-02-04T01:07:12.614Z [ERROR]: Proses pendaftaran error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T02:06:42.946Z [ERROR]: Error: Tipe file tidak diizinkan
+2026-02-04T02:08:42.763Z [ERROR]: Error: Tipe file tidak diizinkan
+2026-02-04T02:09:14.399Z [ERROR]: Proses pendaftaran error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T02:09:23.923Z [ERROR]: Proses pendaftaran error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T02:10:36.827Z [ERROR]: Proses pendaftaran error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T02:12:16.918Z [ERROR]: Daftar pelatihan error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T02:27:12.512Z [ERROR]: Proses pendaftaran error: Anda sudah terdaftar pada pelatihan ini
+2026-02-04T02:27:27.955Z [ERROR]: Proses pendaftaran error: Anda sudah terdaftar pada pelatihan ini
