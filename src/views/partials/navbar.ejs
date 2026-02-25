@@ -64,15 +64,17 @@
                                 </svg>
                                 Dashboard <%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %>
                             </a>
-                            <a href="/<%= user.role %>/profile"
-                                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                                <svg class="w-4 h-4 mr-3 text-gray-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                                Profil Saya
-                            </a>
+                            <% if (user.role !== 'admin') { %>
+                                <a href="/<%= user.role %>/profile"
+                                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                                    <svg class="w-4 h-4 mr-3 text-gray-500" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    Profil Saya
+                                </a>
+                            <% } %>
                             <div class="border-t border-gray-100 my-1"></div>
                             <form action="/auth/logout" method="POST" class="block">
                                 <button type="submit"
@@ -133,10 +135,12 @@
                         <i class="fas fa-tachometer-alt mr-2"></i> Dashboard <%= user.role.charAt(0).toUpperCase() +
                             user.role.slice(1) %>
                     </a>
-                    <a href="/<%= user.role %>/profile"
-                        class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">
-                        <i class="fas fa-user mr-2"></i> Profil Saya
-                    </a>
+                    <% if (user.role !== 'admin') { %>
+                        <a href="/<%= user.role %>/profile"
+                            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">
+                            <i class="fas fa-user mr-2"></i> Profil Saya
+                        </a>
+                    <% } %>
                     <form action="/auth/logout" method="POST" class="block">
                         <button type="submit"
                             class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50">

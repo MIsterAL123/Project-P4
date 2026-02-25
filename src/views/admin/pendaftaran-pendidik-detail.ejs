@@ -1,0 +1,121 @@
+<div class="space-y-6">
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 p-6 text-white shadow-lg">
+        <div class="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/10 blur-2xl"></div>
+        <div class="absolute -left-8 -bottom-10 h-28 w-28 rounded-full bg-blue-300/20 blur-2xl"></div>
+        <div class="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div class="flex items-start gap-3">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-white/20 bg-white/10">
+                    <svg class="h-6 w-6 text-blue-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h4.586a1 1 0 01.707.293l1.414 1.414a1 1 0 00.707.293H18a2 2 0 012 2v8a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-200">Detail Pendaftaran</p>
+                    <h1 class="mt-1 text-2xl font-bold">Pendidik</h1>
+                    <p class="mt-1 text-sm text-blue-100">ID <span class="font-semibold">#<%= pendaftaran.id %></span> · Nomor Urut <span class="font-semibold">#<%= pendaftaran.nomor_urut %></span></p>
+                </div>
+            </div>
+            <a href="/admin/pendaftaran-pendidik" class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/20">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Kembali ke daftar
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Data Pendidik</h2>
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <dt class="text-sm text-gray-500">Nama</dt>
+                <dd class="font-medium text-gray-900"><%= pendaftaran.nama %></dd>
+            </div>
+            <div>
+                <dt class="text-sm text-gray-500">Email</dt>
+                <dd class="font-medium text-gray-900"><%= pendaftaran.email %></dd>
+            </div>
+            <div>
+                <dt class="text-sm text-gray-500">NIP</dt>
+                <dd class="font-medium text-gray-900"><%= pendaftaran.nip || '-' %></dd>
+            </div>
+            <div>
+                <dt class="text-sm text-gray-500">Nomor Urut</dt>
+                <dd class="font-medium text-gray-900">#<%= pendaftaran.nomor_urut %></dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Data Pelatihan</h2>
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <dt class="text-sm text-gray-500">Judul Pelatihan</dt>
+                <dd class="font-medium text-gray-900"><%= pendaftaran.judul_pelatihan || '-' %></dd>
+            </div>
+            <div>
+                <dt class="text-sm text-gray-500">Tahun Ajaran</dt>
+                <dd class="font-medium text-gray-900"><%= pendaftaran.tahun_ajaran || '-' %></dd>
+            </div>
+            <div>
+                <dt class="text-sm text-gray-500">Tanggal Daftar</dt>
+                <dd class="font-medium text-gray-900"><%= pendaftaran.tanggal_daftar ? new Date(pendaftaran.tanggal_daftar).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-' %></dd>
+            </div>
+            <div>
+                <dt class="text-sm text-gray-500">Status</dt>
+                <dd>
+                    <span class="px-3 py-1 text-xs font-medium rounded-full 
+                        <%= pendaftaran.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                           pendaftaran.status === 'approved' ? 'bg-green-100 text-green-800' : 
+                           pendaftaran.status === 'surat_terkirim' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800' %>">
+                        <%= pendaftaran.status %>
+                    </span>
+                </dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-800">Aksi Dokumen</h2>
+            <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">Surat Tugas</span>
+        </div>
+
+        <% if (pendaftaran.surat_tugas) { %>
+            <div class="grid grid-cols-2 gap-3 md:max-w-lg">
+                <a href="/files/surat-tugas/<%= pendaftaran.id %>" target="_blank" class="group relative overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-b from-blue-50 to-white p-4 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+                    <div class="absolute -right-6 -top-6 h-16 w-16 rounded-full bg-blue-200/40 blur-xl"></div>
+                    <span class="relative mx-auto inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-md ring-4 ring-blue-100 transition group-hover:scale-105 group-hover:bg-blue-700">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </span>
+                    <p class="relative mt-3 text-sm font-semibold text-gray-900">Lihat</p>
+                    <p class="relative mt-1 text-xs text-gray-500">Preview dokumen</p>
+                </a>
+
+                <a href="/files/surat-tugas/<%= pendaftaran.id %>?download=1" download class="group relative overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-b from-emerald-50 to-white p-4 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+                    <div class="absolute -right-6 -top-6 h-16 w-16 rounded-full bg-emerald-200/40 blur-xl"></div>
+                    <span class="relative mx-auto inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-md ring-4 ring-emerald-100 transition group-hover:scale-105 group-hover:bg-emerald-700">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v12m0 0l4-4m-4 4l-4-4m-3 9h14"></path>
+                        </svg>
+                    </span>
+                    <p class="relative mt-3 text-sm font-semibold text-gray-900">Unduh</p>
+                    <p class="relative mt-1 text-xs text-gray-500">Simpan file</p>
+                </a>
+            </div>
+        <% } else { %>
+            <div class="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-5 py-6 text-center">
+                <div class="mx-auto mb-2 inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-gray-600">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m2 7H7a2 2 0 01-2-2V6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v10a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <p class="text-sm font-medium text-gray-700">Surat tugas belum diunggah</p>
+                <p class="mt-1 text-xs text-gray-500">Dokumen akan muncul di sini setelah peserta melengkapi upload.</p>
+            </div>
+        <% } %>
+    </div>
+</div>

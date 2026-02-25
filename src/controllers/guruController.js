@@ -371,13 +371,8 @@ const showUploadSuratTugas = async (req, res) => {
       guru,
       pendaftaran,
       kuota,
-      currentUser: req.user,
-      success: req.session.success,
-      error: req.session.error
+      currentUser: req.user
     });
-    
-    delete req.session.success;
-    delete req.session.error;
   } catch (error) {
     logger.error('Show upload surat tugas error:', error);
     req.session.error = 'Gagal memuat halaman upload';
@@ -404,6 +399,11 @@ const uploadSuratTugas = async (req, res) => {
       req.session.error = 'Anda tidak memiliki akses ke halaman ini';
       return res.redirect('/guru/status-pendaftaran');
     }
+
+    if (pendaftaran.status !== 'approved') {
+      req.session.error = 'Upload hanya tersedia setelah pendaftaran disetujui oleh admin';
+      return res.redirect('/guru/status-pendaftaran');
+    }
     
     // Check if file uploaded
     if (!req.file) {
@@ -423,7 +423,7 @@ const uploadSuratTugas = async (req, res) => {
     await PendaftaranGuruP4.updateSuratTugas(pendaftaranId, req.file.filename);
     
     logger.info(`Surat tugas uploaded for pendaftaran ${pendaftaranId}`);
-    req.session.success = 'Surat tugas berhasil diunggah.';
+    req.session.success = 'Surat tugas berhasil ke kirim';
     res.redirect('/guru/status-pendaftaran');
   } catch (error) {
     logger.error('Upload surat tugas error:', error);
@@ -507,13 +507,8 @@ const showStatusPendaftaran = async (req, res) => {
       layout: 'layouts/admin',
       guru,
       pendaftaranList: activePendaftaran,
-      currentUser: req.user,
-      success: req.session.success,
-      error: req.session.error
+      currentUser: req.user
     });
-    
-    delete req.session.success;
-    delete req.session.error;
   } catch (error) {
     logger.error('Show status pendaftaran error:', error);
     req.session.error = 'Gagal memuat status pendaftaran';
