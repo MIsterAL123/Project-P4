@@ -5,6 +5,27 @@ module.exports = {
     "./public/**/*.html",
     "./public/js/**/*.js"
   ],
+  safelist: [
+    // Keep admin detail page accents stable even when watcher misses file-change scan
+    "bg-gradient-to-r",
+    "from-slate-900",
+    "to-slate-900",
+    "via-blue-900",
+    "via-cyan-900",
+    "bg-cyan-50",
+    "text-cyan-700",
+    "bg-cyan-600",
+    "group-hover:bg-cyan-700",
+    "ring-cyan-100",
+    "bg-emerald-50",
+    "bg-emerald-600",
+    "group-hover:bg-emerald-700",
+    "ring-emerald-100",
+    "border-cyan-200",
+    "border-emerald-200",
+    "bg-cyan-200/40",
+    "bg-blue-200/40"
+  ],
   theme: {
     extend: {
       colors: {
