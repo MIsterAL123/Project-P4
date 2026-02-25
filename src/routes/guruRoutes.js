@@ -25,7 +25,8 @@ function handleMulterUpload(fieldName, uploader) {
     uploader.single(fieldName)(req, res, function(err) {
       if (err) {
         req.session.error = err.message || 'Proses upload gagal';
-        return res.redirect('back');
+        const referer = req.headers.referer || `/guru/upload-surat-tugas/${req.params.pendaftaranId}`;
+        return res.redirect(referer);
       }
       next();
     });

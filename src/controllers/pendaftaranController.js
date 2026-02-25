@@ -288,13 +288,8 @@ const showUploadSuratKeterangan = async (req, res) => {
       peserta,
       pendaftaran,
       kuota,
-      currentUser: req.user,
-      success: req.session.success,
-      error: req.session.error
+      currentUser: req.user
     });
-
-    delete req.session.success;
-    delete req.session.error;
   } catch (error) {
     logger.error('Show upload surat keterangan error:', error);
     req.session.error = 'Gagal memuat halaman upload';
@@ -320,6 +315,11 @@ const uploadSuratKeterangan = async (req, res) => {
       return res.redirect('/peserta/status-pendaftaran');
     }
 
+    if (pendaftaran.status !== 'approved') {
+      req.session.error = 'Upload hanya tersedia setelah pendaftaran disetujui oleh admin';
+      return res.redirect('/peserta/status-pendaftaran');
+    }
+
     if (!req.file) {
       req.session.error = 'File surat keterangan wajib diunggah';
       return res.redirect(`/peserta/upload-surat-keterangan/${pendaftaranId}`);
@@ -335,7 +335,7 @@ const uploadSuratKeterangan = async (req, res) => {
     await PendaftaranP4.updateSuratKeterangan(pendaftaranId, req.file.filename);
 
     logger.info(`Surat keterangan uploaded for pendaftaran ${pendaftaranId}`);
-    req.session.success = 'Surat keterangan berhasil diunggah.';
+    req.session.success = 'Surat tugas berhasil ke kirim';
     res.redirect('/peserta/status-pendaftaran');
   } catch (error) {
     logger.error('Upload surat keterangan error:', error);

@@ -325,6 +325,32 @@ const showPendaftaranPendidikPage = async (req, res) => {
   }
 };
 
+// @desc    View detail pendaftaran pendidik
+// @route   GET /admin/pendaftaran-pendidik/:id/detail
+const viewPendaftaranPendidikDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const pendaftaran = await PendaftaranGuruP4.findById(id);
+
+    if (!pendaftaran) {
+      req.session.error = 'Pendaftaran pendidik tidak ditemukan';
+      return res.redirect('/admin/pendaftaran-pendidik');
+    }
+
+    res.render('admin/pendaftaran-pendidik-detail', {
+      title: 'Detail Pendaftaran Pendidik - P4 Jakarta',
+      layout: 'layouts/admin',
+      pendaftaran,
+      currentUser: req.user,
+      user: req.user
+    });
+  } catch (error) {
+    logger.error('View pendaftaran pendidik detail error:', error);
+    req.session.error = 'Gagal memuat detail pendaftaran pendidik';
+    res.redirect('/admin/pendaftaran-pendidik');
+  }
+};
+
 // @desc    Approve pendaftaran pendidik
 // @route   POST /admin/pendaftaran-pendidik/:id/approve
 const approvePendaftaranPendidik = async (req, res) => {
@@ -333,6 +359,11 @@ const approvePendaftaranPendidik = async (req, res) => {
     const pendaftaran = await PendaftaranGuruP4.findById(id);
     if (!pendaftaran) {
       req.session.error = 'Pendaftaran tidak ditemukan';
+      return res.redirect('/admin/pendaftaran-pendidik');
+    }
+
+    if (pendaftaran.status !== 'pending') {
+      req.session.error = 'Approve hanya dapat dilakukan untuk pendaftaran status pending';
       return res.redirect('/admin/pendaftaran-pendidik');
     }
 
@@ -361,9 +392,9 @@ const rejectPendaftaranPendidik = async (req, res) => {
       return res.redirect('/admin/pendaftaran-pendidik');
     }
 
-    // If it was already approved, decrement kuota
-    if (pendaftaran.status === 'approved') {
-      await KuotaP4.decrementGuruPeserta(pendaftaran.kuota_id);
+    if (pendaftaran.status !== 'pending') {
+      req.session.error = 'Tolak hanya dapat dilakukan untuk pendaftaran status pending';
+      return res.redirect('/admin/pendaftaran-pendidik');
     }
 
     await PendaftaranGuruP4.updateStatus(id, 'rejected');
@@ -407,6 +438,32 @@ const showPendaftaranSiswaPage = async (req, res) => {
   }
 };
 
+// @desc    View detail pendaftaran siswa
+// @route   GET /admin/pendaftaran-siswa/:id/detail
+const viewPendaftaranSiswaDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const pendaftaran = await PendaftaranP4.findById(id);
+
+    if (!pendaftaran) {
+      req.session.error = 'Pendaftaran siswa tidak ditemukan';
+      return res.redirect('/admin/pendaftaran-siswa');
+    }
+
+    res.render('admin/pendaftaran-siswa-detail', {
+      title: 'Detail Pendaftaran Siswa - P4 Jakarta',
+      layout: 'layouts/admin',
+      pendaftaran,
+      currentUser: req.user,
+      user: req.user
+    });
+  } catch (error) {
+    logger.error('View pendaftaran siswa detail error:', error);
+    req.session.error = 'Gagal memuat detail pendaftaran siswa';
+    res.redirect('/admin/pendaftaran-siswa');
+  }
+};
+
 // @desc    Approve pendaftaran siswa
 // @route   POST /admin/pendaftaran-siswa/:id/approve
 const approvePendaftaranSiswa = async (req, res) => {
@@ -415,6 +472,11 @@ const approvePendaftaranSiswa = async (req, res) => {
     const pendaftaran = await PendaftaranP4.findById(id);
     if (!pendaftaran) {
       req.session.error = 'Pendaftaran tidak ditemukan';
+      return res.redirect('/admin/pendaftaran-siswa');
+    }
+
+    if (pendaftaran.status !== 'pending') {
+      req.session.error = 'Approve hanya dapat dilakukan untuk pendaftaran status pending';
       return res.redirect('/admin/pendaftaran-siswa');
     }
 
@@ -443,9 +505,9 @@ const rejectPendaftaranSiswa = async (req, res) => {
       return res.redirect('/admin/pendaftaran-siswa');
     }
 
-    // If it was already approved, decrement kuota
-    if (pendaftaran.status === 'approved') {
-      await KuotaP4.decrementPeserta(pendaftaran.kuota_id);
+    if (pendaftaran.status !== 'pending') {
+      req.session.error = 'Tolak hanya dapat dilakukan untuk pendaftaran status pending';
+      return res.redirect('/admin/pendaftaran-siswa');
     }
 
     await PendaftaranP4.updateStatus(id, 'rejected');
@@ -534,11 +596,13 @@ module.exports = {
   viewPendaftaranDetail,
   deletePendaftaran,
   showPendaftaranPendidikPage,
+  viewPendaftaranPendidikDetail,
   approvePendaftaranPendidik,
   rejectPendaftaranPendidik,
   updateStatusPendaftaranPendidik,
   deletePendaftaranPendidik,
   showPendaftaranSiswaPage,
+  viewPendaftaranSiswaDetail,
   approvePendaftaranSiswa,
   rejectPendaftaranSiswa,
   updateStatusPendaftaranSiswa,

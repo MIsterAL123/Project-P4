@@ -7,7 +7,7 @@
     </div>
 
     <!-- Alert Messages (styled like halaman Upload) -->
-    <% if (typeof success !== 'undefined' && success) { %>
+    <% if (typeof success !== 'undefined' && success && success !== 'Surat tugas berhasil ke kirim') { %>
     <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
         <div class="flex items-start">
             <svg class="w-6 h-6 text-green-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +92,7 @@
 
                     <% if (pendaftaran.surat_keterangan) { %>
                     <div class="mt-3">
-                        <a href="/uploads/surat_keterangan/<%= pendaftaran.surat_keterangan %>" target="_blank" class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+                        <a href="/files/surat-keterangan/<%= pendaftaran.id %>" target="_blank" class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -141,6 +141,41 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const successMessage = <%- JSON.stringify((typeof success !== 'undefined' && success) ? success : '') %>;
+    if (successMessage === 'Surat tugas berhasil ke kirim') {
+        document.querySelectorAll('[role="alert"]').forEach(function(alertEl) {
+            if (alertEl.textContent && alertEl.textContent.indexOf('Surat tugas berhasil ke kirim') !== -1) {
+                alertEl.remove();
+            }
+        });
+
+        const overlay = document.createElement('div');
+        overlay.className = 'fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4';
+
+        const modal = document.createElement('div');
+        modal.className = 'w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6 text-center';
+        modal.innerHTML = `
+            <div class="w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Berhasil</h3>
+            <p class="text-gray-600 mb-6">Surat tugas berhasil ke kirim</p>
+            <button type="button" class="swal-ok px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">OK</button>
+        `;
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        const closeModal = () => overlay.remove();
+        const okButton = modal.querySelector('.swal-ok');
+        if (okButton) okButton.addEventListener('click', closeModal);
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) closeModal();
+        });
+    }
+
     document.querySelectorAll('.confirm-action').forEach(function(form) {
         form.addEventListener('submit', function(e) {
             if (!confirm(form.dataset.confirm || 'Yakin?')) {

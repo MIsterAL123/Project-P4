@@ -95,6 +95,8 @@ function createApp() {
 
     // Static files
     app.use(express.static(path.join(__dirname, '../public')));
+    app.use('/uploads/surat_tugas', (req, res) => res.status(403).render('errors/403'));
+    app.use('/uploads/surat_keterangan', (req, res) => res.status(403).render('errors/403'));
     app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
     // Make user and current path available in all views

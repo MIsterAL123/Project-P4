@@ -73,7 +73,7 @@
               <div class="flex text-sm text-gray-600">
                 <label for="surat_keterangan" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
                   <span>Upload file</span>
-                  <input id="surat_keterangan" name="surat_keterangan" type="file" class="sr-only" required accept=".pdf,.jpg,.jpeg,.png" onchange="updateFileName(this)">
+                  <input id="surat_keterangan" name="surat_keterangan" type="file" class="sr-only" required accept=".pdf,.jpg,.jpeg,.png">
                 </label>
                 <p class="pl-1">atau drag and drop</p>
               </div>
@@ -107,7 +107,7 @@
         </div>
       </div>
       <div class="mt-4">
-        <a href="/uploads/surat_keterangan/<%= pendaftaran.surat_keterangan %>" target="_blank" class="text-blue-600 hover:text-blue-800 flex items-center">
+        <a href="/files/surat-keterangan/<%= pendaftaran.id %>" target="_blank" class="text-blue-600 hover:text-blue-800 flex items-center">
           <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -140,51 +140,79 @@
 </div>
 
 <script>
-function updateFileName(input) {
+(function initUploadSuratKeterangan() {
+  const form = document.getElementById('uploadForm');
+  const input = document.getElementById('surat_keterangan');
   const fileName = document.getElementById('fileName');
-  if (input.files && input.files[0]) {
-    fileName.textContent = 'File dipilih: ' + input.files[0].name;
-  } else {
-    fileName.textContent = '';
-  }
-}
+  const dropZone = document.querySelector('#uploadForm .border-dashed');
+  const submitButton = form ? form.querySelector('button[type="submit"]') : null;
 
-// Drag and drop functionality
-const dropZone = document.querySelector('.border-dashed');
-if (dropZone) {
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, preventDefaults, false);
+  if (!form || !input || !fileName) return;
+
+  function updateFileName(inputElem) {
+    if (inputElem.files && inputElem.files[0]) {
+      fileName.textContent = 'File dipilih: ' + inputElem.files[0].name;
+    } else {
+      fileName.textContent = '';
+    }
+  }
+
+  // Keep global for compatibility with existing inline usage patterns.
+  window.updateFileName = updateFileName;
+
+  input.addEventListener('input', function() {
+    updateFileName(input);
   });
 
-  function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-
-  ['dragenter', 'dragover'].forEach(eventName => {
-    dropZone.addEventListener(eventName, highlight, false);
+  input.addEventListener('change', function() {
+    updateFileName(input);
   });
 
-  ['dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, unhighlight, false);
+  form.addEventListener('submit', function(e) {
+    if (!input.files || input.files.length === 0) {
+      e.preventDefault();
+      alert('Silakan pilih file surat tugas terlebih dahulu');
+      input.click();
+      return;
+    }
+
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.classList.add('opacity-75', 'cursor-not-allowed');
+      submitButton.textContent = 'Mengirim...';
+    }
   });
 
-  function highlight() {
-    dropZone.classList.add('border-blue-500', 'bg-blue-50');
-  }
+  if (!dropZone) return;
 
-  function unhighlight() {
-    dropZone.classList.remove('border-blue-500', 'bg-blue-50');
-  }
+  dropZone.addEventListener('click', function(e) {
+    if (e.target.closest('label') || e.target.closest('input[type="file"]')) return;
+    input.click();
+  });
 
-  dropZone.addEventListener('drop', handleDrop, false);
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function(eventName) {
+    dropZone.addEventListener(eventName, function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }, false);
+  });
 
-  function handleDrop(e) {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    const input = document.getElementById('surat_keterangan');
+  ['dragenter', 'dragover'].forEach(function(eventName) {
+    dropZone.addEventListener(eventName, function() {
+      dropZone.classList.add('border-blue-500', 'bg-blue-50');
+    }, false);
+  });
+
+  ['dragleave', 'drop'].forEach(function(eventName) {
+    dropZone.addEventListener(eventName, function() {
+      dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+    }, false);
+  });
+
+  dropZone.addEventListener('drop', function(e) {
+    const files = e.dataTransfer.files;
     input.files = files;
     updateFileName(input);
-  }
-}
+  }, false);
+})();
 </script>

@@ -29,8 +29,7 @@ function handleMulterUpload(fieldName, uploader) {
         const logger = require('../utils/logger');
         logger.error('Multer upload error (peserta):', err);
         req.session.error = err.message || 'Proses upload gagal';
-        // Redirect back to the daftar pelatihan page for the given kuota
-        const referer = req.headers.referer || `/peserta/daftar-pelatihan/${req.params.kuotaId}`;
+        const referer = req.headers.referer || `/peserta/upload-surat-keterangan/${req.params.pendaftaranId}`;
         return res.redirect(referer);
       }
       next();

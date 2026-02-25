@@ -47,6 +47,7 @@ router.post('/pendaftaran/:id/delete', adminController.deletePendaftaran);
 
 // Pendaftaran Pendidik
 router.get('/pendaftaran-pendidik', adminController.showPendaftaranPendidikPage);
+router.get('/pendaftaran-pendidik/:id/detail', adminController.viewPendaftaranPendidikDetail);
 router.post('/pendaftaran-pendidik/:id/approve', adminController.approvePendaftaranPendidik);
 router.post('/pendaftaran-pendidik/:id/reject', adminController.rejectPendaftaranPendidik);
 router.post('/pendaftaran-pendidik/:id/update-status', adminController.updateStatusPendaftaranPendidik);
@@ -54,6 +55,7 @@ router.post('/pendaftaran-pendidik/:id/delete', adminController.deletePendaftara
 
 // Pendaftaran Siswa
 router.get('/pendaftaran-siswa', adminController.showPendaftaranSiswaPage);
+router.get('/pendaftaran-siswa/:id/detail', adminController.viewPendaftaranSiswaDetail);
 router.post('/pendaftaran-siswa/:id/approve', adminController.approvePendaftaranSiswa);
 router.post('/pendaftaran-siswa/:id/reject', adminController.rejectPendaftaranSiswa);
 router.post('/pendaftaran-siswa/:id/update-status', adminController.updateStatusPendaftaranSiswa);
