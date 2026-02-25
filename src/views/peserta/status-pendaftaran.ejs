@@ -91,8 +91,20 @@
                     </div>
 
                     <% if (pendaftaran.surat_keterangan) { %>
+                    <%
+                        const suratKeteranganSlug = ((pendaftaran.judul_pelatihan || 'Surat Keterangan').toString()
+                            .replace(/[\/\\:*?"<>|]/g, '-')
+                            .replace(/\s+/g, '-')
+                            .replace(/[^a-zA-Z0-9._-]/g, '-')
+                            .replace(/-+/g, '-')
+                            .replace(/^-+|-+$/g, '') || 'surat-keterangan');
+                        const suratKeteranganExt = (pendaftaran.surat_keterangan && pendaftaran.surat_keterangan.includes('.'))
+                            ? pendaftaran.surat_keterangan.substring(pendaftaran.surat_keterangan.lastIndexOf('.'))
+                            : '.pdf';
+                        const suratKeteranganDocPath = encodeURIComponent(suratKeteranganSlug + suratKeteranganExt);
+                    %>
                     <div class="mt-3">
-                        <a href="/files/surat-keterangan/<%= pendaftaran.id %>" target="_blank" class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+                        <a href="/files/surat-keterangan/<%= pendaftaran.id %>/<%= suratKeteranganDocPath %>" target="_blank" class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -143,11 +155,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const successMessage = <%- JSON.stringify((typeof success !== 'undefined' && success) ? success : '') %>;
     if (successMessage === 'Surat tugas berhasil ke kirim') {
-        document.querySelectorAll('[role="alert"]').forEach(function(alertEl) {
-            if (alertEl.textContent && alertEl.textContent.indexOf('Surat tugas berhasil ke kirim') !== -1) {
-                alertEl.remove();
-            }
-        });
+        if (window.__suratTugasSwalShown) return;
+        window.__suratTugasSwalShown = true;
 
         const overlay = document.createElement('div');
         overlay.className = 'fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4';

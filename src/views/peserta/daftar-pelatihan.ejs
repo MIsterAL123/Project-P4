@@ -95,24 +95,6 @@
           <p class="text-sm text-gray-600">Silakan klik tombol "Daftar Sekarang" untuk mengajukan pendaftaran. Setelah disetujui oleh admin, Anda akan dapat mengunggah Surat Keterangan sebagai kelengkapan.</p>
         </div>
 
-      <script>
-      // No client-side file validation at registration stage (upload happens after approval)
-      </script>
-
-        // Existing file name updater
-        function updateFileName(inputElem, targetId) {
-          const fileName = document.getElementById(targetId);
-          if (inputElem.files && inputElem.files[0]) {
-            fileName.textContent = 'File dipilih: ' + inputElem.files[0].name;
-          } else {
-            fileName.textContent = '';
-          }
-        }
-        // Wire existing onchange to update display
-        input.addEventListener('change', function(){ updateFileName(this, 'fileNamePeserta'); fileError.textContent = ''; });
-      })();
-      </script>
-
         <div class="mb-4">
           <label class="flex items-start">
             <input type="checkbox" name="agree" required class="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
@@ -132,16 +114,6 @@
         </div>
       </form>
 
-      <script>
-      function updateFileName(input, targetId) {
-        const fileName = document.getElementById(targetId);
-        if (input.files && input.files[0]) {
-          fileName.textContent = 'File dipilih: ' + input.files[0].name;
-        } else {
-          fileName.textContent = '';
-        }
-      }
-      </script>
     </div>
     <% } else if (alreadyRegistered) { %>
     <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
