@@ -35,6 +35,12 @@ const errorHandler = (err, req, res, next) => {
         body: req.body,
         user: req.user?.id || 'anonymous'
     });
+
+    // If response already started, delegate to Express default handler
+    // to avoid "ERR_HTTP_HEADERS_SENT".
+    if (res.headersSent) {
+        return next(err);
+    }
     
     // Set status code
     const statusCode = err.status || err.statusCode || 500;
